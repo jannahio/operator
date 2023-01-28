@@ -1,0 +1,4 @@
+ansible >= 2.7
+ansible-lint
+molecule
+kubernetes
