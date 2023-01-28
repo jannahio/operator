@@ -1,0 +1,19 @@
+---
+- name: Create the jannah.jannah.io/v1alpha1.Jannah
+  k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    definition: "{{ lookup('template', '/'.join([samples_dir, cr_file])) | from_yaml }}"
+  register: jannah_apply_crd
+  vars:
+    cr_file: 'jannah_v1alpha1_jannah.yaml'
+
+- debug: var=jannah_apply_crd
+- assert:
+    that:
+      - jannah_apply_crd['changed'] == true
+      - jannah_apply_crd['failed'] == false
+      - jannah_apply_crd['result']['kind'] == 'Jannah'
+      - jannah_apply_crd['result']['metadata']['name'] == 'jannah'
+      - jannah_apply_crd['result']['metadata']['namespace'] == "jannah-operator-system"
+

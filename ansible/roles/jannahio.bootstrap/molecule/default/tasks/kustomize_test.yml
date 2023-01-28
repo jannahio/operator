@@ -1,0 +1,8 @@
+---
+- name: "Check kustomize status"
+  shell: |
+    kustomize version
+  register: ckeck_kustomize_results
+  tags:
+    - "bootstrap_kustomize_status"
+    - "bootstrap_kustomize"

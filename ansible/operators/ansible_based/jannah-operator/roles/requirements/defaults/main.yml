@@ -1,0 +1,21 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        Jannah:
+          stages:
+            bootstrap:
+              downloads:
+                opm: opm
+                base_dir: downloads
+                pre_requirements:
+                  linux_libs:
+                    - name: "aptitude"
+                    - name: "openssl"
+                  python_modules:
+                    - name: "python-apt"
+                    - name: "python3-apt"
+    host_vars:
+      localhost:
+        name: localhost

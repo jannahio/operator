@@ -1,0 +1,66 @@
+---
+- name: "Using keys/values from the all file, generate molecule file for downstream boostrapping purposes"
+  block:
+    - name: "Generate molecule.yml for jannahio.bootstrap"
+      template:
+        src: "files/templates/molecule.bootstrap.template.yml"
+        dest: "roles/jannahio.bootstrap/molecule/default/molecule.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate molecule.yml for jannah-opertor"
+      template:
+        src: "files/templates/molecule.bootstrap.template.yml"
+        dest: "operators/ansible_based/jannah-operator/molecule/default/molecule.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate .env for jannahio.bootstrap"
+      template:
+        src: "files/templates/env.template"
+        dest: "roles/jannahio.bootstrap/molecule/default/.env"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate .env for jannah-operator"
+      template:
+        src: "files/templates/env.template"
+        dest: "operators/ansible_based/jannah-operator/molecule/default/.env"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate jannah-operator/defaults/main.yml"
+      template:
+        src: "files/templates/operators/ansible_based/jannah/defaults/main.template.yml"
+        dest: "operators/ansible_based/jannah-operator/roles/jannah/defaults/main.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+  rescue:
+    - name: "D1D2 Bootstrapping Exception"
+      ansible.builtin.debug:
+        msg: 'D1D2 Bootstrapping Exception'
+      register: debug_resources
+  ignore_errors: false

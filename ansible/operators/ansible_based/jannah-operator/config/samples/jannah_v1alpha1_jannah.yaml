@@ -1,0 +1,6 @@
+apiVersion: jannah.jannah.io/v1alpha1
+kind: Jannah
+metadata:
+  name: jannah
+spec:
+  size: 1
