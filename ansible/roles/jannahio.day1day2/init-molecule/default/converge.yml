@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include bootstrap"
+      include_role:
+        name: "bootstrap"
+      tags:
+        - "d1d2-bootstrap-cert-manager"
+        - "d1d2-operator"

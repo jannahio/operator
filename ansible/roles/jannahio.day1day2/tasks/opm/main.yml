@@ -1,0 +1,64 @@
+---
+# Implements https://docs.openshift.com/container-platform/4.9/cli_reference/opm/cli-opm-install.html
+  - name: "Day 1, Day 2 OLM Installaions"
+    block:
+      - name: "Remove OPM working directory"
+        file:
+          path: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+          state: absent
+          mode: 0755
+        tags:
+          - "olm-create-download-dir"
+          - "d1d2-olm-install"
+      - name: "Create OPM working directory"
+        file:
+          path: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+          state: directory
+          mode: 0755
+        tags:
+          - "olm-create-download-dir"
+          - "d1d2-olm-install"
+      - name: "Get OPM tar file"
+        shell: |
+          wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.9/opm-mac-4.9.46.tar.gz
+        args:
+          chdir: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+        tags:
+          - "olm-download"
+          - "d1d2-olm-install"
+      - name: "Untar OPM download file"
+        shell: |
+          tar xvf opm-mac-4.9.46.tar.gz
+        args:
+          chdir: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+        tags:
+          - "olm-untar"
+          - "d1d2-olm-install"
+
+      - name: "Install OPM"
+        shell: |
+          mv darwin-amd64-opm /usr/local/bin/opm
+        args:
+          chdir: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+        tags:
+          - "olm-install"
+          - "d1d2-olm-install"
+
+      - name: "Check OPM"
+        shell: |
+          opm --version
+        args:
+          chdir: "/tmp/{{ Jannah.stages.bootstrap.downloads.base_dir }}/{{ Jannah.stages.bootstrap.downloads.opm }}"
+        tags:
+          - "olm-check"
+          - "d1d2-olm-install"
+
+
+    rescue:
+      - name: "D1D2 OLM install Exception"
+        ansible.builtin.debug:
+          msg: 'D1D2 OLM install Exception'
+        register: olm_install_error
+    #become: true
+    ignore_errors: false
+    

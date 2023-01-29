@@ -1,0 +1,9 @@
+---
+
+- name: Import prerequisite tasks
+  include_tasks: '{{ item }}'
+  with_fileglob:
+    - prerequisites/native_linux/main.yml
+  tags:
+    - "deploy_jannah"
+    - "deploy_jannah_prequisites"

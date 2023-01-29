@@ -1,0 +1,49 @@
+
+---
+# Called/imported in the prepare scenario
+- name: "Create download directory"
+  file:
+    path: "/tmp/install_kustomize"
+    state: directory
+    mode: 0755
+  tags:
+    - "bootstrap_get_kustomize"
+    - "bootstrap_kustomize"
+
+# 08/22/2022 - Osmanj - The latest version of Kustomize is buggy?
+# It does not recognize the --load_restrictor='LoadRestrictionsNone' flog
+# Current workaround is to install v3.8.7
+- name: "wget kustomize_v3.8.7_darwin_amd64.tar.gz"
+  shell: |
+    wget  \
+    https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.7/kustomize_v3.8.7_darwin_amd64.tar.gz;
+  async: 600
+  poll: 5
+  args:
+    chdir: "/tmp/install_kustomize"
+  register: ckeck_kustomize_results
+  tags:
+    - "bootstrap_get_kustomize"
+    - "bootstrap_kustomize"
+
+
+- name: "tar xvf kustomize_v3.8.7_darwin_amd64.tar.gz"
+  shell: |
+    tar xvf kustomize_v3.8.7_darwin_amd64.tar.gz
+  args:
+    chdir: "/tmp/install_kustomize"
+  register: ckeck_kustomize_results
+  tags:
+    - "bootstrap_get_kustomize"
+    - "bootstrap_untar_kustomize"
+    - "bootstrap_kustomize"
+
+- name: "mv kustomize /usr/local/bin/kustomize"
+  shell: |
+    mv kustomize /usr/local/bin/kustomize
+  args:
+    chdir: "/tmp/install_kustomize"
+  register: ckeck_kustomize_results
+  tags:
+    - "bootstrap_mv_kustomize"
+    - "bootstrap_kustomize"

@@ -1,0 +1,91 @@
+---
+  - name: "Day 1, Day 2: Install the Operator SDK CLI"
+    block:
+      # NOTE: 04/17/2022 - Osmanj
+      # This is a one time operation to bootstrap the initial operator for Jannah
+      - name: "install operator-sdk"
+        shell: |
+          brew install operator-sdk
+        tags:
+          - "d1d2-install-operator-sdk"
+          - "d1d2-operator"
+          - "molecule-notest"
+          - "never"
+# NOTE: 04/17/2022 - Osmanj
+# This is a one time operation to bootstrap the initial operator for Jannah
+      - name: "operator working directory"
+        file:
+          path: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+          state: directory
+          mode: 0755
+        tags:
+          - "d1d1_operator_create_workdir"
+          - "d1d2-operator"
+          - "molecule-notest"
+          - "never"
+# NOTE: 04/17/2022 - Osmanj
+# This is a one time operation to bootstrap the initial operator for Jannah
+      - name: "install operator-sdk init project"
+        shell: |
+          operator-sdk init --plugins={{ Jannah.bootstrap[0].operator_sdk.init.plugins }} --domain {{ Jannah.bootstrap[0].operator_sdk.init.domain }}
+        args:
+          chdir: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+        tags:
+          - "d1d2-operator-sdk-init-project"
+          - "d1d2-operator"
+          - "molecule-notest"
+          - "never"
+# NOTE: 04/17/2022 - Osmanj
+# This is a one time operation to bootstrap the initial operator for Jannah
+      - name: "install operator-sdk create api"
+        shell: |
+          operator-sdk create api --group {{ Jannah.bootstrap[0].operator_sdk.init.group }} --version {{ Jannah.bootstrap[0].operator_sdk.init.version }}  --kind {{ Jannah.bootstrap[0].operator_sdk.init.kind }} --generate-role
+        args:
+          chdir: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+        tags:
+          - "d1d2-operator-sdk-create-api"
+          - "d1d2-operator"
+          - "molecule-notest"
+          - "never"
+      - name: "Import Other Day1 Day 2 Tasks"
+        include_tasks: '{{ item }}'
+        with_fileglob:
+          - opm/main.yml
+          - bootstrap_config/main.yml
+        tags:
+          - "d1d2-generate-molecule-configurations"
+          - "d1d2-blog-service-install"
+          - "d1d2-jekyll-new-jannah-operator"
+          - "d1d2-olm-install"
+          - "olm-install"
+    rescue:
+      - name: Always do this
+        ansible.builtin.debug:
+          msg: 'TODO: do a kubectl describe'
+    always:
+      - name: "Bootstrap Resources"
+        k8s_info:
+          api_version: '{{ item.api_version }}'
+          kind: '{{ item.kind }}'
+          namespace: '{{ Jannah.credentials[1].namespace }}'
+        loop:
+          - api_version: v1
+            kind: Pod
+          - api_version: apps/v1
+            kind: Deployment
+          - api_version: v1
+            kind: Secret
+          - api_version: v1
+            kind: ConfigMap
+          - api_version: v1
+            kind: ClusterIssuer
+          - api_version: v1
+            kind: Certificate
+          - api_version: v1
+            kind: Secret
+          - api_version: v1
+            kind: Issuer
+        register: debug_resources
+    #become: true
+    ignore_errors: false
+    

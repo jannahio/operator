@@ -1,0 +1,40 @@
+---
+- name: Build kustomize testing overlay
+  # load_restrictor must be set to none so we can load patch files from the default overlay
+  #command: "{{ kustomize }} build  . --load_restrictor='LoadRestrictionsNone'"
+  command: "{{ kustomize }} build --load_restrictor 'LoadRestrictionsNone' . "
+  args:
+    chdir: '{{ config_dir }}/testing'
+  register: resources
+  changed_when: false
+
+- name: Set resources to {{ state }}
+  k8s:
+    definition: '{{ item }}'
+    state: '{{ state }}'
+  loop: '{{ resources.stdout | from_yaml_all | list }}'
+
+# /private/tmp/bundle_debug/kustomize/hack/kustomize build  --load_restrictor='LoadRestrictionsNone' .
+
+#- name: Apply kustomize testing overlay
+#  # load_restrictor must be set to none so we can load patch files from the default overlay
+#  shell: "{{ kustomize }} build --stack-trace --load_restrictor 'LoadRestrictionsNone' . | kubectl apply -f -"
+#  args:
+#    chdir: '{{ config_dir }}/testing'
+#  register: resources
+#  changed_when: false
+#
+#- name: Build kustomize testing overlay
+#  # load_restrictor must be set to none so we can load patch files from the default overlay
+#  command: "{{ kustomize }} build --stack-trace --load_restrictor 'LoadRestrictionsNone' ."
+#  args:
+#    chdir: '{{ config_dir }}/testing'
+#  register: resources
+#  changed_when: false
+
+#- name: Set resources to {{ state }}
+#  k8s:
+#    definition: '{{ item }}'
+#    state: '{{ state }}'
+#    wait: yes
+#  loop: '{{ resources.stdout | from_yaml_all | list }}'

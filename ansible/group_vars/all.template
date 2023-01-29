@@ -1,0 +1,32 @@
+Jannah:
+  global:
+    namespace: jannah
+  credentials:
+    github:
+      GITHUB_USERNAME:
+      GITHUB_TOKEN:
+    k8:
+      namespace: jannah-operator-bootstrap
+      kubeconfig: /Users/osmanj/dev/runtime/01252022/logs/integration0125/kube_config_whelp-gke-integration0125-1cf.yaml
+      state: present
+      ClusterIssuer:
+        name: jannah-operator-issuer
+      Issuer:
+        name: jannah-operator-ca-issuer
+      Certificate:
+        name: jannah-operator-cert
+        commonName: operator.jannah.io
+        secretName: jannah-operator-sc
+    dockerhub:
+      url: https://index.docker.io/v1/
+      USERNAME:
+      PASSWORD:
+      EMAIL:
+  stages:
+    day1day2:
+      sub_dir:
+    bootstrap:
+      conig_map:
+        name: bootstrap-config
+        data:
+          phase: bootstrap

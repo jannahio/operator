@@ -1,0 +1,21 @@
+ansible >= 2.5
+PyEnchant >= 3.1.1
+responses
+certbot
+certbot_dns_digitalocean
+python-jenkins
+PyGithub
+google-cloud-storage
+google-api-python-client
+cryptography
+pyasn1
+prometheus_client
+towncrier >= 17.8.0
+pyaml
+invoke
+mock
+wheel
+flask
+docker-compose
+psycopg2-binary
+txrequests

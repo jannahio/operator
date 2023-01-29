@@ -1,0 +1,108 @@
+---
+dependency:
+  name: galaxy
+#  options:
+#    role-file: ./requirements.yml
+#    requirements-file: ./collections.yml
+driver:
+  name: delegated
+platforms:
+  - name: cluster
+    groups:
+      - k8s
+provisioner:
+  name: ansible
+  lint: |
+    set -e
+    ansible-lint
+  inventory:
+    group_vars:
+      all:
+        namespace: {{ provisioner.inventory.group_vars.all.Jannah.global.namespace }}
+        vars_prompt:
+          - name: operatorname
+            prompt: >
+            private: no
+            unsafe: yes
+            default: jannah-operator
+        Jannah:
+          global:
+            namespace: jannah-operator-system
+          credentials:
+            github:
+              GITHUB_USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME }}"
+              GITHUB_TOKEN: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN }}"
+            k8:
+              namespace: jannah-operator-bootstrap
+              kubeconfig: ~/.kube/config
+              state: present
+              ClusterIssuer:
+                name: jannah-operator-issuer
+              Issuer:
+                name: jannah-operator-ca-issuer
+              Certificate:
+                name: jannah-operator-cert
+                commonName: operator.jannah.io
+                secretName: jannah-operator-sc
+            dockerhub:
+              url: https://index.docker.io/v1/
+              USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME }}"
+              PASSWORD: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD }}"
+              EMAIL: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL }}"
+          stages:
+            day1day2:
+              sub_dir:
+            bootstrap:
+              conig_map:
+                name: bootstrap-config
+                apiVersion: v1
+                data:
+                  phase: bootstrap
+              downloads:
+                opm: opm
+                base_dir: downloads
+                pre_requirements:
+                  linux_libs:
+                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.linux_libs[0].name }}"
+                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.linux_libs[1].name }}"
+                  python_modules:
+                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.python_modules[0].name }}"
+                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.python_modules[1].name }}"
+              build:
+                USERNAME: osmanj515
+                VERSION: 0.0.1
+                IMG: docker.io/osmanj515/jannah-operator:v0.0.1
+                BUNDLE_IMG: docker.io/osmanj515/jannah-operator-bundle:v0.0.1
+                CATALOG_IMG: docker.io/osmanj515/jannah-operator-catalog:v0.0.1
+                IMAGE_TAG_BASE: docker.io/osmanj515/jannah-operator
+              secrets:
+                image_registry:
+                  name: myregistrykey
+                  namespace: default
+                  apiVersion: v1
+                root_cert:
+                  name: myregistrycert
+                  key: myregistrycertkeydebug
+                  path: /Users/osmanj/dev/runtime/certs/docker-com-chain.pem
+                  namespace: default
+              testing:
+                melecule:
+                  MOLECULE_PROJECT_DIRECTORY:
+    host_vars:
+      localhost:
+        name: osmanj-mac-0
+        ansible_python_interpreter: '{{ ansible_playbook_python }}'
+        config_dir: ${MOLECULE_PROJECT_DIRECTORY}/config
+        samples_dir: ${MOLECULE_PROJECT_DIRECTORY}/config/samples
+        operator_image: ${OPERATOR_IMAGE:-""}
+        operator_pull_policy: ${OPERATOR_PULL_POLICY:-"Always"}
+        kustomize: ${KUSTOMIZE_PATH:-kustomize}
+  env:
+    K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
+    MOLECULE_EPHEMERAL_DIRECTORY: /tmp/EPHEMERAL
+verifier:
+  name: ansible
+
+
+
+
