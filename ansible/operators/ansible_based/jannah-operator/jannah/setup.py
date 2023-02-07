@@ -1,5 +1,5 @@
 """
-Jannah (Zen/Mind): Jalloh Media Development Environment
+Jannah (Zen/Mind) Operator: Jalloh Media Development Environment
 """
 
 # Always prefer setuptools over distutils
@@ -17,7 +17,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 _name = 'jannah'
-_version = '0.0.2'
+_version = '0.0.1'
 _release = _version
 
 setup(

@@ -9,13 +9,6 @@ provisioner:
               downloads:
                 opm: opm
                 base_dir: downloads
-                pre_requirements:
-                  linux_libs:
-                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.linux_libs[0].name }}"
-                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.linux_libs[1].name }}"
-                  python_modules:
-                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.python_modules[0].name }}"
-                    - name: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.downloads.pre_requirements.python_modules[1].name }}"
     host_vars:
       localhost:
         name: localhost

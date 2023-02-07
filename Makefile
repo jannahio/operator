@@ -1,9 +1,38 @@
 WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3.9)
 PIP3_BIN=$(shell which pip3.9)
-ANSIBLE_VAULT_DEFAULT_PASS_FILE=$(HOME)/defaultpass.txt
+ANSIBLE_VAULT_DEFAULT_PASS_FILE=$(HOME)/.jannah-operator/ansible_defaultpass.txt
 JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
+
+# encrypts credentials from environment values and store into molecule config file
+jannah-boot-credentials:
+	ls -lrt $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
+	# Make sure $(HOME)/.jannah-operator/ is available
+	if [ -d "$(HOME)/.jannah-operator/" ]; \
+	then \
+	   echo "found $(HOME)/.jannah-operator/.  Assuming laptop has been provisioned"; \
+	else \
+	   echo "Error: $(HOME)/.jannah-operator/ not found"; \
+	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
+	fi
+
+	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
+	$(HOME)/.jannah-operator/molecule.yml
+
+	$(shell cat ANSIBLE_VAULT_DEFAULT_PASSWORD > ANSIBLE_VAULT_DEFAULT_PASS_FILE)
+	ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) '$GITHUB_USERNAME' --output=$(HOME)/.jannah-operator/GITHUB_USERNAME_ECRYPTED.txt
+
+	yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= load("$(HOME)/.jannah-operator/GITHUB_USERNAME_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
+	yq '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME' ~/.jannah-operator/molecule.yml
+
+
+
+
+
+
+# Installs Day 1 Day 2 tooling (i.e. OLM SDK)
+#jannah-day1-day2:
 
 jannah-python-backup:
 	if [ -d "/tmp/jannah-python.backup" ]; \
@@ -33,16 +62,14 @@ jannah-python:
     $(JANNAH_PYTHON)/bin/pip3.9 install -r $(WORKING_DIR)/requirements/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;
 
-
-
 molecule-config: jannah-python
 	# Make sure the molecule config is available
-	if [ -f "$(HOME)/.jannah-bootstrap/all" ]; \
+	if [ -f "$(HOME)/.jannah-operator/molecule.yml" ]; \
     then \
-       echo "found all: $(HOME)/.jannah-bootstrap/all"; \
+       echo "found all: $(HOME)/.jannah-operator/molecule.yml"; \
     else \
-       echo "Error: all not found at: $(HOME)/.jannah-bootstrap/all"; \
-       echo "Please provide all at: $(HOME)/.jannah-bootstrap/all"; \
+       echo "Error: all not found at: $(HOME)/.jannah-operator/molecule.yml"; \
+       echo "Please provide all at: $(HOME)/.jannah-operator/molecule.yml"; \
     fi
 
     # Make sure the ANSIBLE_VAULT_DEFAULT_PASS_FILE is available
@@ -56,7 +83,7 @@ molecule-config: jannah-python
 
 	chown -R $(USER) $(WORKING_DIR)/
 	cp -v $(WORKING_DIR)/ansible/group_vars/all $(WORKING_DIR)/ansible/group_vars/all.backup
-	cp -v $(HOME)/.jannah-bootstrap/all $(WORKING_DIR)/ansible/group_vars/all
+	cp -v $(HOME)/.jannah-operator/all $(WORKING_DIR)/ansible/group_vars/all
 
 	. $(JANNAH_PYTHON)/bin/activate;\
     which molecule;\
@@ -64,6 +91,8 @@ molecule-config: jannah-python
 	pushd ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
     popd;
+
+
 
 bootstrap-clean: molecule-config
 	. $(JANNAH_PYTHON)/bin/activate;\

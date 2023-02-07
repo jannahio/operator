@@ -33,6 +33,7 @@ all
 *.bundle/
 *jannah-blog/vendor/
 
-#Misc.
+#Misc, IDE files
 *.idea
 operator.iml
+*.DS_Store
