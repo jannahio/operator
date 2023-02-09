@@ -61,7 +61,9 @@
 					<key>COMMAND_STRING</key>
 					<string>source ~/.zprofile
 brew install ansible
-</string>
+brew install virtualenv
+brew install wget
+brew install operator-sdk</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -76,7 +78,9 @@ brew install ansible
 					<key>COMMAND_STRING</key>
 					<string>source ~/.zprofile
 brew install ansible
-</string>
+brew install virtualenv
+brew install wget
+brew install operator-sdk</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -86,7 +90,7 @@ brew install ansible
 					<key>source</key>
 					<string></string>
 					<key>temporary items path</key>
-					<string>/var/folders/d1/r6pf5xtd16l2ryq5jjqdbjfw0000gn/T/5DD25271-D731-4A03-B6DD-D3202403C062/1/com.apple.RunShellScript</string>
+					<string>/var/folders/d1/r6pf5xtd16l2ryq5jjqdbjfw0000gn/T/3A38E5A1-8E2F-408B-A34D-F59A6B265172/1/com.apple.RunShellScript</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
@@ -195,7 +199,7 @@ brew install ansible
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>575.750000:584.000000</string>
+				<string>575.750000:364.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>

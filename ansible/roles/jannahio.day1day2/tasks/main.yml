@@ -1,16 +1,6 @@
 ---
   - name: "Day 1, Day 2: Install the Operator SDK CLI"
     block:
-      # NOTE: 04/17/2022 - Osmanj
-      # This is a one time operation to bootstrap the initial operator for Jannah
-      - name: "install operator-sdk"
-        shell: |
-          brew install operator-sdk
-        tags:
-          - "d1d2-install-operator-sdk"
-          - "d1d2-operator"
-          - "molecule-notest"
-          - "never"
 # NOTE: 04/17/2022 - Osmanj
 # This is a one time operation to bootstrap the initial operator for Jannah
       - name: "operator working directory"
@@ -50,16 +40,16 @@
       - name: "Import Other Day1 Day 2 Tasks"
         include_tasks: '{{ item }}'
         with_fileglob:
-          - opm/main.yml
           - bootstrap_config/main.yml
+          - bootstrap_charms/main.yml
         tags:
           - "d1d2-generate-molecule-configurations"
           - "d1d2-blog-service-install"
           - "d1d2-jekyll-new-jannah-operator"
+          - "d1d2-juju-olm-install"
           - "d1d2-olm-install"
-          - "olm-install"
     rescue:
-      - name: Always do this
+      - name: 'TODO: do a kubectl describe'
         ansible.builtin.debug:
           msg: 'TODO: do a kubectl describe'
     always:

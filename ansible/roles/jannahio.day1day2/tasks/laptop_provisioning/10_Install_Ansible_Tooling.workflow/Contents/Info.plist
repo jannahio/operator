@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>10_Install_Ansible</string>
+	<string>10_Install_Ansible_Tooling</string>
 </dict>
 </plist>

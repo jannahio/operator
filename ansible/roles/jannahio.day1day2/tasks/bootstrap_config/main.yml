@@ -1,5 +1,5 @@
 ---
-- name: "Using keys/values from the all file, generate molecule file for downstream boostrapping purposes"
+- name: "Using keys/values from the all file, generate molecule file for downstream bootstrapping purposes"
   block:
     - name: "Generate molecule.yml for jannahio.bootstrap"
       template:
@@ -47,10 +47,21 @@
         - "molecule-notest"
         - "never"
 
-    - name: "Generate jannah-operator/defaults/main.yml"
+    - name: "Generate jannah-operator/install/main.yml"
       template:
         src: "files/templates/operators/ansible_based/jannah/defaults/main.template.yml"
-        dest: "operators/ansible_based/jannah-operator/roles/jannah/defaults/main.yml"
+        dest: "operators/ansible_based/jannah-operator/roles/install/defaults/main.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+    - name: "Generate jannah-operator/requirements/main.yml"
+      template:
+        src: "files/templates/operators/ansible_based/jannah/defaults/main.template.yml"
+        dest: "operators/ansible_based/jannah-operator/roles/requirements/defaults/main.yml"
         backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"

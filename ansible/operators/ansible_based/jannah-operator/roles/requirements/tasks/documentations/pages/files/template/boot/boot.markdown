@@ -210,8 +210,11 @@ Install yq for yaml command line editing.
 <td>
 <pre>   
 <code>
-source ~/.zprofile;
-python3 -m pip install --user ansible
+source ~/.zprofile
+brew install ansible
+brew install virtualenv
+brew install wget
+brew install operator-sdk
 </code>
 </pre>
 </td>
@@ -254,11 +257,18 @@ cd ~/working/jannahio/operator;
     </code>
 </pre>
 
-Execute the following make commands 
+For day 1 day 2 operations type:
+<pre>
+make jannah-day1-day2;
+</pre>
+_'make jannah-day1-day2'_ will execute the following command sequence (top to bottom), to prepare your laptop for Jannah Development.
+
+Note: This will install multipass for managing
+local cloud instances on your laptop. It will prompt you for your user password.
 <table>
     <tr>    
         <th>
-            Make Command Step
+            Command Sequence
         </th>
         <th>
             Description
@@ -275,11 +285,106 @@ make jannah-boot-credentials;
         <td>
 <pre>
 Confirms that ~/.jannah-operator/ exists.
-Copies molecule.bootstrap.template.yml to ~/.jannah-operator/molecule.yml.
+Copies molecule.bootstrap.template.yml to ~/.jannah-operator/
+Encrypts GITHUB_USERNAME as an Ansible vault variable;
+Encrypts GITHUB_TOKEN as an Ansible vault variable;
+Encrypts DOCKERHUB_USERNAME as an Ansible vault variable;
+Encrypts DOCKERHUB_TOKEN as an Ansible vault variable;
 </pre>
         </td>
     </tr>
+    <tr>
+        <td>
+<pre>
+    <code>
+make jannah-python-backup;
+    </code>
+</pre>
+        </td>
+             <td>
+<pre>
+make jannah-boot-credentials;
+Backup any previous jannah-python virtual environment.
+Backup any previous molecule file.
+</pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <pre>   
+                <code>
+make jannah-python-clean;
+                </code>
+            </pre>
+        </td>
+            <td>
+                <pre>
+make jannah-python-backup;
+Delete any previous jannah-python virtual environment.
+Delete previous molecule configuration.
+                </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <pre>
+                <code>
+make jannah-python;
+                </code>
+            </pre>
+        </td>
+        <td>    
+            <pre>
+make jannah-boot-credentials;
+Creates a python virtual environment for working with Jannah.
+Installs required Python modules for bootstrapping.
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <pre>
+                <code>
+make jannah-config;
+                </code>
+            </pre>
+        </td>
+        <td>
+            <pre>
+Generates molecule configuration files for all down stream Ansible Playbook roles.
+The same molecule yaml file is used to hydrate the configuration of the Python Charm.
+This keeps one source of configuration for all down stream components. 
+- roles/jannahio.bootstrap/molecule/default/molecule.yml.
+- operators/ansible_based/jannah-operator/molecule/default/molecule.yml.
+- roles/jannahio.bootstrap/molecule/default/.env.
+- operators/ansible_based/jannah-operator/molecule/default/.env.
+- operators/ansible_based/jannah-operator/roles/install/defaults/main.yml.
+- operators/ansible_based/jannah-operator/roles/requirements/defaults/main.yml.
+
+Ansible role tags: 
+- d1d2-generate-molecule-configurations
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <pre>
+                <code>
+  make jannah-day1-day2;
+                </code>
+            </pre>
+        </td>
+        <td>
+            <pre>
+  make jannah-config;
+  brew upgrade;
+  brew install --cask multipass;
+            </pre>
+        </td>
+    </tr>
 </table>
+
+
 
 [jannah-operator]: https://github.com/jannahio/operator
 [jannah-organization]: https://github.com/jannahio

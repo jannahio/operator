@@ -18,37 +18,19 @@ provisioner:
   inventory:
     group_vars:
       all:
-        namespace: {{ provisioner.inventory.group_vars.all.Jannah.global.namespace }}
-        vars_prompt:
-          - name: operatorname
-            prompt: >
-            private: no
-            unsafe: yes
-            default: jannah-operator
         Jannah:
           global:
             namespace: jannah-operator-system
+            ansible:
+              working_dir:
           credentials:
             github:
               GITHUB_USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME }}"
               GITHUB_TOKEN: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN }}"
-            k8:
-              namespace: jannah-operator-bootstrap
-              kubeconfig: ~/.kube/config
-              state: present
-              ClusterIssuer:
-                name: jannah-operator-issuer
-              Issuer:
-                name: jannah-operator-ca-issuer
-              Certificate:
-                name: jannah-operator-cert
-                commonName: operator.jannah.io
-                secretName: jannah-operator-sc
             dockerhub:
               url: https://index.docker.io/v1/
               USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME }}"
               PASSWORD: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD }}"
-              EMAIL: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL }}"
           stages:
             day1day2:
               sub_dir:
@@ -66,9 +48,8 @@ provisioner:
                     description: |
                       curl https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh;
                       ./install.sh;
-                      echo '# Set PATH, MANPATH, etc., for Homebrew.' >> ~/.zprofile;
-                      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile;
-                      eval "$(/opt/homebrew/bin/brew shellenv)"
+                      /opt/homebrew/bin/brew shellenv >> ~/.zprofile;
+                      /opt/homebrew/bin/brew shellenv
                     comments: |
                       Install Homebrew, Cask, and Github.com client.
                   - name: 3_Input_Directory_Github_Token
@@ -139,9 +120,12 @@ provisioner:
                   - name: 10_Install_Ansible
                     description:
                       source ~/.zprofile;
-                      python3 -m pip install --user ansible
+                      brew install ansible
+                      brew install virtualenv
+                      brew install wget
+                      brew install operator-sdk
                     comments: |
-                      Installs Ansible for automation tasks.
+                      Installs Ansible and related tooling for automation tasks.
 
               url_artifacts:
                 - name: [Docker Desktop]
@@ -191,8 +175,14 @@ provisioner:
               testing:
                 melecule:
                   MOLECULE_PROJECT_DIRECTORY:
-            docs:
-
+            charms:
+              common:
+              # For charming the local MacOs environment
+              laptop:
+                metadata:
+              # For charming the K8 cloud environment
+              cloud:
+                metadata
             network:
             storage:
             ux:
@@ -208,6 +198,7 @@ provisioner:
         kustomize: ${KUSTOMIZE_PATH:-kustomize}
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
+    KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
     MOLECULE_EPHEMERAL_DIRECTORY: /tmp/EPHEMERAL
 verifier:
   name: ansible

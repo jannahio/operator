@@ -1,0 +1,21 @@
+---
+# Implements:
+# https://juju.is/docs/sdk/set-up-your-development-environment
+# https://juju.is/docs/sdk/from-zero-to-hero-write-your-first-kubernetes-charm
+- name: "Set up charm development environment"
+  block:
+    - name: "brew install --cask multipass"
+      shell: |
+        brew upgrade;
+        brew install --cask multipass
+      args:
+        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}"
+      tags:
+        - "d1d2-juju-olm-install"
+        - "d1d2-operator"
+  rescue:
+    - name: "D1D2 Charm Bootstrapping Exception"
+      ansible.builtin.debug:
+        msg: 'D1D2 Charm Bootstrapping Exception'
+      register: debug_resources
+  ignore_errors: false
