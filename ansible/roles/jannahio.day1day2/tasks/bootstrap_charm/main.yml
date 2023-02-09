@@ -7,12 +7,13 @@
     - name: "brew install --cask multipass"
       shell: |
         brew upgrade;
-        brew install --cask multipass
+        brew install --cask multipass;
       args:
         chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}"
       tags:
         - "d1d2-juju-olm-install"
         - "d1d2-operator"
+
   rescue:
     - name: "D1D2 Charm Bootstrapping Exception"
       ansible.builtin.debug:

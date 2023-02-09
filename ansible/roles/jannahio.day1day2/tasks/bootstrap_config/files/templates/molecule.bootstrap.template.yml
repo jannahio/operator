@@ -34,6 +34,12 @@ provisioner:
           stages:
             day1day2:
               sub_dir:
+              charm:
+                vm:
+                  name: d1d2-charm-operator
+                  cpus: 4
+                  disk: 30G
+                  memory: 10G
             bootstrap:
               laptop:
                 provision_scripts:
@@ -175,14 +181,6 @@ provisioner:
               testing:
                 melecule:
                   MOLECULE_PROJECT_DIRECTORY:
-            charms:
-              common:
-              # For charming the local MacOs environment
-              laptop:
-                metadata:
-              # For charming the K8 cloud environment
-              cloud:
-                metadata
             network:
             storage:
             ux:
