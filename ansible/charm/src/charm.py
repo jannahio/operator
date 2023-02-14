@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+                                        #!/usr/bin/env python3
 # Copyright 2023 Ubuntu
 # See LICENSE file for licensing details.
 #
@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 VALID_LOG_LEVELS = ["info", "debug", "warning", "error", "critical"]
 
 
-class CharmCharm(CharmBase):
-    """Charm the service."""
+class JannahCharm(CharmBase):
+    """Charm service for Jannah."""
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -102,4 +102,4 @@ class CharmCharm(CharmBase):
 
 
 if __name__ == "__main__":  # pragma: nocover
-    main(CharmCharm)
+    main(JannahCharm)
