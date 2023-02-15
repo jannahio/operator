@@ -6,9 +6,7 @@ provisioner:
         Jannah:
           stages:
             bootstrap:
-              downloads:
-                opm: opm
-                base_dir: downloads
-    host_vars:
+              laptop:
+                provision_scripts:
       localhost:
         name: localhost

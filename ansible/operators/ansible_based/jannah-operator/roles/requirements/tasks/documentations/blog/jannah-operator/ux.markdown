@@ -4,16 +4,41 @@ title: UX
 permalink: /ux/
 order: 5
 ---
-
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
-
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+Task items to be completed
+<table>
+  <tr>
+        <th>
+         Task
+        </th>
+  </tr>
+        <tr>
+            <td><pre>
+Kotlin Multiplatform Mobile Base
+               </pre>
+            </td>
+        </tr>
+        <tr>
+            <td><pre>
+Kotlin Multiplatform Mobile IOS
+               </pre>
+            </td>
+        </tr>
+        <tr>
+            <td><pre>
+Kotlin Multiplatform Mobile Android
+               </pre>
+            </td>
+        </tr>
+        <tr>
+            <td><pre>
+Jannah Web Application
+               </pre>
+            </td>
+        </tr>
+        <tr>
+            <td><pre>
+Jannah Website and Blog.
+               </pre>
+            </td>
+        </tr>
+</table>

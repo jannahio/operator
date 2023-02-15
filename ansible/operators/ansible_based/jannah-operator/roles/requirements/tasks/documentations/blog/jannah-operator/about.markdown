@@ -3,16 +3,11 @@ layout: page
 title: About
 permalink: /about/
 ---
+Jannah.io is a lab for developing cloud native software solutions.
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Jannah.io itself, is implemented as a software application.  Software applications developed
+on the Jannah platform would be somewhat feature clones of Jannah itself.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+This  kubernetes operator is tooling to manage end to end
+lifecycle management of Jannah infrastructure including public, and
+private clouds.

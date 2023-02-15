@@ -26,6 +26,7 @@ ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.
 *bundle-*
 # Operator SDK - Ignore operator molecule.yml
 */molecule.yml*
+*defaults/main.yml*
 *.env
 all
 

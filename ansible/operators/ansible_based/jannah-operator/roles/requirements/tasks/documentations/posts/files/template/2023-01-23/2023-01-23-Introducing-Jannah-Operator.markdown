@@ -2,28 +2,23 @@
 layout: post
 title:  "Introducing Jannah Operator!"
 date:   2023-01-23 21:47:49 -0800
-categories: jekyll update
+categories: jannah update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+Introducing Jannah.io Operator.  
 
-Jekyll requires blog post files to be named according to the following format:
+Jannah.io is a lab for developing cloud native software solutions. 
 
-`YEAR-MONTH-DAY-title.MARKUP`
+Jannah.io itself, is implemented as a software application.  Software applications developed
+on the Jannah platform would be somewhat feature clones of Jannah itself.
 
-Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+This  kubernetes operator is tooling to manage end to end 
+lifecycle management of Jannah infrastructure between public, and 
+private clouds.
 
-Jekyll also offers powerful support for code snippets:
+Join us on this journey into software development, and the business of data.
 
-\\{\\% highlight ruby \\%\\}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-\\{\\% endhighlight \\%\\}
-
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+{% if provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
+{% for url_artifact in provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
+{{ url_artifact.name }}: {{ url_artifact.url }}
+{% endfor %}
+{% endif %}

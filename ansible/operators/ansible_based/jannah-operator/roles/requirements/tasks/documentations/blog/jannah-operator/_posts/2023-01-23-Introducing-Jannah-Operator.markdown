@@ -2,28 +2,25 @@
 layout: post
 title:  "Introducing Jannah Operator!"
 date:   2023-01-23 21:47:49 -0800
-categories: jekyll update
+categories: jannah update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+Introducing Jannah.io Operator.  
 
-Jekyll requires blog post files to be named according to the following format:
+Jannah.io is a lab for developing cloud native software solutions. 
 
-`YEAR-MONTH-DAY-title.MARKUP`
+Jannah.io itself, is implemented as a software application.  Software applications developed
+on the Jannah platform would be somewhat feature clones of Jannah itself.
 
-Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+This  kubernetes operator is tooling to manage end to end 
+lifecycle management of Jannah infrastructure including public, and 
+private clouds.
 
-Jekyll also offers powerful support for code snippets:
-
-\\{\\% highlight ruby \\%\\}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-\\{\\% endhighlight \\%\\}
-
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+['Docker Desktop']: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
+['jannah-operator']: https://github.com/jannahio/operator
+['jannah-organization']: https://github.com/jannahio
+['laptop-provisioning']: https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/
+['IntelliJ IDE']: https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002
+['VS Code IDE']: https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip
+['Google Chrome']: https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg
+['Docker Desktop']: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
+['Molecule Configuration']: https://molecule.readthedocs.io/en/latest/configuration.html

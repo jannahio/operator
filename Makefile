@@ -97,12 +97,17 @@ jannah-config: jannah-python
     which molecule;\
     which ansible-playbook;
 	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-jannah-configurations;\
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
     popd;
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-juju-olm-install;\
+    popd;
+
+jannah-requirements: jannah-config
+	pushd ansible/operators/ansible_based/jannah-operator && \
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ playbooks/requirements.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags generate-blog-pages;\
     popd;
 
 bootstrap-clean: jannah-config
@@ -132,5 +137,36 @@ bootstrap-converge:  jannah-config
 bootstrap-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd ansible/roles/jannahio.bootstrap && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
+	popd;
+
+
+charm-clean: jannah-config
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.charm && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
+	popd;
+
+charm-destroy: bootstrap-clean
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.charm && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
+	popd;
+
+charm-prepare: bootstrap-destroy
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.charm && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
+	popd;
+
+charm-converge:  jannah-config
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.charm && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
+	popd;
+
+charm-test: jannah-config
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.charm && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;

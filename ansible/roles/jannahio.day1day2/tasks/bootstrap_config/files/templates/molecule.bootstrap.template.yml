@@ -76,11 +76,11 @@ provisioner:
                     comments: |
                       Create a 'working' directory, and clone the Jannah repository.
                   - name: 5_Install_IntelliJ_IDE
-                    description:
+                    description: |
                       hdiutil mount ~/Downloads/ideaIC-2022.3.2-aarch64.dmg;
-                      cp -R "/Volumes/IntelliJ IDEA CE/IntelliJ IDEA CE.app" /Applications;
+                      cp -R '/Volumes/IntelliJ IDEA CE/IntelliJ IDEA CE.app' /Applications;
                       hdiutil unmount "/Volumes/IntelliJ IDEA CE/IntelliJ IDEA CE.app";
-                      rm ~/Downloads/ideaIC-2022.3.2-aarch64.dmg
+                      rm ~/Downloads/ideaIC-2022.3.2-aarch64.dmg;
                     comments: |
                       Download, mount, and copy IntelliJ IDE
                       to your MacOS Applications folder.
@@ -93,12 +93,12 @@ provisioner:
                       cd $HOME/Downloads;
                       rm -rf "$HOME/Downloads/Visual Studio Code.app";
                       rm "VSCode-darwin-universal.zip"
-                    comments:
+                    comments: |
                       Download [VS Code IDE], unzip, and copy VS Code IDE
                       to your MacOS Applications folder.
                   - name: 7_Install_Docker_Desktop
                     description: |
-                      cd $HOME/Downloads
+                      cd $HOME/Downloads;
                       curl -v -o Docker.dmg [Docker Desktop];
                       hdiutil mount ~/Downloads/Docker.dmg;
                       cp -R "/Volumes/Docker/Docker.app" /Applications/;
@@ -107,7 +107,7 @@ provisioner:
                       Download, mount, and copy Docker Desktop
                       to your MacOS Applications folder.
                   - name: 8_Install_Google_Chrome
-                    description:
+                    description: |
                       cd $HOME/Downloads;
                       curl -v -o Docker.dmg [Google Chrome];
                       hdiutil mount ~/Downloads/googlechrome.dmg;
@@ -118,13 +118,13 @@ provisioner:
                       Download, mount, and copy Chrome
                       to your MacOS Applications folder.
                   - name: 9_Install_Yaml_yq
-                    description:
+                    description: |
                       source ~/.zprofile;
                       brew install yq
                     comments: |
                         Install yq for yaml command line editing.
                   - name: 10_Install_Ansible
-                    description:
+                    description: |
                       source ~/.zprofile;
                       brew install ansible
                       brew install virtualenv
@@ -132,6 +132,48 @@ provisioner:
                       brew install operator-sdk
                     comments: |
                       Installs Ansible and related tooling for automation tasks.
+                make_commands:
+                  - name: make jannah-boot-credentials;
+                    description: |
+                      Confirms that ~/.jannah-operator/ exists;
+                      Copies molecule.bootstrap.template.yml to ~/.jannah-operator/;
+                      Encrypts GITHUB_USERNAME as an Ansible vault variable;
+                      Encrypts GITHUB_TOKEN as an Ansible vault variable;
+                      Encrypts DOCKERHUB_USERNAME as an Ansible vault variable;
+                      Encrypts DOCKERHUB_TOKEN as an Ansible vault variable;
+                  - name: make jannah-python-backup;
+                    description: |
+                      make jannah-boot-credentials;
+                      Backup any previous jannah-python virtual environment.
+                      Backup any previous molecule file.
+                  - name: make jannah-python-clean;
+                    description: |
+                      jannah-python-backup;
+                      Backup and remove the dev python virtual environment
+                  - name: make jannah-python;
+                    description: |
+                      make jannah-boot-credentials;
+                      Creates a python virtual environment for working with Jannah.
+                      Installs required Python modules for bootstrapping.
+                  - name: make jannah-config;
+                    description: |
+                      Generates molecule configuration files for all down stream Ansible Playbook roles.
+                      The same molecule yaml file is used to hydrate the configuration of the Python Charm.
+                      This keeps one source of configuration for all down stream components. 
+                      - roles/jannahio.bootstrap/molecule/default/molecule.yml.
+                      - operators/ansible_based/jannah-operator/molecule/default/molecule.yml.
+                      - roles/jannahio.bootstrap/molecule/default/.env.
+                      - operators/ansible_based/jannah-operator/molecule/default/.env.
+                      - operators/ansible_based/jannah-operator/roles/install/defaults/main.yml.
+                      - operators/ansible_based/jannah-operator/roles/requirements/defaults/main.yml.
+                      
+                      Ansible role tags: 
+                      - d1d2-generate-molecule-configurations
+                  - name: make jannah-day1-day2;
+                    description: |
+                      brew upgrade;
+                      brew install --cask multipass;
+                      brew install kdoctor  cocoapods;
               url_artifacts:
                 - name: [Docker Desktop]
                   url: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
@@ -140,7 +182,7 @@ provisioner:
                 - name: [jannah-organization]
                   url: https://github.com/jannahio
                 - name: [laptop-provisioning]
-                - url: https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/
+                  url: https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/
                 - name: [IntelliJ IDE]
                   url: https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002
                 - name: [VS Code IDE]
@@ -151,6 +193,8 @@ provisioner:
                   url: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
                 - name: [Molecule Configuration]
                   url: https://molecule.readthedocs.io/en/latest/configuration.html
+                - name: [Jannah Get Start]
+                  url: https:operator.jannah.io/boot
               conig_map:
                 name: bootstrap-config
                 apiVersion: v1
@@ -219,9 +263,41 @@ provisioner:
                       default: "info"
                       type: string
             network:
+              tasks:
+                - name: Smee, ngrok Instance
+                  description:
+                - name: Wireguard Deployment
+                  description:
+                - name: Juju Interfaces
+                  description:
             storage:
+              tasks:
+                - name: CSI Infrastructure
+                - name: PersistentVolumes
+                - name: Django ORM
+            compute:
+              tasks:
+                - name: Django App Model
+                - name: Wordpress Integration
+                - name: SwiftUI Integration
+                - name: TaskMeister Integration
+                - name: Facebook/Meta Integration
+                - name: Google Integration
+                - name: Jupyter Lab Cloud
+                - name: TensorFlow Integration
+                  utilities:
+                    Apache Airflow
             ux:
+              tasks:
+                - name: Kotlin Multiplatform Mobile Base
+                - name: Kotlin Multiplatform Mobile IOS
+                - name: Kotlin Multiplatform Mobile Android
+                - name: Jannah Web Application
+                - name: Jannah Website and Blog.
             feedback:
+              tasks:
+                - name: Build Machine Learning Models of Jannah Services
+
     host_vars:
       localhost:
         name: osmanj-mac-0
