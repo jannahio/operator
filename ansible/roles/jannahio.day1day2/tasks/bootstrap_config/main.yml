@@ -1,5 +1,5 @@
 ---
-- name: "Using keys/values from the all file, generate molecule file for downstream boostrapping purposes"
+- name: "Using keys/values from the all file, generate molecule file for downstream bootstrapping purposes"
   block:
     - name: "Generate molecule.yml for jannahio.bootstrap"
       template:
@@ -17,6 +17,42 @@
         src: "files/templates/molecule.bootstrap.template.yml"
         dest: "operators/ansible_based/jannah-operator/molecule/default/molecule.yml"
         backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory"
+      file:
+        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
+        state: directory
+        mode: 0755
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate molecule.yml so can remove sensitive variables"
+      template:
+        src: "files/templates/molecule.bootstrap.template.yml"
+        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "remove sensitive variables from provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY/molecule.yml"
+      shell: |
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= ""' molecule.yml
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN |= ""' molecule.yml
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= ""' molecule.yml
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= ""' molecule.yml
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-configurations"
@@ -47,10 +83,22 @@
         - "molecule-notest"
         - "never"
 
-    - name: "Generate jannah-operator/defaults/main.yml"
+    - name: "Generate jannah-operator/install/main.yml"
       template:
-        src: "files/templates/operators/ansible_based/jannah/defaults/main.template.yml"
-        dest: "operators/ansible_based/jannah-operator/roles/jannah/defaults/main.yml"
+        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
+        dest: "operators/ansible_based/jannah-operator/roles/install/defaults/main.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate jannah-operator/requirements/main.yml"
+      template:
+        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
+        dest: "operators/ansible_based/jannah-operator/roles/requirements/defaults/main.yml"
         backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"
