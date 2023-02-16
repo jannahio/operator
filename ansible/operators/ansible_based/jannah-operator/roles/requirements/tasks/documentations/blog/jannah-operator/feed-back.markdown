@@ -4,11 +4,10 @@ title: Feedback
 permalink: /feed-back/
 order: 6
 ---
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
         <tr>

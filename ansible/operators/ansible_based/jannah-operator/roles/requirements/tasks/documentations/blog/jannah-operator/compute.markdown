@@ -4,11 +4,10 @@ title: Compute
 permalink: /compute/
 order: 4
 ---
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
         <tr>

@@ -5,11 +5,10 @@ permalink: /network/
 order: 3
 ---
 {% if provisioner.inventory.group_vars.all.Jannah.stages.network.tasks %}
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
 {% for task_item in provisioner.inventory.group_vars.all.Jannah.stages.network.tasks %}

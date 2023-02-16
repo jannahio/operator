@@ -5,11 +5,10 @@ permalink: /storage/
 order: 2
 ---
 {% if provisioner.inventory.group_vars.all.Jannah.stages.storage.tasks %}
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
 {% for task_item in provisioner.inventory.group_vars.all.Jannah.stages.storage.tasks %}

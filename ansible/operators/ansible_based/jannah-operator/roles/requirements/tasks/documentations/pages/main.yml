@@ -55,7 +55,7 @@
         - "blog-service-install"
         - "generate-blog-pages"
         - "operator"
-    - name: "Generate blog/jannah-operator/feed-back.markdown"
+    - name: "Generate blog/jannah-operator/index.markdown"
       template:
         src: "files/template/index/index.markdown"
         dest: "../roles/requirements/tasks/documentations/blog/jannah-operator/index.markdown"

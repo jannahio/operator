@@ -4,11 +4,10 @@ title: Network
 permalink: /network/
 order: 3
 ---
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
         <tr>

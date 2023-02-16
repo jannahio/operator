@@ -5,7 +5,7 @@
 layout: home
 ---
 
-[Jannah Get Start]
+[Jannah Get Start](/boot/)
 
 <table>
     <tr>
@@ -61,9 +61,3 @@ layout: home
         </td>
      </tr>
 </table>
-
-{% if provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
-{% for url_artifact in provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
-{{ url_artifact.name }}: {{ url_artifact.url }}
-{% endfor %}
-{% endif %}

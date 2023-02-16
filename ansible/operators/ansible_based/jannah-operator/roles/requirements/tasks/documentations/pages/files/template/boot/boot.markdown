@@ -101,23 +101,15 @@ local cloud instances on your laptop. It will prompt you for your user password.
         </th>
   </tr>
 {% for make_command in provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.laptop.make_commands %}
-        <tr>
-            <td><pre>
+        <tr><td><pre>
 {{ make_command.name }}
-            </td></pre>
+                </pre>
+            </td>
             <td><pre>
 {{ make_command.description | replace("\n","<br>") }}
-            </td></pre>
+                </pre>
+            </td>
         </tr>
 {% endfor %}
 </table>
-{% endif %}
-
-
-
-
-{% if provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
-{% for url_artifact in provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.url_artifacts %}
-{{ url_artifact.name }}: {{ url_artifact.url }}
-{% endfor %}
 {% endif %}

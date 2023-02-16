@@ -4,11 +4,10 @@ title: Storage
 permalink: /storage/
 order: 2
 ---
-Task items to be completed
 <table>
   <tr>
         <th>
-         Task
+         Task items to be completed
         </th>
   </tr>
         <tr>

@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir:
+              working_dir: "/Users/osmanjalloh/IdeaProjects/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -94,7 +94,7 @@ provisioner:
                       rm -rf "$HOME/Downloads/Visual Studio Code.app";
                       rm "VSCode-darwin-universal.zip"
                     comments: |
-                      Download [VS Code IDE], unzip, and copy VS Code IDE
+                      Download [VS Code IDE], unzip, and copy
                       to your MacOS Applications folder.
                   - name: 7_Install_Docker_Desktop
                     description: |
@@ -163,26 +163,26 @@ provisioner:
                       brew install --cask multipass;
                       brew install kdoctor  cocoapods;
               url_artifacts:
-                - name: [Docker Desktop]
-                  url: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
-                - name: [jannah-operator]
-                  url: https://github.com/jannahio/operator
-                - name: [jannah-organization]
-                  url: https://github.com/jannahio
-                - name: [laptop-provisioning]
-                  url: https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/
-                - name: [IntelliJ IDE]
-                  url: https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002
-                - name: [VS Code IDE]
-                  url: https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip
-                - name: [Google Chrome]
-                  url: https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg
-                - name: [Docker Desktop]
-                  url: https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module
-                - name: [Molecule Configuration]
-                  url: https://molecule.readthedocs.io/en/latest/configuration.html
-                - name: [Jannah Get Start]
-                  url: https:operator.jannah.io/boot
+                - name: "[Docker Desktop]"
+                  url: "https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module"
+                - name: "[jannah-operator]"
+                  url: "https://github.com/jannahio/operator"
+                - name: "[jannah-organization]"
+                  url: "https://github.com/jannahio"
+                - name: "[laptop-provisioning]"
+                  url: "https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/"
+                - name: "[IntelliJ IDE]"
+                  url: "https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002"
+                - name: "[VS Code IDE]"
+                  url: "https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip"
+                - name: "[Google Chrome]"
+                  url: "https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
+                - name: "[Docker Desktop]"
+                  url: "https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module"
+                - name: "[Molecule Configuration]"
+                  url: "https://molecule.readthedocs.io/en/latest/configuration.html"
+                - name: "[Jannah Get Start]"
+                  url: "/boot/"
               conig_map:
                 name: bootstrap-config
                 apiVersion: v1

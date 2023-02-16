@@ -102,12 +102,12 @@ jannah-config: jannah-python
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-juju-olm-install;\
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
     popd;
 
 jannah-requirements: jannah-config
 	pushd ansible/operators/ansible_based/jannah-operator && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ playbooks/requirements.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags generate-blog-pages;\
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ playbooks/requirements.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
     popd;
 
 bootstrap-clean: jannah-config
@@ -170,3 +170,6 @@ charm-test: jannah-config
 	pushd ansible/roles/jannahio.charm && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
+
+
+clean: jannah-python-clean
