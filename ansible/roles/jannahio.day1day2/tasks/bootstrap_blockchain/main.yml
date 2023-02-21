@@ -1,0 +1,27 @@
+---
+- name: "D1D2 Set up Blockchain Development Environment"
+  block:
+    - name: "Install rustup"
+      shell: |
+        brew install rust
+      args:
+        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}"
+      tags:
+        - "d1d2-blockchain-dev-env-setup"
+        - "d1d2-blockchain-install-rust"
+        - "d1d2-operator"
+    - name: "Confirm rustup"
+      shell: |
+        rustc --version
+      args:
+        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}"
+      tags:
+        - "d1d2-blockchain-dev-env-setup"
+        - "d1d2-blockchain-confirm-rust"
+        - "d1d2-operator"
+  rescue:
+    - name: "D1D2 Set up Blockchain Development Environment Exception"
+      ansible.builtin.debug:
+        msg: 'D1D2 Set up Blockchain Development Environment Exception'
+      register: debug_d1d2_blockchain_installrust
+  ignore_errors: false
