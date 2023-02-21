@@ -102,7 +102,8 @@ jannah-config: jannah-python
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) \
+    --tags "blog-service-install,d1d2-ux-dev-env-setup"; \
     popd;
 
 jannah-requirements: jannah-config

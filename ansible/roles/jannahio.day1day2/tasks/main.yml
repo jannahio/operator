@@ -6,6 +6,7 @@
         with_fileglob:
           - bootstrap_config/main.yml
           - bootstrap_charm/main.yml
+          - bootstrap_ux/main.yml
         tags:
           - "d1d2-generate-molecule-configurations"
           - "d1d2-blog-service-install"
@@ -13,6 +14,7 @@
           - "d1d2-juju-olm-install"
           - "d1d2-juju-olm-install-one-time-event"
           - "d1d2-olm-install"
+          - "d1d2-ux-dev-env-setup"
     rescue:
       - name: 'TODO: do a kubectl describe'
         ansible.builtin.debug:
