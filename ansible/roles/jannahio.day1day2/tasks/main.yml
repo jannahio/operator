@@ -8,6 +8,7 @@
           - bootstrap_charm/main.yml
           - bootstrap_ux/main.yml
           - bootstrap_blockchain/main.yml
+          - bootstrap_languages_for_bazel/main.yml
         tags:
           - "d1d2-generate-molecule-configurations"
           - "d1d2-blog-service-install"
@@ -17,6 +18,7 @@
           - "d1d2-olm-install"
           - "d1d2-ux-dev-env-setup"
           - "d1d2-blockchain-dev-env-setup"
+          - "d1d2-bazel-install"
     rescue:
       - name: 'TODO: do a kubectl describe'
         ansible.builtin.debug:
