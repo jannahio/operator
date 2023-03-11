@@ -12,7 +12,18 @@
         - "molecule-notest"
         - "never"
 
-    - name: "Generate molecule.yml for jannah-opertor"
+    - name: "Generate molecule.yml for Charmed jannah-opertor"
+      template:
+        src: "files/templates/molecule.bootstrap.template.yml"
+        dest: "roles/jannahio.charm/molecule/default/molecule.yml"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Generate molecule.yml for Ansible based jannah-opertor"
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
         dest: "operators/ansible_based/jannah-operator/molecule/default/molecule.yml"
@@ -22,6 +33,7 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
+
 
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory"
       file:
@@ -49,6 +61,7 @@
       shell: |
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN |= ""' molecule.yml
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_EMAIL |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= ""' molecule.yml
       args:
@@ -71,10 +84,37 @@
         - "molecule-notest"
         - "never"
 
+    - name: "Generate .env for jannahio.charm"
+      template:
+        src: "files/templates/env.template"
+        dest: "roles/jannahio.charm/molecule/default/.env"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
     - name: "Generate .env for jannah-operator"
       template:
         src: "files/templates/env.template"
         dest: "operators/ansible_based/jannah-operator/molecule/default/.env"
+        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-generate-molecule-environment-variables"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    # We need the defaults/main.yml for running the Ansible playbooks outside of Molecule
+    # i.e. running with ansible-playbook
+
+    - name: "Generate roles/jannahio.charm/defaults/main.yml"
+      template:
+        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
+        dest: "roles/jannahio.charm/defaults/main.yml"
         backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"

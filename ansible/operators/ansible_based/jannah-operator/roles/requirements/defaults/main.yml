@@ -27,10 +27,12 @@ provisioner:
             github:
               GITHUB_USERNAME: ""
               GITHUB_TOKEN: ""
+              GITHUB_EMAIL: ""
             dockerhub:
               url: https://index.docker.io/v1/
               USERNAME: ""
               PASSWORD: ""
+              EMAIL: "osman.jalloh@gmail.com"
           stages:
             day1day2:
               sub_dir:
@@ -141,6 +143,7 @@ provisioner:
                       Encrypts GITHUB_TOKEN as an Ansible vault variable;
                       Encrypts DOCKERHUB_USERNAME as an Ansible vault variable;
                       Encrypts DOCKERHUB_TOKEN as an Ansible vault variable;
+                      Encrypts DOCKERHUB_EMAIL as an Ansible vault variable;
                   - name: make jannah-python-backup;
                     description: |
                       make jannah-boot-credentials;

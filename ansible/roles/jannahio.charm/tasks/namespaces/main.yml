@@ -1,0 +1,28 @@
+---
+# tasks file for jannahio.bootstrap
+# TODO: implement a docker image pull secrete (a corresponding test case)
+# https://sdk.operatorframework.io/docs/olm-integration/cli-overview/#private-bundle-and-catalog-image-registries
+# https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+
+- name: 'Create Namespace'
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: '{{ Jannah.global.namespace }}'
+  tags:
+    - "bootstrap_jannah_namespace"
+    - ""
+
+- name: 'Create Bootstrap Configmap'
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: '{{ Jannah.stages.bootstrap.conig_map.apiVersion }}'
+      kind: ConfigMap
+      metadata:
+        name: '{{ Jannah.stages.bootstrap.conig_map.name }}'
+        namespace: '{{ Jannah.global.namespace }}'
+      data: '{{ Jannah.stages.bootstrap.conig_map.data }}'
+  tags:
+    - "bootstrap_jannah_namespace"

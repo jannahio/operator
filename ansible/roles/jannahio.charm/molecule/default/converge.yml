@@ -5,7 +5,7 @@
   tasks:
     - name: "Include jannahio.bootstrap"
       include_role:
-        name: "jannahio.charm
+        name: "jannahio.charm"
       tags:
         - "bootstrap_jannah_namespace"
         - "secrets_infra"

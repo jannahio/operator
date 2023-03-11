@@ -10,6 +10,8 @@
         - name: Import all tasks/cleanup by order
           include_tasks: '{{ item }}'
           with_fileglob:
+            - tasks/cleanup/secrets_cleanup.yml
+            - tasks/cleanup/namespaces_cleanup.yml
           tags:
             - "bootstrap_namespace_cleanup"
             - "bootstrap_prepared_tasks_cleanup"

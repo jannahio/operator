@@ -1,0 +1,18 @@
+---
+- name: Get the Namespace object
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Namespace
+    name: '{{ Jannah.global.namespace }}'
+  register: bootstrap_ns_r
+- debug: var=bootstrap_ns_r['resources']
+- assert:
+    that:
+      - bootstrap_ns_r['api_found'] == true
+      - bootstrap_ns_r['resources'][0]['metadata']['name'] == '{{ Jannah.global.namespace }}'
+- debug: var=bootstrap_ns
+  vars:
+    bootstrap_ns: '{{ lookup("kubernetes.core.k8s", api_version="v1", kind="Namespace", resource_name="bootstrap-config") }}'
+- debug: var=bootstrap_cm
+  vars:
+    bootstrap_cm: '{{ lookup("kubernetes.core.k8s", api_version="v1", kind="ConfigMap", namespace=namespace, resource_name="bootstrap-config") }}'

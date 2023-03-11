@@ -15,10 +15,8 @@
         - name: Import all test files from tasks/
           include_tasks: '{{ item }}'
           with_fileglob:
-            - tasks/*kustomize_test.yml
             - tasks/*namespaces_test.yml
             - tasks/*secrets_test.yml
-            - tasks/*build_operator_test.yml
           tags:
             - "bootstrap_kustomize"
             - "bootstrap_get_kustomize"
@@ -62,14 +60,3 @@
               result: '{{ ansible_failed_result }}'
           fail:
             msg: '{{ failed_task }}'
-#    - debug: var=image_registry_cm
-#      vars:
-#        image_registry_cm: '{{ lookup("kubernetes.core.k8s", api_version="v1", kind="Secret", namespace=namespace, resource_name="regcred") }}'
-#    - assert:
-#        that: bootstrap_cm.data.phase == 'bootstrap'
-#      vars:
-#        bootstrap_cm: '{{ lookup("kubernetes.core.k8s", api_version="v1", kind="ConfigMap", namespace=namespace, resource_name="bootstrap-config") }}'
-#    - assert:
-#        that: image_registry_cm.metadata.name == 'regcred'
-#      vars:
-#        image_registry_cm: '{{ lookup("kubernetes.core.k8s", api_version="v1", kind="Secret", namespace=namespace, resource_name="regcred") }}'

@@ -30,12 +30,14 @@ jannah-boot-credentials:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN |= load("$(HOME)/.jannah-operator/GITHUB_TOKEN_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
 	@rm $(HOME)/.jannah-operator/GITHUB_TOKEN_ECRYPTED.txt
 
-	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_USERNAME)" --output=$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= load("$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
-	@rm $(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_USERNAME)" --output=$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt;
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= load("$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml;
+	@rm $(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt;
 
 	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_TOKEN)" --output=$(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_EMAIL)" --output=$(HOME)/.jannah-operator/DOCKERHUB_EMAIL_ECRYPTED.txt
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= load("$(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= load("$(HOME)/.jannah-operator/DOCKERHUB_EMAIL_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
 	@rm $(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/.jannah-operator/molecule.yml
 
