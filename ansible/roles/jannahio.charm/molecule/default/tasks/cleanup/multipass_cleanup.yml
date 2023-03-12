@@ -1,0 +1,16 @@
+---
+- name: "Remove Buildx infra"
+  block:
+    - name: "Remove Buildx builder with the Kubernetes driver"
+      shell: |
+        multipass delete --purge {{ Jannah.stages.bootstrap.build.vm.name }}
+        exit 0;
+      tags:
+        - "buildx_infra"
+
+    - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
+      file:
+        path: "$MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
+        state: absent
+      tags:
+        - "buildx_infra"

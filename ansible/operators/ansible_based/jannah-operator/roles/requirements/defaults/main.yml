@@ -201,6 +201,11 @@ provisioner:
                 BUNDLE_IMG: docker.io/jallohmediabuild/jannah-operator-bundle:v0.0.1
                 CATALOG_IMG: docker.io/jallohmediabuild/jannah-operator-catalog:v0.0.1
                 IMAGE_TAG_BASE: docker.io/jallohmediabuild/jannah-operator
+                vm:
+                  name: jannah-charm-operator-v2
+                  cpus: 4
+                  disk: 30G
+                  memory: 10G
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
