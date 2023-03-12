@@ -12,4 +12,5 @@
         - "bootstrap_make_bundle"
         - "bootstrap_kustomize"
         - "bootstrap_get_kustomize"
+        - "buildx_infra"
 

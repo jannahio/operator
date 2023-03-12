@@ -193,6 +193,4 @@
               result: '{{ ansible_failed_result }}'
           fail:
             msg: '{{ failed_task }}'
-
-
       ignore_errors: false

@@ -212,6 +212,16 @@ provisioner:
                 BUNDLE_IMG: docker.io/jallohmediabuild/jannah-operator-bundle:v0.0.1
                 CATALOG_IMG: docker.io/jallohmediabuild/jannah-operator-catalog:v0.0.1
                 IMAGE_TAG_BASE: docker.io/jallohmediabuild/jannah-operator
+                builderx:
+                  - name: jannah_builder
+                    driver: kubernetes
+                    services:
+                      - name: frontend
+                        giturl: https://github.com/jannahio/frontend.git
+                        image: docker.io/jallohmediabuild/jannah-frontend:v0.0.1
+                      - name: middlware
+                        giturl: https://github.com/jannahio/middleware.git
+                        image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
               secrets:
                 image_registry:
                   name: myregistrykey

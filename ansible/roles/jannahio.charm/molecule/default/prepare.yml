@@ -11,8 +11,11 @@
           with_fileglob:
             - ../../tasks/namespaces/main.yml
             - ../../tasks/secrets/main.yml
+            - ../../tasks/docker_buildx/main.yml
           tags:
             - "bootstrap_jannah_namespace"
+            - "bootstrap_secrets_infra"
+            - "buildx_infra"
       rescue:
         - name: "Build namespaces, secrets exception is thrown"
           ansible.builtin.debug:
