@@ -174,12 +174,13 @@
     - name: "clone docker buildx"
       git:
         repo: 'https://github.com/docker/buildx.git'
-        dest: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
+        dest: $MOLECULE_EPHEMERAL_DIRECTORY/buildx
       tags:
         - "multipass_infra"
         - "operator_e2e"
     - name: "make install buildx"
       shell: |
+        sleep 5;
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- make install;
       args:
