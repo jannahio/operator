@@ -268,8 +268,8 @@
         - "operator_e2e"
     - name: "Mount the buildx directory"
       shell: |
-        multipass mount {{ Jannah.global.ansible.working_dir }} \
-        $MOLECULE_EPHEMERAL_DIRECTORY/buildx:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
+        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/buildx \
+        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
       register: multipass_infra_mount_working_directory
       tags:
         - "multipass_infra"
