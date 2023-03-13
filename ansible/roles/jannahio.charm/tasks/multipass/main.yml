@@ -305,4 +305,8 @@
       ansible.builtin.debug:
         msg: 'Multipass Infra Exception'
       register: multipass_infra_debug_resources
+    - debug: var=multipass_infra_debug_resources
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
   ignore_errors: false
