@@ -67,7 +67,6 @@
 
     - name: "install microk8s"
       shell: |
-        # Install Microk8s from snap:
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- sudo snap install microk8s --channel 1.25-strict/stable
       async: 600
@@ -170,41 +169,11 @@
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- juju clouds;
         exit 0;
-      async: 600
-      poll: 5
       register: multipass_infra_juju_clouds
       tags:
         - "multipass_infra"
         - "operator_e2e"
     - debug: var=multipass_infra_juju_clouds
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Install juju controller into microk8s cloud"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju bootstrap microk8s {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-      async: 60
-      poll: 3
-      register: multipass_infra_install_juju_controller_into_microk8s_cloud
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Create a workspace/model, on the controller"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-      async: 60
-      poll: 3
-      register: multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -266,18 +235,18 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "Mount the buildx directory"
-      shell: |
-        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/buildx \
-        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
-      register: multipass_infra_mount_working_directory
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_mount_working_directory
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
+#    - name: "Mount the buildx directory"
+#      shell: |
+#        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/buildx \
+#        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
+#      register: multipass_infra_mount_working_directory
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - debug: var=multipass_infra_mount_working_directory
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
     - name: "make install buildx"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -298,6 +267,34 @@
         - "bootstrap_jannah_namespace"
         - "bootstrap_secrets_infra"
         - "buildx_in"
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Install juju controller into microk8s cloud"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju bootstrap microk8s {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+#      async: 60
+#      poll: 3
+      register: multipass_infra_install_juju_controller_into_microk8s_cloud
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Create a workspace/model, on the controller"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+#      async: 60
+#      poll: 3
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
         - "multipass_infra"
         - "operator_e2e"
   rescue:
