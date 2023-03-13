@@ -246,7 +246,7 @@
     - name: "install make"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo apt install make;
+        -- sudo apt -y install make;
       args:
         chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
       async: 600
