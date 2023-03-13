@@ -96,10 +96,11 @@
         - "operator_e2e"
     #        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
     #        -- sudo chown -f -R ubuntu {{ Jannah.global.ansible.working_dir }}
-    - name: "Give the 'ubuntu' user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
+    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
       shell: |  
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo chown -f -R ubuntu ~/.kube
+        -- sudo chown -f -R ubuntu ~/.kube;
+        exit 0;
       async: 600
       poll: 5
       register: multipass_infra_chown_kube_and_working_dir
