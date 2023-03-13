@@ -144,63 +144,83 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
+    - name: "launch bootstrap container image"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
+        --alias {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
+        --alias {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
+        --alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+        exit 0;
+      register: multipass_infra_juju_clouds
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
     # sudo snap install docker
-    - name: "install docker"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- curl -fsSL https://get.docker.com -o get-docker.sh;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo sh get-docker.sh;
-      args:
-        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
-      async: 600
-      poll: 5
-      register: multipass_infra_install_docker
+#    - name: "install docker"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- curl -fsSL https://get.docker.com -o get-docker.sh;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo sh get-docker.sh;
+#      args:
+#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_install_docker
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "install make"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo apt -y install make;
+#      args:
+#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_install_make
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "clone docker buildx"
+#      git:
+#        repo: 'https://github.com/docker/buildx.git'
+#        dest: $MOLECULE_EPHEMERAL_DIRECTORY/buildx
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "make install buildx"
+#      shell: |
+#        sleep 5;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo make install;
+#      args:
+#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_clone_docker_buildx
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "install make"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo apt -y install make;
-      args:
-        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
-      async: 600
-      poll: 5
-      register: multipass_infra_install_make
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "clone docker buildx"
-      git:
-        repo: 'https://github.com/docker/buildx.git'
-        dest: $MOLECULE_EPHEMERAL_DIRECTORY/buildx
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "make install buildx"
-      shell: |
-        sleep 5;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo make install;
-      args:
-        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
-      async: 600
-      poll: 5
-      register: multipass_infra_clone_docker_buildx
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: Import docker_buildx tasks
-      include_tasks: '{{ item }}'
-      with_fileglob:
-        - ../docker_buildx/main.yml
-      tags:
-        - "bootstrap_jannah_namespace"
-        - "bootstrap_secrets_infra"
-        - "buildx_in"
-        - "multipass_infra"
-        - "operator_e2e"
+#    - name: Import docker_buildx tasks
+#      include_tasks: '{{ item }}'
+#      with_fileglob:
+#        - ../docker_buildx/main.yml
+#      tags:
+#        - "bootstrap_jannah_namespace"
+#        - "bootstrap_secrets_infra"
+#        - "buildx_in"
+#        - "multipass_infra"
+#        - "operator_e2e"
     - name: "Install juju controller into microk8s cloud"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \

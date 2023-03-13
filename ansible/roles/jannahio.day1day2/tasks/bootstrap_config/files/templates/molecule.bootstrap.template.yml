@@ -217,11 +217,19 @@ provisioner:
                     name: jannah-charm-operator-controller
                   model:
                     name: jannah-charm-operator-workflow-model
+                  containers:
+                    base:
+                      name: jannahbase
+                    middleware:
+                      name: jannahmiddleware
+                    frontend:
+                      name: jannahfrontend
                 vm:
                   name: jannah-charm-operator
                   cpus: 4
                   disk: 30G
                   memory: 10G
+
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
