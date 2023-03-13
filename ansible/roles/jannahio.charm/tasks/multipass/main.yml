@@ -260,34 +260,36 @@
         - "multipass_infra"
         - "operator_e2e"
     - name: "clone docker buildx"
+      git:
+        repo: 'https://github.com/docker/buildx.git'
+        dest: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Mount the buildx directory"
+      shell: |
+        multipass mount {{ Jannah.global.ansible.working_dir }} \
+        $MOLECULE_EPHEMERAL_DIRECTORY/buildx:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
+      register: multipass_infra_mount_working_directory
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_mount_working_directory
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "make install buildx"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- git clone https://github.com/docker/buildx.git && cd buildx && make install;
+        -- make install;
       args:
-        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
+        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
       async: 600
       poll: 5
       register: multipass_infra_clone_docker_buildx
       tags:
         - "multipass_infra"
         - "operator_e2e"
-#    - name: "install docker buildx"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo make install;
-#      args:
-#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_install_docker_buildx
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - debug: var=multipass_infra_install_docker_buildx
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-
     - name: Import docker_buildx tasks
       include_tasks: '{{ item }}'
       with_fileglob:
