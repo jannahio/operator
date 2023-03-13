@@ -182,7 +182,7 @@
       shell: |
         sleep 5;
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- make install;
+        -- sudo make install;
       args:
         chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
       async: 600
