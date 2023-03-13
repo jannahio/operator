@@ -184,7 +184,7 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- juju bootstrap microk8s {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-      async: 1200
+      async: 900
       poll: 5
       register: multipass_infra_install_juju_controller_into_microk8s_cloud
       tags:

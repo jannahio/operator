@@ -219,9 +219,9 @@ provisioner:
                     name: jannah-charm-operator-workflow-model
                 vm:
                   name: jannah-charm-operator
-                  cpus: 7
-                  disk: 50G
-                  memory: 16G
+                  cpus: 4
+                  disk: 30G
+                  memory: 10G
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
