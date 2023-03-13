@@ -17,19 +17,11 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_launch
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "Mount the working directory"
       shell: |
         multipass mount {{ Jannah.global.ansible.working_dir }} \
         {{ Jannah.stages.bootstrap.build.vm.name }}:{{ Jannah.global.ansible.working_dir }}
       register: multipass_infra_mount_working_directory
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_mount_working_directory
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -43,11 +35,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_charm_lxd_init
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
     - name: "install charmcraft, and juju"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -60,11 +47,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_install_charmcraft_and_juju
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
     - name: "install microk8s"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -75,10 +57,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_install_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "add ubuntu to snap_microk8s"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -86,10 +64,6 @@
       async: 600
       poll: 5
       register: multipass_infra_add_ubuntu_to_snap_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_add_ubuntu_to_snap_microk8s
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -104,10 +78,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_chown_kube_and_working_dir
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "Create the 'microk8s' group"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -115,10 +85,6 @@
       async: 600
       poll: 5
       register: multipass_infra_create_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_create_microk8s
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -132,10 +98,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_enable_microK8s_addons
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "Set up a short alias for the Kubernetes CLI:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -143,10 +105,6 @@
       async: 600
       poll: 5
       register: multipass_infra_short_alias_kubernetes_cli
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_short_alias_kubernetes_cli
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -160,10 +118,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_manually_create_path
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "juju clouds"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -173,23 +127,20 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_juju_clouds
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY"
+      file:
+        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
+        state: directory
+        mode: 0755
+      register: multipass_infra_create_ephemeral_dir
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "Make ephemeral directory"
+    - name: "Mount the buildx directory"
       shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- mkdir -vp $MOLECULE_EPHEMERAL_DIRECTORY/;
-      args:
-        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
-      async: 600
-      poll: 5
-      register: multipass_infra_install_docker
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_install_docker
+        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/ \
+        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/
+      register: multipass_infra_mount_working_directory
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -208,10 +159,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_install_docker
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "install make"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -224,10 +171,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - debug: var=multipass_infra_install_make
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "clone docker buildx"
       git:
         repo: 'https://github.com/docker/buildx.git'
@@ -235,18 +178,6 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-#    - name: "Mount the buildx directory"
-#      shell: |
-#        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/buildx \
-#        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/buildx
-#      register: multipass_infra_mount_working_directory
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - debug: var=multipass_infra_mount_working_directory
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
     - name: "make install buildx"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -306,4 +237,10 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
   ignore_errors: false

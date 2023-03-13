@@ -10,7 +10,7 @@
 
     - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
       file:
-        path: "$MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
+        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
         state: absent
       tags:
         - "buildx_infra"
