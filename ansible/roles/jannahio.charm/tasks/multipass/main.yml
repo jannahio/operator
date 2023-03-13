@@ -154,7 +154,7 @@
     - name: "Since the juju package is strictly confined, you also need to manually create a path"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- mkdir -p ~/.local/share;
+        -- mkdir -vp /home/ubuntu/.local/share;
       async: 600
       poll: 5
       register: multipass_infra_manually_create_path
