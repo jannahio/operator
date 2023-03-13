@@ -169,7 +169,11 @@
     - name: "publish Jannah.stages.bootstrap.build.juju.containers.frontend.name"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }} \
+        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }} \
         --alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
       tags:
         - "multipass_infra"
