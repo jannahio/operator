@@ -142,7 +142,12 @@
     - name: "Set up a short alias for the Kubernetes CLI:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap alias microk8s.kubectl kubectl
+        -- sudo snap alias microk8s.kubectl kubectl;
+        # Since the juju package is strictly confined, you also need to manually create a path
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- mkdir -p ~/.local/share;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju clouds;
       async: 600
       poll: 5
       register: multipass_infra_install_charmcraft
@@ -150,6 +155,34 @@
         - "multipass_infra"
         - "operator_e2e"
     - debug: var=multipass_infra_install_charmcraft
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Install juju controller into microk8s cloud"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju bootstrap microk8s {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+      async: 600
+      poll: 5
+      register: multipass_infra_install_juju_controller_into_microk8s_cloud
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Create a workspace/model, on the controller"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+      async: 600
+      poll: 5
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
       tags:
         - "multipass_infra"
         - "operator_e2e"
