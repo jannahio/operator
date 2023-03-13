@@ -3,18 +3,19 @@
 
 # The charm package name, no spaces (required)
 # See https://juju.is/docs/sdk/naming#heading--naming-charms for guidance.
-name: Jannah
+name: Jannah.io Operator
  
 # The following metadata are human-readable and will be published prominently on Charmhub.
 
 # (Recommended)
-display-name: Charm Template
+display-name: Charmed Jannah Operator
 
 # (Required)
-summary: A very short one-line summary of the charm.
+summary: End to end deployment of Jannah infrastructure.
 
 description: |
   A single sentence that says what the charm is, concisely and memorably.
+  - Deploy Jannah.io, a software application accelator platform.
 
   A paragraph of one to three short sentences, that describe what the charm does.
 
