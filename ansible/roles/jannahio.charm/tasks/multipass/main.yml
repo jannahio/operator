@@ -147,12 +147,11 @@
     - name: "lxc launch"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc launch images:ubuntu/22.04 \
-        {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "launch bootstrap container image"
+    - name: "lxc stop"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
@@ -163,7 +162,7 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
-        -- alias {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }};
+        --alias {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }};
       tags:
         - "multipass_infra"
         - "operator_e2e"
@@ -171,7 +170,7 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
-        -- alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+        --alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
         exit 0;
       tags:
         - "multipass_infra"
