@@ -243,14 +243,40 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "install docker buildx"
+    - name: "install make"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo apt install make;
+      args:
+        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
+      async: 600
+      poll: 5
+      register: multipass_infra_install_make
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_install_make
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "clone docker buildx"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- git clone https://github.com/docker/buildx.git;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- cd buildx && make install ;
       args:
         chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
+      async: 600
+      poll: 5
+      register: multipass_infra_clone_docker_buildx
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "install docker buildx"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo make install ;
+      args:
+        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
       async: 600
       poll: 5
       register: multipass_infra_install_docker_buildx
