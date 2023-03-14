@@ -178,67 +178,11 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    # sudo snap install docker
-#    - name: "install docker"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- curl -fsSL https://get.docker.com -o get-docker.sh;
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo sh get-docker.sh;
-#      args:
-#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_install_docker
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "install make"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo apt -y install make;
-#      args:
-#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/"
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_install_make
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "clone docker buildx"
-#      git:
-#        repo: 'https://github.com/docker/buildx.git'
-#        dest: $MOLECULE_EPHEMERAL_DIRECTORY/buildx
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "make install buildx"
-#      shell: |
-#        sleep 5;
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo make install;
-#      args:
-#        chdir: "$MOLECULE_EPHEMERAL_DIRECTORY/buildx"
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_clone_docker_buildx
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: Import docker_buildx tasks
-#      include_tasks: '{{ item }}'
-#      with_fileglob:
-#        - ../docker_buildx/main.yml
-#      tags:
-#        - "bootstrap_jannah_namespace"
-#        - "bootstrap_secrets_infra"
-#        - "buildx_in"
-#        - "multipass_infra"
-#        - "operator_e2e"
     - name: "Install juju controller into microk8s cloud"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju bootstrap microk8s {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+        -- juju bootstrap --build-agent=true --show-log=true --verbose=true microk8s \
+        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
 #      async: 60
 #      poll: 3
       register: multipass_infra_install_juju_controller_into_microk8s_cloud
