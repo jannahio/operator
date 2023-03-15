@@ -4,7 +4,7 @@
 # The charm package name, no spaces (required)
 # See https://juju.is/docs/sdk/naming#heading--naming-charms for guidance.
 name: Jannah.io Operator
- 
+
 # The following metadata are human-readable and will be published prominently on Charmhub.
 
 # (Recommended)
@@ -28,8 +28,12 @@ description: |
 
 # Your workload’s containers.
 containers:
-  httpbin:
+  jannahmiddleware:
     resource: jannahmiddleware
+  jannahfrontend:
+    resource: jannahfrontend
+  demo-server:
+    resource: demo-server-image
 
 # This field populates the Resources tab on Charmhub.
 resources:
@@ -37,8 +41,24 @@ resources:
   # You may remove this if your charm will run without a workload sidecar container.
   jannahmiddleware:
     type: oci-image
-    description: OCI image for httpbin
+    description: OCI image for jannahmiddleware
     # The upstream-source field is ignored by Juju. It is included here as a reference
     # so the integration testing suite knows which image to deploy during testing. This field
     # is also used by the 'canonical/charming-actions' Github action for automated releasing.
     upstream-source: jannahmiddleware
+  jannahfrontend:
+    type: oci-image
+    description: OCI image for jannahfrontend
+    # The upstream-source field is ignored by Juju. It is included here as a reference
+    # so the integration testing suite knows which image to deploy during testing. This field
+    # is also used by the 'canonical/charming-actions' Github action for automated releasing.
+    upstream-source: jannahfrontend
+    # An OCI image resource for each container listed above.
+    # You may remove this if your charm will run without a workload sidecar container.
+  demo-server-image:
+    type: oci-image
+    description: OCI image from GitHub Container Repository
+    # The upstream-source field is ignored by Juju. It is included here as a reference
+    # so the integration testing suite knows which image to deploy during testing. This field
+    # is also used by the 'canonical/charming-actions' Github action for automated releasing.
+    upstream-source: ghcr.io/beliaev-maksim/api_demo_server:0.0.9

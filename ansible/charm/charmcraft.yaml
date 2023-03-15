@@ -9,3 +9,10 @@ bases:
     run-on:
     - name: ubuntu
       channel: "22.04"
+
+
+
+parts:
+  yt-dlp:
+    plugin: python
+    source: https://github.com/yt-dlp/yt-dlp.git
