@@ -215,9 +215,9 @@ provisioner:
                       name: jannahfrontend
                 vm:
                   name: jannah-charm-operator
-                  cpus: 4
-                  disk: 30G
-                  memory: 10G
+                  cpus: 8
+                  disk: 50G
+                  memory: 15G
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes

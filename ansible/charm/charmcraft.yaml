@@ -12,7 +12,7 @@ bases:
 
 
 
-parts:
-  yt-dlp:
-    plugin: python
-    source: https://github.com/yt-dlp/yt-dlp.git
+#parts:
+#  yt-dlp:
+#    plugin: python
+#    source: https://github.com/yt-dlp/yt-dlp.git
