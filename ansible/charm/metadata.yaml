@@ -32,8 +32,8 @@ containers:
     resource: ubuntu
   jannahfrontend:
     resource: ubuntu
-  demo-server:
-    resource: demo-server-image
+#  demo-server:
+#    resource: demo-server-image
 
 # This field populates the Resources tab on Charmhub.
 resources:
