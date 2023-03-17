@@ -229,6 +229,10 @@ provisioner:
                   cpus: 8
                   disk: 50G
                   memory: 15G
+#                  <image> can be a partial image hash or
+#                  an Ubuntu release version, codename or
+#                  alias.
+                  image:
 
                 builderx:
                   - name: jannah_builder

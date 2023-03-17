@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/IdeaProjects/github/operator"
+              working_dir: "/Users/osmanjalloh/IdeaProjects/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -218,6 +218,10 @@ provisioner:
                   cpus: 8
                   disk: 50G
                   memory: 15G
+                  #                  <image> can be a partial image hash or
+                  #                  an Ubuntu release version, codename or
+                  #                  alias.
+                  image:
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
@@ -314,7 +318,7 @@ provisioner:
     host_vars:
       localhost:
         name: osmanj-mac-0
-        ansible_python_interpreter: '/Users/osmanjalloh/IdeaProjects/github/operator/jannah-python/bin/python'
+        ansible_python_interpreter: '/Users/osmanjalloh/IdeaProjects/operator/jannah-python/bin/python'
         config_dir: ${MOLECULE_PROJECT_DIRECTORY}/config
         samples_dir: ${MOLECULE_PROJECT_DIRECTORY}/config/samples
         operator_image: ${OPERATOR_IMAGE:-""}

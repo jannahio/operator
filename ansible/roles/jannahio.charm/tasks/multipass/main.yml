@@ -11,6 +11,7 @@
         -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
         -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
         -d "{{ Jannah.stages.bootstrap.build.vm.disk }}";
+
       async: 600
       poll: 5
       register: multipass_launch
@@ -207,6 +208,22 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
+
+    - name: "Deploy operator"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+      #      async: 60
+      #      poll: 3
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+
   rescue:
     - name: "Multipass Infra Exception"
       ansible.builtin.debug:

@@ -47,7 +47,7 @@ resources:
     # so the integration testing suite knows which image to deploy during testing. This field
     # is also used by the 'canonical/charming-actions' Github action for automated releasing.
     #upstream-source: ubuntu
-    upstream-source: jujusolutions/jujud-operator:2.9.42
+    upstream-source: images:ubuntu
 #  ubunnt:
 #    type: oci-image
 #    #file: 59bf49664d2a43c13edccb3a1fa5c28e6f2e92067bd44fb1d6eb323b19346c79.tar.gz
