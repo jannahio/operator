@@ -7,6 +7,7 @@ PYTHONPATH ?= $(WORKING_DIR)
 
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
+	mkdir -vp "$(HOME)/jannah-operator/"
 	ls -lrt $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	# Make sure $(HOME)/jannah-operator/ is available
 	if [ -d "$(HOME)/jannah-operator/" ]; \
