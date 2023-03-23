@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/IdeaProjects/operator"
+              working_dir: "/home/vagrant/osmanjalloh/IdeaProjects/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -318,7 +318,7 @@ provisioner:
     host_vars:
       localhost:
         name: osmanj-mac-0
-        ansible_python_interpreter: '/Users/osmanjalloh/IdeaProjects/operator/jannah-python/bin/python'
+        ansible_python_interpreter: '/home/vagrant/osmanjalloh/IdeaProjects/operator/jannah-python/bin/python'
         config_dir: ${MOLECULE_PROJECT_DIRECTORY}/config
         samples_dir: ${MOLECULE_PROJECT_DIRECTORY}/config/samples
         operator_image: ${OPERATOR_IMAGE:-""}
@@ -327,6 +327,6 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: /tmp/EPHEMERAL
+    MOLECULE_EPHEMERAL_DIRECTORY: /home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/tmp/EPHEMERAL
 verifier:
   name: ansible

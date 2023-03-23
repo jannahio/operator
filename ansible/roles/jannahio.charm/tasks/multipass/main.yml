@@ -1,228 +1,229 @@
 ---
 # Implements:
 # https://juju.is/docs/sdk/set-up-your-development-environment
+# However, we are assuming the playbook running on a Mac or Ubuntu
+# https://linuxcontainers.org/lxd/getting-started-cli/
+# https://formulae.brew.sh/formula/juju
+# https://discourse.charmhub.io/t/ann-charmcraft-can-now-be-install-from-homebrew/5259
 - name: "Kubernetes on Ubuntu VM environment"
   block:
-    # Create a VM, and mount local repository path,
-    - name: "Create an Ubuntu VM, an environment for building container images"
+    - name: "Install lxc juju charmcraft - Darwin"
       shell: |
-        multipass launch \
-        -n "{{ Jannah.stages.bootstrap.build.vm.name }}" \
-        -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
-        -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
-        -d "{{ Jannah.stages.bootstrap.build.vm.disk }}";
-
+        brew install lxc juju charmcraft;
+      when: ansible_facts['os_family'] == "Darwin"
       async: 600
       poll: 5
-      register: multipass_launch
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "Mount the working directory"
+    - name: "Install lxc juju charmcraft - Ubuntu"
       shell: |
-        multipass mount {{ Jannah.global.ansible.working_dir }} \
-        {{ Jannah.stages.bootstrap.build.vm.name }}:{{ Jannah.global.ansible.working_dir }}
-      register: multipass_infra_mount_working_directory
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Initialize lxd"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxd init --auto;
+        sudo snap install lxd;
+        sudo snap install charmcraft --classic;
+        sudo snap install juju --classic;
+      when: ansible_facts['os_family'] != "Darwin"
       async: 600
       poll: 5
-      register: multipass_infra_charm_lxd_init
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "install charmcraft, and juju"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install charmcraft --classic;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install juju --classic;
-      async: 600
-      poll: 5
-      register: multipass_infra_install_charmcraft_and_juju
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "install microk8s"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install microk8s --channel 1.25-strict/stable
-      async: 600
-      poll: 5
-      register: multipass_infra_install_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "add ubuntu to snap_microk8s"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo usermod -a -G snap_microk8s ubuntu;
-      async: 600
-      poll: 5
-      register: multipass_infra_add_ubuntu_to_snap_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
-      shell: |  
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo chown -f -R ubuntu ~/.kube;
-        exit 0;
-      async: 600
-      poll: 5
-      register: multipass_infra_chown_kube_and_working_dir
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Create the 'microk8s' group"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- newgrp snap_microk8s;
-      async: 600
-      poll: 5
-      register: multipass_infra_create_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Enable the necessary MicroK8s addons:"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo microk8s enable hostpath-storage dns
-      async: 600
-      poll: 5
-      register: multipass_infra_enable_microK8s_addons
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Set up a short alias for the Kubernetes CLI:"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap alias microk8s.kubectl kubectl;
-      async: 600
-      poll: 5
-      register: multipass_infra_short_alias_kubernetes_cli
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Since the juju package is strictly confined, you also need to manually create a path"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- mkdir -vp /home/ubuntu/.local/share;
-      async: 600
-      poll: 5
-      register: multipass_infra_manually_create_path
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "juju clouds"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju clouds;
-        exit 0;
-      register: multipass_infra_juju_clouds
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY"
-      file:
-        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
-        state: directory
-        mode: 0755
-      register: multipass_infra_create_ephemeral_dir
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Mount the buildx directory"
-      shell: |
-        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/ \
-        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/
-      register: multipass_infra_mount_working_directory
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "lxc launch Jannah.stages.bootstrap.build.juju.containers.base.name "
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "lxc stop Jannah.stages.bootstrap.build.juju.containers.base.name "
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "lxc publish Jannah.stages.bootstrap.build.juju.containers.middleware.name"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
-        --alias {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }};
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "publish Jannah.stages.bootstrap.build.juju.containers.frontend.name"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }} \
-        --alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Install juju controller into microk8s cloud"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju bootstrap --show-log=true --verbose=true microk8s \
-        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-#      async: 60
-#      poll: 3
-      register: multipass_infra_install_juju_controller_into_microk8s_cloud
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - name: "Create a workspace/model, on the controller"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-#      async: 60
-#      poll: 3
-      register: multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Deploy operator"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-      #      async: 60
-      #      poll: 3
-      register: multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
+#    - name: "Initialize lxd"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxd init --auto;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_charm_lxd_init
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "install charmcraft, and juju"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap install charmcraft --classic;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap install juju --classic;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_install_charmcraft_and_juju
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "install microk8s"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap install microk8s --channel 1.25-strict/stable
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_install_microk8s
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "add ubuntu to snap_microk8s"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo usermod -a -G snap_microk8s ubuntu;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_add_ubuntu_to_snap_microk8s
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo chown -f -R ubuntu ~/.kube;
+#        exit 0;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_chown_kube_and_working_dir
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Create the 'microk8s' group"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- newgrp snap_microk8s;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_create_microk8s
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Enable the necessary MicroK8s addons:"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo microk8s enable hostpath-storage dns
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_enable_microK8s_addons
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Set up a short alias for the Kubernetes CLI:"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap alias microk8s.kubectl kubectl;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_short_alias_kubernetes_cli
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Since the juju package is strictly confined, you also need to manually create a path"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- mkdir -vp /home/ubuntu/.local/share;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_manually_create_path
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "juju clouds"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju clouds;
+#        exit 0;
+#      register: multipass_infra_juju_clouds
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY"
+#      file:
+#        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
+#        state: directory
+#        mode: 0755
+#      register: multipass_infra_create_ephemeral_dir
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Mount the buildx directory"
+#      shell: |
+#        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/ \
+#        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/
+#      register: multipass_infra_mount_working_directory
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "lxc launch Jannah.stages.bootstrap.build.juju.containers.base.name "
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "lxc stop Jannah.stages.bootstrap.build.juju.containers.base.name "
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.base.name }};
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "lxc publish Jannah.stages.bootstrap.build.juju.containers.middleware.name"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.base.name }} \
+#        --alias {{ Jannah.stages.bootstrap.build.juju.containers.middleware.name }};
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "publish Jannah.stages.bootstrap.build.juju.containers.frontend.name"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc launch ubuntu:22.04 {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc stop {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- lxc publish {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }} \
+#        --alias {{ Jannah.stages.bootstrap.build.juju.containers.frontend.name }};
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Install juju controller into microk8s cloud"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju bootstrap --show-log=true --verbose=true microk8s \
+#        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+##      async: 60
+##      poll: 3
+#      register: multipass_infra_install_juju_controller_into_microk8s_cloud
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - name: "Create a workspace/model, on the controller"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+##      async: 60
+##      poll: 3
+#      register: multipass_infra_create_a_workspace_model_on_the_controller
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#
+#    - name: "Deploy operator"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+#      #      async: 60
+#      #      poll: 3
+#      register: multipass_infra_create_a_workspace_model_on_the_controller
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
+#    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
 
   rescue:
     - name: "Multipass Infra Exception"

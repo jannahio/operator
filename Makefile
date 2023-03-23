@@ -1,3 +1,4 @@
+SHELL=/bin/bash
 WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3)
 PIP3_BIN=$(shell which pip3)

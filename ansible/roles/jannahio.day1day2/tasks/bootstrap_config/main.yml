@@ -1,6 +1,19 @@
 ---
 - name: "Using keys/values from the all file, generate molecule file for downstream bootstrapping purposes"
   block:
+    - name: "Update MOLECULE_EPHEMERAL_DIRECTORY"
+      shell: |
+        yq -i \
+        '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"' \
+        molecule.bootstrap.template.yml
+      when: ansible_facts['os_family'] != "Darwin"
+      args:
+        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/"
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
     - name: "Generate molecule.yml for jannahio.bootstrap"
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
@@ -34,12 +47,24 @@
         - "molecule-notest"
         - "never"
 
-
-    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory"
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory - Darwin"
       file:
         path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
         state: directory
         mode: 0755
+      #when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory - Ubuntu"
+      file:
+        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
+        state: directory
+        mode: 0755
+      #when: ansible_facts['os_family'] != "Darwin"
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-configurations"
