@@ -326,6 +326,6 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: /home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/tmp/EPHEMERAL
+    MOLECULE_EPHEMERAL_DIRECTORY: /home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/home/vagrant/osmanjalloh/IdeaProjects/operator/tmp/EPHEMERAL
 verifier:
   name: ansible
