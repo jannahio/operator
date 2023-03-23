@@ -7,6 +7,9 @@
 # https://discourse.charmhub.io/t/ann-charmcraft-can-now-be-install-from-homebrew/5259
 - name: "Kubernetes on Ubuntu VM environment"
   block:
+#    - name: Output gathered resources
+#      debug:
+#        var: ansible_facts['os_family']
     - name: "Install lxc juju charmcraft - Darwin"
       shell: |
         brew install lxc juju charmcraft;

@@ -2,7 +2,7 @@
 - name: Create
   hosts: localhost
   connection: local
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: "Create multipass environment"
       block:
