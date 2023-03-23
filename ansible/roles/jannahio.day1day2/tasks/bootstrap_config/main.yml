@@ -164,4 +164,18 @@
       ansible.builtin.debug:
         msg: 'D1D2 Bootstrapping Exception'
       register: debug_resources
+  always:
+    - name: "Reset MOLECULE_EPHEMERAL_DIRECTORY"
+      shell: |
+        yq -i \
+        '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "/tmp/EPHEMERAL"' \
+        molecule.bootstrap.template.yml
+      when: ansible_facts['os_family'] != "Darwin"
+      args:
+        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/"
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
   ignore_errors: false
