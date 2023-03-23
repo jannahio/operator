@@ -30,125 +30,103 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-#    - name: "Initialize lxd"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- lxd init --auto;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_charm_lxd_init
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "install charmcraft, and juju"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo snap install charmcraft --classic;
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo snap install juju --classic;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_install_charmcraft_and_juju
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "install microk8s"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo snap install microk8s --channel 1.25-strict/stable
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_install_microk8s
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "add ubuntu to snap_microk8s"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo usermod -a -G snap_microk8s ubuntu;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_add_ubuntu_to_snap_microk8s
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo chown -f -R ubuntu ~/.kube;
-#        exit 0;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_chown_kube_and_working_dir
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Create the 'microk8s' group"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- newgrp snap_microk8s;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_create_microk8s
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Enable the necessary MicroK8s addons:"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo microk8s enable hostpath-storage dns
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_enable_microK8s_addons
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Set up a short alias for the Kubernetes CLI:"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo snap alias microk8s.kubectl kubectl;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_short_alias_kubernetes_cli
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Since the juju package is strictly confined, you also need to manually create a path"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- mkdir -vp /home/ubuntu/.local/share;
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_manually_create_path
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "juju clouds"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- juju clouds;
-#        exit 0;
-#      register: multipass_infra_juju_clouds
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY"
-#      file:
-#        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
-#        state: directory
-#        mode: 0755
-#      register: multipass_infra_create_ephemeral_dir
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - name: "Mount the buildx directory"
-#      shell: |
-#        multipass mount $MOLECULE_EPHEMERAL_DIRECTORY/ \
-#        {{ Jannah.stages.bootstrap.build.vm.name }}:$MOLECULE_EPHEMERAL_DIRECTORY/
-#      register: multipass_infra_mount_working_directory
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
+    - name: "Initialize lxd"
+      shell: |
+        sudo lxd init --auto;
+      async: 600
+      poll: 5
+      register: multipass_infra_charm_lxd_init
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "install microk8s"
+      shell: |
+        sudo snap install microk8s --channel 1.25-strict/stable
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_install_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "add ubuntu to snap_microk8s"
+      shell: |
+        sudo usermod -a -G snap_microk8s ubuntu;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_add_ubuntu_to_snap_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
+      shell: |
+        sudo chown -f -R ubuntu:ubuntu ~/.kube;
+        exit 0;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_chown_kube_and_working_dir
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Create the 'microk8s' group"
+      shell: |
+        sudo newgrp snap_microk8s;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_create_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Enable the necessary MicroK8s addons:"
+      shell: |
+        sudo microk8s enable hostpath-storage dns
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_enable_microK8s_addons
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Set up a short alias for the Kubernetes CLI:"
+      shell: |
+        sudo snap alias microk8s.kubectl kubectl;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_short_alias_kubernetes_cli
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Since the juju package is strictly confined, you also need to manually create a path"
+      shell: |
+        sudo mkdir -vp /home/ubuntu/.local/share;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_manually_create_path
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "juju clouds"
+      shell: |
+        juju clouds;
+        exit 0;
+      register: multipass_infra_juju_clouds
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY"
+      file:
+        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
+        state: directory
+        mode: 0755
+      register: multipass_infra_create_ephemeral_dir
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
 #    - name: "lxc launch Jannah.stages.bootstrap.build.juju.containers.base.name "
 #      shell: |
 #        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
