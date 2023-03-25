@@ -52,16 +52,16 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-#    - name: "Create the 'microk8s' group"
-#      shell: |
-#        newgrp snap_microk8s;
-#      when: ansible_facts['os_family'] != "Darwin"
-#      async: 600
-#      poll: 5
-#      register: multipass_infra_create_microk8s
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
+    - name: "Create the 'microk8s' group"
+      shell: |
+        newgrp snap_microk8s;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_create_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
     - name: "add ubuntu to snap_microk8s"
       shell: |
         sudo usermod -a -G snap_microk8s ubuntu;

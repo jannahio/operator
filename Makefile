@@ -3,9 +3,11 @@ WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3)
 PIP3_BIN=$(shell which pip3)
 ANSIBLE_VAULT_DEFAULT_PASS_FILE=$(HOME)/jannah-operator/ansible_defaultpass.txt
-#JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
-JANNAH_PYTHON=$(HOME)/jannah-python
+JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
+#JANNAH_PYTHON=$(HOME)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
+
+source ./boot.env.sh
 
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
