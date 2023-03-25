@@ -7,14 +7,6 @@
 # https://discourse.charmhub.io/t/ann-charmcraft-can-now-be-install-from-homebrew/5259
 - name: "Kubernetes on Ubuntu VM environment"
   block:
-    - name: "Install lxc juju charmcraft"
-      shell: |
-        brew install lxc juju charmcraft;
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
     - name: "Install lxc juju charmcraft - Ubuntu"
       shell: |
         sudo snap install lxd;
