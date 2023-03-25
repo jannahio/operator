@@ -52,6 +52,8 @@
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_EMAIL |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= ""' molecule.yml
+        yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= ""' molecule.yml
+        yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter |= "python3"' molecule.yml
       args:
         chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
       tags:
