@@ -3,13 +3,14 @@ WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3)
 PIP3_BIN=$(shell which pip3)
 ANSIBLE_VAULT_DEFAULT_PASS_FILE=$(HOME)/jannah-operator/ansible_defaultpass.txt
-JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
+#JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
+JANNAH_PYTHON=$(HOME)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
 
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
 	mkdir -vp "$(HOME)/jannah-operator/"
-	ls -lrt $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
+	ls -lrt $(WORKING_DIR)/charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	# Make sure $(HOME)/jannah-operator/ is available
 	if [ -d "$(HOME)/jannah-operator/" ]; \
 	then \
@@ -19,7 +20,7 @@ jannah-boot-credentials:
 	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
 	fi
 
-	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
+	cp $(WORKING_DIR)/charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
 	$(HOME)/jannah-operator/molecule.yml
 
 	@echo $(ANSIBLE_VAULT_DEFAULT_PASSWORD) > $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)
@@ -42,6 +43,7 @@ jannah-boot-credentials:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= load("$(HOME)/jannah-operator/DOCKERHUB_EMAIL_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml
 	@rm $(HOME)/jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "$(WORKING_DIR)/tmp/EPHEMERAL"' ~/jannah-operator/molecule.yml
 
 
 jannah-python-backup: jannah-boot-credentials
@@ -94,15 +96,15 @@ jannah-config: jannah-python
 	   echo "Please provide ANSIBLE_VAULT_DEFAULT_PASS_FILE at: $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)"; \
 	fi
 
-	chown -R $(USER) $(WORKING_DIR)/
-	cp -v $(HOME)/jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all
+	cp -v $(HOME)/jannah-operator/molecule.yml $(WORKING_DIR)/charm/src/ansible/group_vars/all
 
 	. $(JANNAH_PYTHON)/bin/activate;\
     which molecule;\
     which ansible-playbook;
-	pushd ansible && \
+	pushd charm/src/ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
     popd;
+
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \

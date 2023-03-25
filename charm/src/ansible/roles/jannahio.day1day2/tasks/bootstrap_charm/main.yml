@@ -1,0 +1,33 @@
+---
+# Implements:
+# https://juju.is/docs/sdk/set-up-your-development-environment
+# https://juju.is/docs/sdk/from-zero-to-hero-write-your-first-kubernetes-charm
+- name: "Set up charm development environment"
+  block:
+    - name: "Create an Ubuntu VM, an environment for building container images"
+      shell: |
+        multipass launch \
+        -n "{{ Jannah.stages.bootstrap.build.vm.name }}" \
+        -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
+        -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
+        -d "{{ Jannah.stages.bootstrap.build.vm.disk }}";
+      async: 600
+      poll: 5
+      register: multipass_launch
+      tags:
+        - "d1d2-multipass-infra"
+        - "d1d2-operator-e2e"
+    - name: "Mount the working directory"
+      shell: |
+        multipass mount {{ Jannah.global.ansible.working_dir }} \
+        {{ Jannah.stages.bootstrap.build.vm.name }}:{{ Jannah.global.ansible.working_dir }}
+      register: multipass_infra_mount_working_directory
+      tags:
+        - "d1d2-multipass-infra"
+        - "d1d2-operator-e2e"
+  rescue:
+    - name: "D1D2 Charm Bootstrapping Exception"
+      ansible.builtin.debug:
+        msg: 'D1D2 Charm Bootstrapping Exception'
+      register: debug_resources
+  ignore_errors: false
