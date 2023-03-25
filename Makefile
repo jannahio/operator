@@ -7,10 +7,10 @@ JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
 #JANNAH_PYTHON=$(HOME)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
 
-source ./boot.env.sh
-
+include boot.env.sh
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
+	#@source boot.env.sh
 	mkdir -vp "$(HOME)/jannah-operator/"
 	ls -lrt $(WORKING_DIR)/charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	# Make sure $(HOME)/jannah-operator/ is available
@@ -46,6 +46,7 @@ jannah-boot-credentials:
 	@rm $(HOME)/jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "$(WORKING_DIR)/tmp/EPHEMERAL"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter = "$(JANNAH_PYTHON)/bin/python3"' ~/jannah-operator/molecule.yml
 
 
 jannah-python-backup: jannah-boot-credentials
@@ -76,7 +77,7 @@ jannah-python: jannah-boot-credentials
 		virtualenv --always-copy $(JANNAH_PYTHON);\
 	fi
 	. $(JANNAH_PYTHON)/bin/activate;\
-    $(JANNAH_PYTHON)/bin/pip3 install -r $(WORKING_DIR)/requirements/requirements.txt;\
+    $(JANNAH_PYTHON)/bin/pip3 install -r $(WORKING_DIR)/charm/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 
 jannah-config: jannah-python
