@@ -41,18 +41,19 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "Create the 'microk8s' group"
-      shell: |
-        newgrp snap_microk8s;
-      async: 600
-      poll: 5
-      register: multipass_infra_create_microk8s
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
+#    - name: "Create the 'microk8s' group"
+#      shell: |
+#        newgrp snap_microk8s;
+#      async: 600
+#      poll: 5
+#      register: multipass_infra_create_microk8s
+#      tags:
+#        - "multipass_infra"
+#        - "operator_e2e"
     - name: "add ubuntu to snap_microk8s"
       shell: |
         sudo usermod -a -G snap_microk8s ubuntu;
+        exit 0;
       async: 600
       poll: 5
       register: multipass_infra_add_ubuntu_to_snap_microk8s

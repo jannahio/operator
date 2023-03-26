@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/IdeaProjects/operator"
+              working_dir: "/home/ubuntu/IdeaProjects/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -32,7 +32,7 @@ provisioner:
               url: https://index.docker.io/v1/
               USERNAME: ""
               PASSWORD: ""
-              EMAIL: "osman.jalloh@gmail.com"
+              EMAIL: ""
           stages:
             day1day2:
               sub_dir:
@@ -318,7 +318,7 @@ provisioner:
     host_vars:
       localhost:
         name: osmanj-mac-0
-        ansible_python_interpreter: '/Users/osmanjalloh/jannah-python/bin/python'
+        ansible_python_interpreter: 'python3'
         config_dir: ${MOLECULE_PROJECT_DIRECTORY}/config
         samples_dir: ${MOLECULE_PROJECT_DIRECTORY}/config/samples
         operator_image: ${OPERATOR_IMAGE:-""}
