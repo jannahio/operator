@@ -158,7 +158,7 @@
       shell: |
         charmcraft pack -v --debug
       args:
-        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/charm/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
       async: 600
       poll: 5
       register: multipass_infra_pack_operator
