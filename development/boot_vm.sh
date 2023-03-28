@@ -7,7 +7,7 @@ python3-dev \
 python3-pip \
 virtualenv
 multipass exec jannah-charm-operator-amd64 -- sudo snap install yq
-#multipass exec jannah-charm-operator-amd64 -- ls -lrt /home/ubuntu/
-#multipass exec jannah-charm-operator-amd64 -- pip3 install --user -r /home/ubuntu/IdeaProjects/operator/charm/requirements.txt
+multipass exec jannah-charm-operator-amd64 -- pip3 install ansible
+multipass exec jannah-charm-operator-amd64 -- PATH=/home/ubuntu/.local/bin:$PATH make jannah-config pip3 install --user -r /home/ubuntu/IdeaProjects/operator/charm/requirements.txt
 #multipass exec jannah-charm-operator-amd64 -- cd /home/ubuntu/IdeaProjects/operator && make jannah-config
 #multipass shell jannah-charm-operator-amd64
