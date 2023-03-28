@@ -116,6 +116,9 @@
         - "multipass_infra"
         - "operator_e2e"
     - name: "Install juju controller into microk8s cloud"
+      environment:
+        - JUJU_LOGGING_CONFIG: "DEBUG"
+        - JUJU_STARTUP_LOGGING_CONFIG: "TRACE"
       shell: |
         juju bootstrap --show-log=true --verbose=true microk8s \
         {{ Jannah.stages.bootstrap.build.juju.controller.name }};
@@ -139,20 +142,45 @@
         - "multipass_infra"
         - "operator_e2e"
 
-#    - name: "Deploy operator"
-#      shell: |
-#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-#      #      async: 60
-#      #      poll: 3
-#      register: multipass_infra_create_a_workspace_model_on_the_controller
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
-#    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
+    - name: "Install jhack"
+      shell: |
+        sudo snap install --edge jhack
+        sudo snap connect jhack:dot-local-share-juju snapd
+        sudo snap connect jhack:ssh-read snapd
+      async: 600
+      poll: 5
+      register: multipass_infra_install_jhack
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+
+
+    - name: "Deploy operator"
+      shell: |
+        juju deploy --debug=true --logging-config=true  --show-log=true \
+        --verbose=true \
+        --model={{ Jannah.stages.bootstrap.build.juju.controller.name }}:{{ Jannah.stages.bootstrap.build.juju.model.name }} \
+        ./jannah-operator_ubuntu-22.04-amd64-arm64.charm \
+        jannah-operator \
+        --resource ubuntu=jujusolutions/jujud-operator:2.9.42 \
+        --resource demo_server=ghcr.io/beliaev-maksim/api_demo_server:0.0.9
+      async: 600
+      poll: 5
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+
+    - name: "kubectl gets pods -A"
+      shell: |
+        kubectl gets pods -A
+        exit 0;
+      async: 600
+      poll: 5
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
 
   rescue:
     - name: "Multipass Infra Exception"

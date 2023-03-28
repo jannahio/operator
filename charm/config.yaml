@@ -10,5 +10,5 @@ options:
       Configures the log level of gunicorn. 
 
       Acceptable values are: "info", "debug", "warning", "error" and "critical"
-    default: "info"
+    default: "debug"
     type: string

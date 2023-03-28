@@ -6,11 +6,22 @@ bases:
   - build-on:
     - name: ubuntu
       channel: "22.04"
-      architectures: [amd64]
+      architectures: [amd64,arm64]
     run-on:
     - name: ubuntu
       channel: "22.04"
-      architectures: [amd64]
+      architectures: [amd64,arm64]
+
+
+parts:
+  charm:
+#    charm-entrypoint: <path to an entrypoint script>
+#    charm-requirements: <list of requirements files>
+#    charm-python-packages: <list of package names>
+#    charm-binary-python-packages: <list of package names>
+    prime:
+#     Include the ansible directory
+      - ansible
 
 
 
