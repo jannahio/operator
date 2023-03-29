@@ -159,8 +159,8 @@
         charmcraft pack -v --debug
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
-      async: 600
-      poll: 5
+      async: 1200
+      poll: 15
       register: multipass_infra_pack_operator
       tags:
         - "multipass_infra"
