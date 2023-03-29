@@ -41,6 +41,18 @@
         - "bootstrap_kustomize"
         - "bootstrap_get_kustomize"
 
+    - name: "Import multipass infra tasks"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - multipass/main.yml
+      tags:
+        - "bootstrap_jannah_namespace"
+        - "bootstrap_secrets_infra"
+        - "buildx_in"
+        - "multipass_infra"
+        - "operator_e2e"
+        - "dev_debug"
+
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

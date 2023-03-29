@@ -1,5 +1,6 @@
 multipass delete --all -p
-multipass launch -n jannah-charm-operator-amd64 -m 15g -c 8 -d 800G  charm-dev
+#multipass launch -n jannah-charm-operator-amd64 -m 15g -c 8 -d 800G  charm-dev
+multipass launch -n jannah-charm-operator-amd64 -m 15g -c 8 -d 800G  22.04
 multipass mount /Users/osmanjalloh/IdeaProjects jannah-charm-operator-amd64:/home/ubuntu/IdeaProjects
 multipass exec jannah-charm-operator-amd64 -- sudo apt -y update
 multipass exec jannah-charm-operator-amd64 -- sudo apt install -y make \
