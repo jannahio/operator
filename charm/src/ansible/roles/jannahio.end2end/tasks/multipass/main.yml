@@ -9,7 +9,7 @@
   block:
     - name: "Initialize lxd"
       shell: |
-        lxd init --auto
+        lxd init --auto;
       async: 600
       poll: 5
       register: multipass_infra_charm_lxd_init
@@ -28,9 +28,10 @@
         - "operator_e2e"
 
     # sudo snap install microk8s --channel 1.25-strict/stable
+    # sudo snap install --classic microk8s;
     - name: "install microk8s"
       shell: |
-        sudo snap install --classic microk8s;
+        sudo snap install microk8s --channel 1.25-strict/stable;
       async: 600
       poll: 5
       register: multipass_infra_install_microk8s
