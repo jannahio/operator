@@ -48,6 +48,7 @@ resources:
     # is also used by the 'canonical/charming-actions' Github action for automated releasing.
     #upstream-source: ubuntu
     upstream-source: images:ubuntu
+<<<<<<< HEAD
   #  ubunnt:
   #    type: oci-image
   #    #file: 59bf49664d2a43c13edccb3a1fa5c28e6f2e92067bd44fb1d6eb323b19346c79.tar.gz
@@ -66,6 +67,26 @@ resources:
   #    #upstream-source: jannahfrontend
   #    # An OCI image resource for each container listed above.
   #    # You may remove this if your charm will run without a workload sidecar container.
+=======
+#  ubunnt:
+#    type: oci-image
+#    #file: 59bf49664d2a43c13edccb3a1fa5c28e6f2e92067bd44fb1d6eb323b19346c79.tar.gz
+#    description: OCI image for jannahmiddleware
+#    # The upstream-source field is ignored by Juju. It is included here as a reference
+#    # so the integration testing suite knows which image to deploy during testing. This field
+#    # is also used by the 'canonical/charming-actions' Github action for automated releasing.
+#    #upstream-source: jannahmiddleware
+#  ubuntu:
+#    type: oci-image
+#    #file: 5b723a2c79d8615b79d572952225b0d211f062057d2d981c488c3656b244efe9.tar.gz
+#    description: OCI image for jannahfrontend
+#    # The upstream-source field is ignored by Juju. It is included here as a reference
+#    # so the integration testing suite knows which image to deploy during testing. This field
+#    # is also used by the 'canonical/charming-actions' Github action for automated releasing.
+#    #upstream-source: jannahfrontend
+#    # An OCI image resource for each container listed above.
+#    # You may remove this if your charm will run without a workload sidecar container.
+>>>>>>> 5be771c (Revert "full debug run:multipass")
 
   demo_server:
     type: oci-image
