@@ -111,13 +111,16 @@
         - "multipass_infra"
         - "operator_e2e"
 
+    #        juju bootstrap --show-log=true --verbose=true microk8s \
+    #        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+
     - name: "Install juju controller into microk8s cloud"
       environment:
         - JUJU_LOGGING_CONFIG: "DEBUG"
         - JUJU_STARTUP_LOGGING_CONFIG: "TRACE"
       shell: |
         juju bootstrap --show-log=true --verbose=true microk8s \
-        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+        jannah-charm-operator-controller;
       register: multipass_infra_install_juju_controller_into_microk8s_cloud
       async: 600
       poll: 5
@@ -130,9 +133,11 @@
         - "multipass_infra"
         - "operator_e2e"
 
+    # juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+
     - name: "Create a workspace/model, on the controller"
       shell: |
-        juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+        juju add-model jannah-charm-operator-workflow-model
       register: multipass_infra_create_a_workspace_model_on_the_controller
       tags:
         - "multipass_infra"
@@ -167,11 +172,11 @@
 
     - name: "Pack operator"
       shell: |
-        charmcraft pack -v --debug;
-        exit 0;
+        charmcraft pack -v --debug
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
-      async: 3600
+        chdir: "/home/ubuntu/IdeaProjects/operator/charm"
+      #         "{{ Jannah.global.ansible.working_dir }}/charm/"
+      async: 1200
       poll: 15
       register: multipass_infra_pack_operator
       tags:
@@ -196,7 +201,7 @@
         - "multipass_infra"
         - "operator_e2e"
 
-    - name: "kubectl gets pods -A"
+    - name: "kubectl get pods -A"
       shell: |
         kubectl get pods -A
         exit 0;
