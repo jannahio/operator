@@ -33,7 +33,7 @@ class JannahCharm(CharmBase):
         self.framework.observe(self.on.jannahfrontend_pebble_ready, self._on_jannahfrontend_pebble_ready)
         self.framework.observe(self.on.jannahmiddleware_pebble_ready, self._on_jannahmiddleware_pebble_ready)
         self.framework.observe(self.on.config_changed, self._on_config_changed)
-        self.framework.observe(self.on.demo_server_pebble_ready, self._on_demo_server_pebble_ready)
+        self.framework.observe(self.on.demoserver_pebble_ready, self._on_demoserver_pebble_ready)
         self.framework.observe(self.on.httpbin_pebble_ready, self._on_httpbin_pebble_ready)
 
         self.pebble_service_name = "jannah-operator-service"
@@ -92,7 +92,7 @@ class JannahCharm(CharmBase):
         # https://juju.is/docs/sdk/constructs#heading--statuses
         self.unit.status = ActiveStatus()
 
-    def _on_demo_server_pebble_ready(self, event):
+    def _on_demoserver_pebble_ready(self, event):
         """Define and start a workload using the Pebble API.
 
         Change this example to suit your needs. You'll need to specify the right entrypoint and
@@ -103,7 +103,7 @@ class JannahCharm(CharmBase):
         # Get a reference the container attribute on the PebbleReadyEvent
         container = event.workload
         # Add initial Pebble config layer using the Pebble API
-        container.add_layer("fastapi_demo", self._demo_server_pebble_layer, combine=True)
+        container.add_layer("fastapi_demo", self._demoserver_pebble_layer, combine=True)
         # Make Pebble reevaluate its plan, ensuring any services are started if enabled.
         container.replan()
         # Learn more about statuses in the SDK docs:
@@ -124,11 +124,11 @@ class JannahCharm(CharmBase):
         # Do some validation of the configuration option
         if log_level in VALID_LOG_LEVELS:
             # The config is good, so update the configuration of the workload
-            container = self.unit.get_container("httpbin")
+            container = self.unit.get_container("jannahfrontend")
             # Verify that we can connect to the Pebble API in the workload container
             if container.can_connect():
                 # Push an updated layer with the new config
-                container.add_layer("httpbin", self._pebble_layer, combine=True)
+                container.add_layer("jannahfrontend", self._jannahfrontend_pebble_layer, combine=True)
                 container.replan()
 
                 logger.debug("Log level for gunicorn changed to '%s'", log_level)
@@ -197,7 +197,7 @@ class JannahCharm(CharmBase):
         }
 
     @property
-    def _demo_server_pebble_layer(self):
+    def _demoserver_pebble_layer(self):
         """Return a dictionary representing a Pebble layer."""
         command = " ".join(
             [
