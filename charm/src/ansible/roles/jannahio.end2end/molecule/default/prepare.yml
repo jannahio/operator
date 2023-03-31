@@ -94,25 +94,30 @@
             - "operator_e2e"
         - name: "apt update"
           shell: |
-            sudo apt update
+            export DEBIAN_FRONTEND=noninteractive;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get -y update;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade;
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y make \
+            python3-dev \
+            python3-pip \
+            virtualenv;
+            exit 0;
           async: 600
           poll: 5
           register: multipass_infra_install_jhack
           tags:
             - "multipass_infra"
             - "operator_e2e"
-        # pip3 install git+https://github.com/PietroPasotti/jhack
-#        - name: "Install jhack"
-#          shell: |
-#            sudo snap install --edge jhack
-#            sudo snap connect jhack:dot-local-share-juju snapd
-#            sudo snap connect jhack:ssh-read snapd
-#          async: 600
-#          poll: 5
-#          register: multipass_infra_install_jhack
-#          tags:
-#            - "multipass_infra"
-#            - "operator_e2e"
+
+        - name: "Install jhack"
+          shell: |
+            sudo snap install --edge jhack
+          async: 600
+          poll: 5
+          register: multipass_infra_install_jhack
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
 
         - name: "Pack operator"
           shell: |
