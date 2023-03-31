@@ -92,7 +92,7 @@
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- juju bootstrap --show-log=true --verbose=true microk8s \
             {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-          async: 600
+          async: 1600
           poll: 3
           register: multipass_infra_install_juju_controller_into_microk8s_cloud
           tags:
@@ -106,7 +106,7 @@
           shell: |
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-          async: 600
+          async: 1600
           poll: 3
           register: multipass_infra_create_a_workspace_model_on_the_controller
           tags:
@@ -141,7 +141,7 @@
             charmcraft pack -v --debug
           args:
             chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
-          async: 1200
+          async: 1600
           poll: 15
           register: multipass_infra_pack_operator
           tags:
@@ -158,7 +158,7 @@
             --resource ubuntu=jujusolutions/jujud-operator:2.9.42 \
             --resource demoserver=ghcr.io/beliaev-maksim/api_demo_server:0.0.9;
             exit 0
-          async: 1200
+          async: 1600
           poll: 15
           register: multipass_infra_create_a_workspace_model_on_the_controller
           tags:
