@@ -6,7 +6,7 @@
   tasks:
     - name: "Deploy operator"
       block:
-        - name: "Restart multipass instance for provisioning"
+        - name: "start multipass instance for provisioning"
           shell: |
             multipass start {{ Jannah.stages.bootstrap.build.vm.name }};
           async: 1200
@@ -19,6 +19,7 @@
           shell: |
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- sudo microk8s enable hostpath-storage dns
+            sleep 10;
           async: 1200
           poll: 15
           register: multipass_infra_enable_microK8s_addons
@@ -45,6 +46,46 @@
           tags:
             - "multipass_infra"
             - "operator_e2e"
+        - name: "Restart-stop multipass instance for provisioning"
+          shell: |
+            multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};
+          async: 1200
+          poll: 5
+          register: multipass_infra_enable_microK8s_addons
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
+        - name: "Restart-start multipass instance for provisioning"
+          shell: |
+            multipass start {{ Jannah.stages.bootstrap.build.vm.name }};
+          async: 1200
+          poll: 5
+          register: multipass_infra_enable_microK8s_addons
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
+        - name: "Enable thostpath-storage"
+          shell: |
+            multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+            -- sudo microk8s enable hostpath-storage
+            sleep 10;
+          async: 1200
+          poll: 15
+          register: multipass_infra_enable_microK8s_addons
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
+        - name: "Enable dns"
+          shell: |
+            multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+            -- sudo microk8s enable dns
+            sleep 10;
+          async: 1200
+          poll: 15
+          register: multipass_infra_enable_microK8s_addons
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
         - name: "juju clouds"
           shell: |
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -59,8 +100,8 @@
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- juju bootstrap --show-log=true --verbose=true microk8s \
             {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-          #      async: 60
-          #      poll: 3
+          async: 60
+          poll: 3
           register: multipass_infra_install_juju_controller_into_microk8s_cloud
           tags:
             - "multipass_infra"
@@ -163,9 +204,9 @@
 #        - name: Import tasks
 #          include_tasks: '{{ item }}'
 #          with_fileglob:
-#            - ../../tasks/namespaces/main_ubuntu.yml
-#            - ../../tasks/secrets/main_ubuntu.yml
-#            - ../../tasks/docker_buildx/main_ubuntu.yml
+#            - ../../tasks/namespaces/main.yml
+#            - ../../tasks/secrets/main.yml
+#            - ../../tasks/docker_buildx/main.yml
 #          tags:
 #            - "bootstrap_jannah_namespace"
 #            - "bootstrap_secrets_infra"

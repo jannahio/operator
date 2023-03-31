@@ -9,8 +9,8 @@
         - name: Import tasks
           include_tasks: '{{ item }}'
           with_fileglob:
-            - ../../tasks/namespaces/main_ubuntu.yml
-            - ../../tasks/secrets/main_ubuntu.yml
+            - ../../tasks/namespaces/main.yml
+            - ../../tasks/secrets/main.yml
           tags:
             - "bootstrap_jannah_namespace"
       rescue:
@@ -171,14 +171,14 @@
         - name: Import build catalog tasks/
           include_tasks: '{{ item }}'
           with_fileglob:
-            - ../../tasks/build_catalog/main_ubuntu.yml
+            - ../../tasks/build_catalog/main.yml
           tags:
             - "bootstrap_catalog"
 
         - name: Import install_kustomize
           include_tasks: '{{ item }}'
           with_fileglob:
-            - ../../tasks/install_kustomize/main_ubuntu.yml
+            - ../../tasks/install_kustomize/main.yml
           tags:
             - "bootstrap_kustomize"
             - "bootstrap_get_kustomize"

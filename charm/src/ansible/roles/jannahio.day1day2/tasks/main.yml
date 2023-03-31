@@ -4,8 +4,8 @@
       - name: "Import Other Day1 Day 2 Tasks"
         include_tasks: '{{ item }}'
         with_fileglob:
-          - bootstrap_config/main_ubuntu.yml
-        #  - bootstrap_charm/main_ubuntu.yml
+          - bootstrap_config/main.yml
+        #  - bootstrap_charm/main.yml
         tags:
           - "d1d2-generate-molecule-configurations"
           - "d1d2-blog-service-install"
