@@ -7,7 +7,7 @@
   tasks:
     - name: "delete multipass instance"
       shell: |
-        multipass delete -p {{ Jannah.stages.bootstrap.build.vm.name }}
+        multipass delete --all -p;
         exit 0;
 
 #    - name: "force clear namespace"
