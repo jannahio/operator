@@ -36,12 +36,10 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
-    - name: "install charmcraft, and juju"
+    - name: "install charmcraft"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- sudo snap install charmcraft --classic;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install juju --classic;
       async: 600
       poll: 5
       register: multipass_infra_install_charmcraft_and_juju
@@ -89,6 +87,30 @@
       tags:
         - "multipass_infra"
         - "operator_e2e"
+
+    - name: "Enable the necessary MicroK8s addons:"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo microk8s enable hostpath-storage dns
+        sleep 10;
+      async: 1200
+      poll: 15
+      register: multipass_infra_enable_microK8s_addons
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+
+    - name: "Set up a short alias for the Kubernetes CLI:"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap alias microk8s.kubectl kubectl;
+      async: 600
+      poll: 5
+      register: multipass_infra_short_alias_kubernetes_cli
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+
     - name: "multipass stop"
       shell: |
         multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};
