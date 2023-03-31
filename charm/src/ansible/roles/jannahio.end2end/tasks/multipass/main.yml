@@ -11,7 +11,8 @@
         -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
         -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
         -d "{{ Jannah.stages.bootstrap.build.vm.disk }}" \
-        lts;
+        22.10;
+        exit 0;
       async: 600
       poll: 5
       register: multipass_launch
@@ -111,15 +112,15 @@
         - "multipass_infra"
         - "operator_e2e"
 
-#    - name: "multipass stop"
-#      shell: |
-#        multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};
-#      async: 1200
-#      poll: 5
-#      register: multipass_infra_create_microk8s
-#      tags:
-#        - "multipass_infra"
-#        - "operator_e2e"
+    - name: "multipass stop"
+      shell: |
+        multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};
+      async: 1200
+      poll: 5
+      register: multipass_infra_create_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
   rescue:
     - name: "Multipass Infra Exception"
       ansible.builtin.debug:

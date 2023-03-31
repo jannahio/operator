@@ -6,15 +6,15 @@
   tasks:
     - name: "Deploy operator"
       block:
-#        - name: "start multipass instance for provisioning"
-#          shell: |
-#            multipass start {{ Jannah.stages.bootstrap.build.vm.name }};
-#          async: 1200
-#          poll: 5
-#          register: multipass_infra_enable_microK8s_addons
-#          tags:
-#            - "multipass_infra"
-#            - "operator_e2e"
+        - name: "start multipass instance for provisioning"
+          shell: |
+            multipass start {{ Jannah.stages.bootstrap.build.vm.name }};
+          async: 1200
+          poll: 5
+          register: multipass_infra_enable_microK8s_addons
+          tags:
+            - "multipass_infra"
+            - "operator_e2e"
         #-- sudo snap install juju --classic;
         - name: "install juju"
           shell: |
