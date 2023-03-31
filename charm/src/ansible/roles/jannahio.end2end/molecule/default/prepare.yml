@@ -15,7 +15,7 @@
           tags:
             - "multipass_infra"
             - "operator_e2e"
-
+        #-- sudo snap install juju --classic;
         - name: "install juju"
           shell: |
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -92,7 +92,7 @@
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- juju bootstrap --show-log=true --verbose=true microk8s \
             {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-          async: 60
+          async: 600
           poll: 3
           register: multipass_infra_install_juju_controller_into_microk8s_cloud
           tags:
@@ -106,7 +106,7 @@
           shell: |
             multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
             -- juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-          async: 60
+          async: 600
           poll: 3
           register: multipass_infra_create_a_workspace_model_on_the_controller
           tags:
@@ -118,7 +118,8 @@
             - "operator_e2e"
         - name: "juju status"
           shell: |
-            juju status
+            multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+            -- juju status;
           tags:
             - "multipass_infra"
             - "operator_e2e"
