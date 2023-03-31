@@ -44,11 +44,9 @@
     - name: "Import multipass infra tasks"
       include_tasks: '{{ item }}'
       with_fileglob:
+        - molecule/default/tasks/cleanup/multipass_cleanup.yml
         - multipass/main.yml
       tags:
-        - "bootstrap_jannah_namespace"
-        - "bootstrap_secrets_infra"
-        - "buildx_in"
         - "multipass_infra"
         - "operator_e2e"
         - "dev_debug"

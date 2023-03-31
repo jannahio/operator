@@ -112,71 +112,42 @@ jannah-day1-day2: jannah-config
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
     popd;
 
-jannah-requirements: jannah-config
-	pushd ansible/operators/ansible_based/jannah-operator && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ playbooks/requirements.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
-    popd;
-
-bootstrap-clean: jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
-	popd;
-
-bootstrap-destroy: bootstrap-clean
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
-
-bootstrap-prepare: bootstrap-destroy
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
-
-bootstrap-converge:  jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
-	popd;
-
-bootstrap-test: jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
-	popd;
-
-
 charm-clean: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
+	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
 	popd;
 
-charm-destroy: bootstrap-clean
+charm-reset: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
+	pushd charm/src/ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) reset;\
+
+charm-destroy: jannah-config
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd charm/src/ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) destroy;\
 	popd;
 
-charm-prepare: bootstrap-destroy
+# default molecule scenario test matrix: dependency, create, prepare
+charm-create: jannah-config charm-reset charm-destroy
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
+	pushd charm/src/ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) create;\
+
+
 
 charm-converge:  jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
+	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
 	popd;
 
 charm-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
+	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
 
-clean: jannah-python-clean
+clean: charm-destroy jannah-python-clean

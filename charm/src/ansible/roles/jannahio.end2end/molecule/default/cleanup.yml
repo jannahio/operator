@@ -10,14 +10,18 @@
         - name: Import all tasks/cleanup by order
           include_tasks: '{{ item }}'
           with_fileglob:
-            - tasks/cleanup/secrets_cleanup.yml
-            - tasks/cleanup/namespaces_cleanup.yml
-            - tasks/cleanup/docker_buildx_cleanup.yml
+#            - tasks/cleanup/secrets_cleanup.yml
+#            - tasks/cleanup/namespaces_cleanup.yml
+#            - tasks/cleanup/docker_buildx_cleanup.yml
+            - tasks/cleanup/multipass_cleanup.yml
           tags:
             - "bootstrap_namespace_cleanup"
             - "bootstrap_prepared_tasks_cleanup"
             - "bootstrap_secretes_cleanup"
             - "bootstrap_kustomize_cleanup"
+            - "multipass_infra"
+            - "operator_e2e"
+            - "dev_debug"
       rescue:
         - name: Re-emit failure
           vars:

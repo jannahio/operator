@@ -1,16 +1,21 @@
 ---
 - name: "Remove Buildx infra"
   block:
-    - name: "Remove Buildx builder with the Kubernetes driver"
+    - name: "jhack modem remove"
       shell: |
-        multipass delete --all  --purge {{ Jannah.stages.bootstrap.build.vm.name }}
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+           -- jhack model rm {{ Jannah.stages.bootstrap.build.juju.model.name }};
         exit 0;
       tags:
-        - "buildx_infra"
+        - "multipass_infra"
+        - "operator_e2e"
+        - "dev_debug"
 
     - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
       file:
         path: "$MOLECULE_EPHEMERAL_DIRECTORY"
         state: absent
       tags:
-        - "buildx_infra"
+        - "multipass_infra"
+        - "operator_e2e"
+        - "dev_debug"

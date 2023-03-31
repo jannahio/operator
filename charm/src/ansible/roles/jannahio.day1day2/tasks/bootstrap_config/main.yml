@@ -86,13 +86,13 @@
         - "molecule-notest"
         - "never"
 
-    # We need the defaults/main.yml for running the Ansible playbooks outside of Molecule
+    # We need the defaults/main_ubuntu.yml for running the Ansible playbooks outside of Molecule
     # i.e. running with ansible-playbook
 
-    - name: "Generate roles/jannahio.end2end/defaults/main.yml"
+    - name: "Generate roles/jannahio.end2end/defaults/main_ubuntu.yml"
       template:
         src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
-        dest: "roles/jannahio.end2end/defaults/main.yml"
+        dest: "roles/jannahio.end2end/defaults/main_ubuntu.yml"
         backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"

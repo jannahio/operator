@@ -5,8 +5,10 @@
   gather_facts: true
   no_log: "{{ molecule_no_log }}"
   tasks:
-    # Developer must implement.
-    # Mandatory copnfiguration for Molecule to function.
+    - name: "delete multipass instance"
+      shell: |
+        multipass delete -p {{ Jannah.stages.bootstrap.build.vm.name }}
+        exit 0;
 
 #    - name: "force clear namespace"
 #      shell: |

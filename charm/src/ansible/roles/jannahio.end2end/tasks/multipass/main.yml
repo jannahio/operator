@@ -1,217 +1,103 @@
 ---
 # Implements:
 # https://juju.is/docs/sdk/set-up-your-development-environment
-# However, we are assuming the playbook running on a Mac or Ubuntu
-# https://linuxcontainers.org/lxd/getting-started-cli/
-# https://formulae.brew.sh/formula/juju
-# https://discourse.charmhub.io/t/ann-charmcraft-can-now-be-install-from-homebrew/5259
-- name: "Kubernetes on Ubuntu VM environment"
+- name: "Kubernetes on Ubuntu Multipass VM environment"
   block:
+    # Create a VM, and mount local repository path,
+    - name: "Create an Ubuntu VM, an environment for building container images"
+      shell: |
+        multipass launch \
+        -n "{{ Jannah.stages.bootstrap.build.vm.name }}" \
+        -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
+        -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
+        -d "{{ Jannah.stages.bootstrap.build.vm.disk }}" \
+        22.04;
+      async: 600
+      poll: 5
+      register: multipass_launch
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Mount the working directory"
+      shell: |
+        multipass mount {{ Jannah.global.ansible.working_dir }} \
+        {{ Jannah.stages.bootstrap.build.vm.name }}:{{ Jannah.global.ansible.working_dir }}
+      register: multipass_infra_mount_working_directory
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
     - name: "Initialize lxd"
       shell: |
-        lxd init --auto;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxd init --auto;
       async: 600
       poll: 5
       register: multipass_infra_charm_lxd_init
       tags:
         - "multipass_infra"
         - "operator_e2e"
-
-    - name: "sudo snap install charmcraft --classic"
+    - name: "install charmcraft, and juju"
       shell: |
-        sudo snap install charmcraft --classic
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap install charmcraft --classic;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap install juju --classic;
       async: 600
       poll: 5
-      register: multipass_infra_charm_lxd_init
+      register: multipass_infra_install_charmcraft_and_juju
       tags:
         - "multipass_infra"
         - "operator_e2e"
-
-    # sudo snap install microk8s --channel 1.25-strict/stable
-    # sudo snap install --classic microk8s;
     - name: "install microk8s"
       shell: |
-        sudo snap install microk8s --channel 1.25-strict/stable;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap install microk8s --channel 1.25-strict/stable
       async: 600
       poll: 5
       register: multipass_infra_install_microk8s
       tags:
         - "multipass_infra"
         - "operator_e2e"
-
-    - name: "Add the 'ubuntu' user to the MicroK8s group"
+    - name: "add ubuntu to snap_microk8s"
       shell: |
-        sudo usermod -a -G snap_microk8s ubuntu;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo usermod -a -G snap_microk8s ubuntu;
       async: 600
       poll: 5
+      register: multipass_infra_add_ubuntu_to_snap_microk8s
       tags:
         - "multipass_infra"
         - "operator_e2e"
-
-    - name: "mkdir -vp ~/.kube"
-      shell: |
-        mkdir -vp ~/.kube;
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Give the ubuntu user permissions to read the ~/.kube"
-      shell: |
-        sudo chown -f -R ubuntu ~/.kube;
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-
-    - name: "Create the 'microk8s' group"
-      shell: |
-        newgrp snap_microk8s;
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Enable the necessary MicroK8s addons:"
-      shell: |
-        sudo microk8s enable hostpath-storage dns storage ingress
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Set up a short alias for the Kubernetes CLI:"
-      shell: |
-        sudo snap alias microk8s.kubectl kubectl;
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-
-    - name: "Install juju"
-      shell: |
-        sudo snap install juju --classic;
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Since the juju package is strictly confined, you also need to manually create a path"
-      shell: |
-        mkdir -p ~/.local/share;
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "juju clouds"
-      shell: |
-        juju clouds;
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    #        juju bootstrap --show-log=true --verbose=true microk8s \
-    #        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-
-    - name: "Install juju controller into microk8s cloud"
-      environment:
-        - JUJU_LOGGING_CONFIG: "DEBUG"
-        - JUJU_STARTUP_LOGGING_CONFIG: "TRACE"
-      shell: |
-        juju bootstrap --show-log=true --verbose=true microk8s \
-        jannah-charm-operator-controller;
-      register: multipass_infra_install_juju_controller_into_microk8s_cloud
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - debug: var=multipass_infra_install_juju_controller_into_microk8s_cloud
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    # juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-
-    - name: "Create a workspace/model, on the controller"
-      shell: |
-        juju add-model jannah-charm-operator-workflow-model
-      register: multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - debug: var=multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "juju status"
-      shell: |
-        juju status
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    #        sudo snap install --edge jhack
-    #        sudo snap connect jhack:dot-local-share-juju snapd
-    #        sudo snap connect jhack:ssh-read snapd
-
-
-    - name: "Install jhack"
-      shell: |
-        pip3 install git+https://github.com/PietroPasotti/jhack
-      async: 600
-      poll: 5
-      register: multipass_infra_install_jhack
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "Pack operator"
-      shell: |
-        charmcraft pack -v --debug
-      args:
-        chdir: "/home/ubuntu/IdeaProjects/operator/charm"
-      #         "{{ Jannah.global.ansible.working_dir }}/charm/"
-      async: 1200
-      poll: 15
-      register: multipass_infra_pack_operator
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-        - "dev_debug"
-
-    - name: "Deploy operator"
-      shell: |
-        juju deploy --debug=true --logging-config=true  --show-log=true \
-        --verbose=true \
-        --model={{ Jannah.stages.bootstrap.build.juju.controller.name }}:{{ Jannah.stages.bootstrap.build.juju.model.name }} \
-        ./jannah-operator_ubuntu-22.04-amd64-arm64.charm \
-        jannah-operator \
-        --resource ubuntu=jujusolutions/jujud-operator:2.9.42 \
-        --resource demoserver=ghcr.io/beliaev-maksim/api_demo_server:0.0.9;
-        exit 0
-      async: 1200
-      poll: 15
-      register: multipass_infra_create_a_workspace_model_on_the_controller
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-
-    - name: "kubectl get pods -A"
-      shell: |
-        kubectl get pods -A
+    - name: "Give the ubuntu user permissions to read the ~/.kube, and Jannah.global.ansible.working_dir"
+      shell: |  
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo chown -f -R ubuntu ~/.kube;
         exit 0;
       async: 600
       poll: 5
+      register: multipass_infra_chown_kube_and_working_dir
       tags:
         - "multipass_infra"
         - "operator_e2e"
-
+    - name: "Create the 'microk8s' group"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- newgrp snap_microk8s;
+      async: 600
+      poll: 5
+      register: multipass_infra_create_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "multipass stop"
+      shell: |
+        multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};
+      async: 1200
+      poll: 5
+      register: multipass_infra_create_microk8s
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
   rescue:
     - name: "Multipass Infra Exception"
       ansible.builtin.debug:
