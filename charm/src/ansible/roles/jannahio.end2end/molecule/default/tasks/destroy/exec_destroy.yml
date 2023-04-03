@@ -4,6 +4,7 @@
     - name: "delete multipass instance"
       shell: |
         multipass delete -p "{{ Jannah.stages.bootstrap.build.vm.name }}";
+        exit 0;
       async: 1200
       poll: 5
       tags:
