@@ -15,8 +15,7 @@
         - name: Import all test files from tasks/
           include_tasks: '{{ item }}'
           with_fileglob:
-            - tasks/*namespaces_test.yml
-            - tasks/*secrets_test.yml
+            - tasks/test_jannah/exec.yml
           tags:
             - "bootstrap_kustomize"
             - "bootstrap_get_kustomize"

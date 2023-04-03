@@ -1,0 +1,32 @@
+---
+# ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
+- name: "Deploy Jannah"
+  block:
+    - name: "Import multipass build infra tasks - Darwin"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - tasks/converge/deploy_jannah/exec_destroy.yml
+      when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "Import Ubuntu inline infra tasks"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - tasks/converge/deploy_jannah/inline_destroy.yml
+#     On MacOs M2, deploy dependencies inline Docker Desktop as well (as Multipass Ubuntu instance)
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+      tags:
+        - "multipass_infra"
+        - "operator_e2e"
+  rescue:
+    - name: "Deploy Jannah Exception"
+      ansible.builtin.debug:
+        msg: 'Deploy Jannah Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  ignore_errors: false

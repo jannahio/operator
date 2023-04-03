@@ -1,0 +1,33 @@
+---
+- name: "Deploy dependencies for Jannah"
+  block:
+    - name: "Deploy operator - Inline"
+      shell: |
+        ls -lrt
+      async: 1600
+      poll: 15
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "deploy_jannah"
+        - "multipass_infra"
+        - "operator_e2e"
+    - name: "kubectl get pods -A after dependencies deployment"
+      shell: |
+        kubectl get pods -A
+        exit 0;
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_dependencies"
+        - "operator_e2e"
+  rescue:
+    - name: "Deploy dependencies for Jannah Exception"
+      ansible.builtin.debug:
+        msg: 'Deploy dependencies for Jannah Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  ignore_errors: false

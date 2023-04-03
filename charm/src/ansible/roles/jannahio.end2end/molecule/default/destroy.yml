@@ -5,43 +5,23 @@
   gather_facts: true
   no_log: "{{ molecule_no_log }}"
   tasks:
-    - name: "delete multipass instance"
-      shell: |
-        multipass delete --all -p;
-        exit 0;
-
-#    - name: "force clear namespace"
-#      shell: |
-#        kubectl delete namespace/{{ Jannah.global.namespace }}
-#        exit 0
-
-#    - name: Populate instance config
-#      set_fact:
-#        instance_conf:  {}
-
-
-
-
-#    - name: "Create Registry Root Cert Secret block"
-#      block:
-#        - name: "operator-sdk olm uninstall"
-#          shell: |
-#            operator-sdk olm uninstall
-#            exit 0
-#          tags:
-#            - "bootstrap_operator_sdk_olm_uninstall"
-#            - "build_operator_infra"
-#      rescue:
-#        - name: "operator-sdk olm uninstall Handle exception"
-#          ansible.builtin.debug:
-#            #msg: '{{ debug_logs.results }}'
-#            msg: 'It maybe the operator sdk is not install'
-
-#    - name: Dump instance config
-#      copy:
-#        content: |
-#          # Molecule managed
-#          {{ instance_conf | to_json | from_json | to_yaml }}
-#        dest: "{{ molecule_instance_config }}"
-#        mode: 0600
-#      when: server.changed | default(false) | bool
+    - name: "Destroy environment for Jannah"
+      block:
+        - name: "Import prepare tasks"
+          include_tasks: '{{ item }}'
+          with_fileglob:
+            - tasks/destroy/main.yml
+          tags:
+            - "multipass_infra"
+            - "molecule_prepare"
+            - "operator_e2e"
+      rescue:
+        - name: "Prepare exception is thrown"
+          ansible.builtin.debug:
+            msg: 'Prepare exception is thrown'
+        - name: Re-emit failure
+          vars:
+            failed_task:
+              result: '{{ ansible_failed_result }}'
+          fail:
+            msg: '{{ failed_task }}'

@@ -44,10 +44,11 @@
     - name: "Import multipass infra tasks"
       include_tasks: '{{ item }}'
       with_fileglob:
-        - molecule/default/tasks/cleanup/multipass_cleanup.yml
-        - multipass/main.yml
+        - molecule/default/tasks/cleanup/main.yml
+        - multipass/exec.yml
       tags:
         - "multipass_infra"
+        - "deploy_dependencies"
         - "operator_e2e"
         - "dev_debug"
 

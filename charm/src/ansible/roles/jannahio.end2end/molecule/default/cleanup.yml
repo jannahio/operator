@@ -13,7 +13,7 @@
 #            - tasks/cleanup/secrets_cleanup.yml
 #            - tasks/cleanup/namespaces_cleanup.yml
 #            - tasks/cleanup/docker_buildx_cleanup.yml
-            - tasks/cleanup/multipass_cleanup.yml
+            - tasks/cleanup/main.yml
           tags:
             - "bootstrap_namespace_cleanup"
             - "bootstrap_prepared_tasks_cleanup"

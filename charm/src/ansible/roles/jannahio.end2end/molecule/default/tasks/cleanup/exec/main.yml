@@ -8,14 +8,5 @@
         exit 0;
       tags:
         - "multipass_infra"
+        - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
-
-    - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY/jannah_services"
-      file:
-        path: "$MOLECULE_EPHEMERAL_DIRECTORY"
-        state: absent
-      tags:
-        - "multipass_infra"
-        - "operator_e2e"
-        - "dev_debug"

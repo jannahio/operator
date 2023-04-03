@@ -1,0 +1,129 @@
+---
+#   On MacOs M2 or Multipass/Ubuntu, prepare inline for Docker Desktop.
+- name: "Inline prepare operator - Ubuntu/Darwin(ARM64)"
+  block:
+    #-- sudo snap install juju --classic;
+    - name: "install juju - Darwin"
+      shell: |
+        brew install juju;
+      when: ansible_facts['os_family'] == "Darwin"
+      async: 600
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "install juju - Ubuntu/Darwin(ARM64)"
+      shell: |
+        snap install juju --channel 3.0/stable;
+      when: ansible_facts['os_family'] != "Darwin"
+      async: 600
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "install charmcraft"
+      shell: |
+        brew install charmcraft;
+      when: ansible_facts['os_family'] == "Darwin"
+      async: 600
+      poll: 5
+      register: multipass_infra_install_charmcraft_and_juju
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Since the juju package is strictly confined, you also need to manually create a path-Ubuntu/Darwin(ARM64)"
+      shell: |
+        mkdir -vp ~/.local/share;
+      async: 600
+      poll: 5
+      register: multipass_infra_manually_create_path
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "juju clouds"
+      shell: |
+        juju clouds;
+        exit 0;
+      register: multipass_infra_juju_clouds
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Install juju controller into microk8s cloud"
+      shell: |
+        juju bootstrap --show-log=true --verbose=true microk8s \
+        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+      async: 1600
+      poll: 3
+      register: multipass_infra_install_juju_controller_into_microk8s_cloud
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Create a workspace/model, on the controller"
+      shell: |
+        juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+      async: 1600
+      poll: 3
+      register: multipass_infra_create_a_workspace_model_on_the_controller
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "juju status"
+      shell: |
+        juju status;
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    #        - name: "Install jhack"
+    #          shell: |
+    #            sudo snap install --edge jhack
+    #          async: 600
+    #          poll: 5
+    #          register: multipass_infra_install_jhack
+    #          tags:
+    #            - "multipass_infra"
+    #            - "operator_e2e"
+    - name: "Pack operator"
+      shell: |
+        charmcraft pack -v --debug
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
+      async: 1600
+      poll: 15
+      register: multipass_infra_pack_operator
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "list jannah-operator_ubuntu-22.04-amd64-arm64.charm"
+      shell: |
+        ls -lrt {{ Jannah.global.ansible.working_dir }}/charm/jannah-operator_ubuntu-22.04-amd64-arm64.charm
+      async: 600
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Multipass Infra Exception"
+      ansible.builtin.debug:
+        msg: 'Multipass Infra Exception'
+      register: multipass_infra_debug_resources
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

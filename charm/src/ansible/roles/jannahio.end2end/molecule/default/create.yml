@@ -4,17 +4,15 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: "Create multipass environment"
+    - name: "Create multipass VM environment if developing on MacOs"
       block:
-        - name: "Import multipass infra tasks"
+        - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
           include_tasks: '{{ item }}'
           with_fileglob:
-            - ../../tasks/multipass/main.yml
+            - tasks/create/main.yml
           tags:
-            - "bootstrap_jannah_namespace"
-            - "bootstrap_secrets_infra"
-            - "buildx_in"
             - "multipass_infra"
+            - "molecule_create"
             - "operator_e2e"
       rescue:
         - name: "Create multipass exception is thrown"

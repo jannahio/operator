@@ -2,15 +2,15 @@
 - name: Converge
   hosts: localhost
   connection: local
+  gather_facts: true
   tasks:
-    - name: "Include jannahio.bootstrap"
-      include_role:
-        name: "jannahio.charm"
+    - name: "Import multipass infra tasks"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - tasks/converge/deploy_dependencies/main.yml
+        - tasks/converge/deploy_jannah/main.yml
       tags:
-        - "bootstrap_jannah_namespace"
-        - "secrets_infra"
-        - "bootstrap_make_bundle"
-        - "bootstrap_kustomize"
-        - "bootstrap_get_kustomize"
-        - "buildx_infra"
+        - "deploy_dependencies"
+        - "deploy_jannah"
+        - "operator_e2e"
 

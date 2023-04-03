@@ -1,0 +1,35 @@
+---
+#   On MacOs M2 or Multipass/Ubuntu, prepare inline for Docker Desktop.
+# ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
+- name: "Destroy Jannah environment Tasks"
+  block:
+    - name: "Import destroy tasks - Darwin"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - tasks/destroy/exec_destroy.yml
+      when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - "multipass_infra"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Import prepare tasks - Ubuntu, Darwin arm64"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - tasks/destroy/inline_destroy.yml
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+      tags:
+        - "multipass_infra"
+        - "molecule_destroy"
+        - "operator_e2e"
+  rescue:
+    - name: "Destroy Jannah Tasks Exception"
+      ansible.builtin.debug:
+        msg: 'Destroy Jannah Tasks Exception'
+      register: preparea_jannah_tasks_debug_resources
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  ignore_errors: false
