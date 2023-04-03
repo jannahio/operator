@@ -214,9 +214,9 @@ provisioner:
                       name: jannahfrontend
                 vm:
                   name: jannah-charm-operator
-                  cpus: 8
-                  disk: 100G
-                  memory: 18G
+                  cpus: 4
+                  disk: 30G
+                  memory: 10G
                   #                  <image> can be a partial image hash or
                   #                  an Ubuntu release version, codename or
                   #                  alias.

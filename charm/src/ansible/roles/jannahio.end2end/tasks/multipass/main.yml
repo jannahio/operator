@@ -11,8 +11,8 @@
         -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
         -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
         -d "{{ Jannah.stages.bootstrap.build.vm.disk }}" \
-        22.10;
-        exit 0;
+        22.04;
+
       async: 600
       poll: 5
       register: multipass_launch

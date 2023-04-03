@@ -109,15 +109,15 @@
             - "multipass_infra"
             - "operator_e2e"
 
-        - name: "Install jhack"
-          shell: |
-            sudo snap install --edge jhack
-          async: 600
-          poll: 5
-          register: multipass_infra_install_jhack
-          tags:
-            - "multipass_infra"
-            - "operator_e2e"
+#        - name: "Install jhack"
+#          shell: |
+#            sudo snap install --edge jhack
+#          async: 600
+#          poll: 5
+#          register: multipass_infra_install_jhack
+#          tags:
+#            - "multipass_infra"
+#            - "operator_e2e"
 
         - name: "Pack operator"
           shell: |
