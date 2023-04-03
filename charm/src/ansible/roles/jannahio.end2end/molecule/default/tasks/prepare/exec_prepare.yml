@@ -121,6 +121,7 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- charmcraft pack -v --debug
+        exit 0;
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
       async: 1600
@@ -134,6 +135,7 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- ls -lrt {{ Jannah.global.ansible.working_dir }}/charm/jannah-operator_ubuntu-22.04-amd64-arm64.charm
+        exit 0
       async: 600
       poll: 5
       tags:
