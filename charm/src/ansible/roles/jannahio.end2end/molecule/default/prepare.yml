@@ -7,9 +7,11 @@
     - name: "Prepare environment for deploying Jannah"
       block:
         - name: "Import prepare tasks"
-          include_tasks: '{{ item }}'
+          include_tasks: '{{ prepare_task_item }}'
           with_fileglob:
             - tasks/prepare/main.yml
+          loop_control:
+            loop_var: prepare_task_item
           tags:
             - "multipass_infra"
             - "molecule_prepare"
@@ -24,3 +26,6 @@
               result: '{{ ansible_failed_result }}'
           fail:
             msg: '{{ failed_task }}'
+        - name: "Print return information from the previous task"
+          ansible.builtin.debug:
+            var: ansible_facts.keys()

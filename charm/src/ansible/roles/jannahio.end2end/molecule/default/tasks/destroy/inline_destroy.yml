@@ -94,7 +94,6 @@
     - name: "Exec destroy infra inline Exception "
       ansible.builtin.debug:
         msg: 'Exec destroy infra inline Exception'
-      register: destroy infra_debug_resources
     - name: Re-emit failure
       vars:
         failed_task:

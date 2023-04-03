@@ -2,14 +2,16 @@
 - name: Create
   hosts: localhost
   connection: local
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: "Create multipass VM environment if developing on MacOs"
       block:
         - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
-          include_tasks: '{{ item }}'
+          include_tasks: '{{ create_task_item }}'
           with_fileglob:
             - tasks/create/main.yml
+          loop_control:
+            loop_var: create_task_item
           tags:
             - "multipass_infra"
             - "molecule_create"

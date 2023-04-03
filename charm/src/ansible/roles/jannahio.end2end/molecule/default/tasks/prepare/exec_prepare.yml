@@ -88,7 +88,7 @@
         - "molecule_prepare"
         - "operator_e2e"
     - name: "apt update"
-      enviornment:
+      environment:
         DEBIAN_FRONTEND: noninteractive
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \

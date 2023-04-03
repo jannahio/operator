@@ -14,7 +14,7 @@
       with_fileglob:
         - tasks/converge/deploy_dependencies/inline_destroy.yml
 #     On MacOs M2, deploy dependencies inline Docker Desktop as well (as Multipass Ubuntu instance)
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
       tags:
         - "multipass_infra"
         - "operator_e2e"

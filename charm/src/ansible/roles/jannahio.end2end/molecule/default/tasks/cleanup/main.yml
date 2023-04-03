@@ -14,7 +14,7 @@
       include_tasks: '{{ item }}'
       with_fileglob:
         - tasks/cleanup/inline/main.yml
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
       tags:
         - "multipass_infra"
         - "molecule_cleanup"
@@ -23,10 +23,14 @@
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:
         msg: 'Cleanup Jannah Tasks Exception'
+    - name: "Print return information from the previous task"
+      ansible.builtin.debug:
+        var: ansible_facts['architecture']
     - name: Re-emit failure
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
+
   ignore_errors: false

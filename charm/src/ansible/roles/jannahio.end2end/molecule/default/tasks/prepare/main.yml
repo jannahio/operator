@@ -16,7 +16,7 @@
       include_tasks: '{{ item }}'
       with_fileglob:
         - tasks/prepare/inline_prepare.yml
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
       tags:
         - "multipass_infra"
         - "molecule_prepare"

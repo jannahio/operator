@@ -2,18 +2,20 @@
 - name: Cleanup
   hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: true
   collections:
     - kubernetes.core
   tasks:
     - block:
         - name: Import all tasks/cleanup by order
-          include_tasks: '{{ item }}'
+          include_tasks: '{{ cleanup_task_item }}'
           with_fileglob:
 #            - tasks/cleanup/secrets_cleanup.yml
 #            - tasks/cleanup/namespaces_cleanup.yml
 #            - tasks/cleanup/docker_buildx_cleanup.yml
             - tasks/cleanup/main.yml
+          loop_control:
+            loop_var: cleanup_task_item
           tags:
             - "bootstrap_namespace_cleanup"
             - "bootstrap_prepared_tasks_cleanup"

@@ -4,19 +4,23 @@
 - name: "Destroy Jannah environment Tasks"
   block:
     - name: "Import destroy tasks - Darwin"
-      include_tasks: '{{ item }}'
+      include_tasks: '{{ destroy_exec_task_item }}'
       with_fileglob:
-        - tasks/destroy/exec_destroy.yml
+        - destroy/exec_destroy.yml
+      loop_control:
+        loop_var: destroy_exec_task_item
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "multipass_infra"
         - "molecule_destroy"
         - "operator_e2e"
-    - name: "Import prepare tasks - Ubuntu, Darwin arm64"
-      include_tasks: '{{ item }}'
+    - name: "Import destroy tasks - Ubuntu, Darwin arm64"
+      include_tasks: '{{ destroy_inline_task_item }}'
       with_fileglob:
-        - tasks/destroy/inline_destroy.yml
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['ansible_architecture'] == "arm64"
+        - destroy/inline_destroy.yml
+      loop_control:
+        loop_var: destroy_inline_task_item
+      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
       tags:
         - "multipass_infra"
         - "molecule_destroy"
