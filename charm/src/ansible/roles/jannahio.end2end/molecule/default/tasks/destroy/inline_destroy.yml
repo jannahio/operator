@@ -1,50 +1,50 @@
 ---
 - name: "Exec destroy infra - Inline"
   block:
-    - name: "Uninstall lxc  - Inline/Darwin"
-      shell: |
-        brew uninstall lxc;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
-    - name: "Uninstall charmcraft - Inline/Darwin"
-      shell: |
-        brew uninstall charmcraft;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
-    - name: "uninstall microk8s  - Inline/Darwin"
-      shell: |
-        brew uninstall ubuntu/microk8s/microk8s;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 1200
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
-    - name: "uninstall microk8s  - Inline/Ubuntu"
-      shell: |
-        sudo snap remove microk8s;
-        exit 0;
-      when: ansible_facts['os_family'] == "Ubuntu"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
+#    - name: "Uninstall lxc  - Inline/Darwin"
+#      shell: |
+#        brew uninstall lxc;
+#        exit 0;
+#      when: ansible_facts['os_family'] == "Darwin"
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#    - name: "Uninstall charmcraft - Inline/Darwin"
+#      shell: |
+#        brew uninstall charmcraft;
+#        exit 0;
+#      when: ansible_facts['os_family'] == "Darwin"
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#    - name: "uninstall microk8s  - Inline/Darwin"
+#      shell: |
+#        brew uninstall ubuntu/microk8s/microk8s;
+#        exit 0;
+#      when: ansible_facts['os_family'] == "Darwin"
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#    - name: "uninstall microk8s  - Inline/Ubuntu"
+#      shell: |
+#        sudo snap remove microk8s;
+#        exit 0;
+#      when: ansible_facts['os_family'] == "Ubuntu"
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
     - name: "remove ubuntu from snap_microk8s  - Inline/Ubuntu"
       shell: |
         sudo usermod -r -G snap_microk8s ubuntu;
@@ -57,22 +57,22 @@
         - "multipass_infra"
         - "molecule_destroy"
         - "operator_e2e"
-    - name: "uninstall juju - Darwin"
-      shell: |
-        brew uninstall juju;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
+#    - name: "uninstall juju - Darwin"
+#      shell: |
+#        brew uninstall juju;
+#        exit 0;
+#      when: ansible_facts['os_family'] == "Darwin"
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
     - name: "uninstall juju - Ubuntu/Darwin(ARM64)"
       shell: |
         snap remove juju;
         exit 0;
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts['os_family'] == "Ubuntu"
       async: 600
       poll: 5
       tags:
@@ -91,7 +91,10 @@
       shell: |
         rm {{ Jannah.global.ansible.working_dir }}/charm/jannah-operator_ubuntu-22.04-amd64-arm64.charm;
         exit 0;
+      when: ansible_facts['os_family'] == "Ubsu
       async: 600
+
+
       poll: 5
       tags:
         - "multipass_infra"

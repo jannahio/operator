@@ -1,15 +1,15 @@
 ---
 - name: "Deploy dependencies for Jannah"
   block:
-    - name: "kubectl get pods -A after dependencies deployment"
-      shell: |
-        kubectl get pods -A
-        exit 0;
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_dependencies"
-        - "operator_e2e"
+#    - name: "kubectl get pods -A after dependencies deployment"
+#      shell: |
+#        kubectl get pods -A
+#        exit 0;
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "deploy_dependencies"
+#        - "operator_e2e"
   rescue:
     - name: "Deploy dependencies for Jannah Exception"
       ansible.builtin.debug:
