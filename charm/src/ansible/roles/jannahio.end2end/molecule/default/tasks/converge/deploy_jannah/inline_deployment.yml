@@ -13,6 +13,7 @@
         --resource ubuntu=jujusolutions/jujud-operator:2.9.42 \
         --resource demoserver=ghcr.io/beliaev-maksim/api_demo_server:0.0.9;
         exit 0
+      when: ansible_facts['os_family'] == "Ubuntu"
       async: 1600
       poll: 15
       tags:
@@ -24,6 +25,7 @@
       shell: |
         kubectl get pods -A
         exit 0;
+        when: ansible_facts['os_family'] == "Ubuntu"
       async: 600
       poll: 5
       tags:

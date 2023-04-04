@@ -220,7 +220,7 @@ provisioner:
                   #                  <image> can be a partial image hash or
                   #                  an Ubuntu release version, codename or
                   #                  alias.
-                  image:
+                  image: 22.10
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes

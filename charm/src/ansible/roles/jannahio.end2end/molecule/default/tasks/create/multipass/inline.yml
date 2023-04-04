@@ -2,16 +2,6 @@
 - name: "Kubernetes/Charmcraft tooling - Inline"
   block:
     # Note: Ubuntu already comes with LXC.
-    - name: "Install lxc  - Inline/Darwin"
-      shell: |
-        brew install lxc;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
     - name: "Initialize lxd"
       shell: |
         lxd init --auto;
@@ -22,33 +12,11 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "install charmcraft - Inline/Darwin"
+    - name: "install charmcraft - Inline/Ubuntu"
       shell: |
-        brew install charmcraft;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
-    - name: "uninstall charmcraft  - Inline/Ubuntu"
-      shell: |
-        sudo snap remove charmcraft;
+        sudo snap install charmcraft --classic;
       when: ansible_facts['os_family'] == "Ubuntu"
       async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
-    - name: "install microk8s  - Inline/Darwin"
-      shell: |
-        brew install ubuntu/microk8s/microk8s;
-        microk8s install;
-        microk8s status --wait-ready;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 1200
       poll: 5
       tags:
         - "multipass_infra"
@@ -56,9 +24,9 @@
         - "operator_e2e"
     - name: "install microk8s  - Inline/Ubuntu"
       shell: |
-        sudo snap install microk8s --channel 1.25-strict/stable
+        sudo snap install microk8s --channel 1.25-strict/stable;
       when: ansible_facts['os_family'] == "Ubuntu"
-      async: 600
+      async: 1200
       poll: 5
       tags:
         - "multipass_infra"
@@ -97,7 +65,7 @@
         - "operator_e2e"
     - name: "Enable the necessary MicroK8s addons:  - Inline/Ubuntu"
       shell: |
-        sudo microk8s enable hostpath-storage dns
+        sudo microk8s enable hostpath-storage dns;
         sleep 10;
       when: ansible_facts['os_family'] == "Ubuntu"
       async: 1200
