@@ -91,7 +91,7 @@
       shell: |
         rm {{ Jannah.global.ansible.working_dir }}/charm/jannah-operator_ubuntu-22.04-amd64-arm64.charm;
         exit 0;
-      when: ansible_facts['os_family'] == "Ubsu
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
 
 
