@@ -15,7 +15,7 @@
       include_tasks: '{{ item }}'
       with_fileglob:
         - tasks/create/multipass/inline.yml
-      when: (ansible_facts['os_family'] == "Ubuntu") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
+      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
       tags:
         - "multipass_infra"
         - "molecule_create"

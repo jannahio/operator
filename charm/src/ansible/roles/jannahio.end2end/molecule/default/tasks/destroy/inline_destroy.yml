@@ -38,7 +38,7 @@
 #      shell: |
 #        sudo snap remove microk8s;
 #        exit 0;
-#      when: ansible_facts['os_family'] == "Ubuntu"
+#      when: ansible_facts['os_family'] == "Debian"
 #      async: 600
 #      poll: 5
 #      tags:
@@ -49,7 +49,7 @@
       shell: |
         sudo usermod -r -G snap_microk8s ubuntu;
         exit 0;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
       poll: 5
       register: multipass_infra_add_ubuntu_to_snap_microk8s
@@ -72,7 +72,7 @@
       shell: |
         snap remove juju;
         exit 0;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
       poll: 5
       tags:

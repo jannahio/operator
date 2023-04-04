@@ -5,7 +5,7 @@
     - name: "install juju - Ubuntu/Darwin(ARM64)"
       shell: |
         snap install juju --channel 3.0/stable;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
       poll: 5
       tags:
@@ -15,7 +15,7 @@
     - name: "Since the juju package is strictly confined, you also need to manually create a path-Ubuntu/Darwin(ARM64)"
       shell: |
         mkdir -vp /home/ubuntu/.local/share;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
       poll: 5
       tags:
@@ -26,7 +26,7 @@
       shell: |
         juju clouds;
         exit 0;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       tags:
         - "multipass_infra"
         - "molecule_prepare"
@@ -35,7 +35,7 @@
       shell: |
         juju bootstrap --show-log=true --verbose=true microk8s \
         {{ Jannah.stages.bootstrap.build.juju.controller.name }};
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 1600
       poll: 3
       register: multipass_infra_install_juju_controller_into_microk8s_cloud
@@ -46,7 +46,7 @@
     - name: "Create a workspace/model, on the controller"
       shell: |
         juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 1600
       poll: 3
       register: multipass_infra_create_a_workspace_model_on_the_controller
@@ -57,7 +57,7 @@
     - name: "juju status"
       shell: |
         juju status;
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       tags:
         - "multipass_infra"
         - "molecule_prepare"
@@ -65,7 +65,7 @@
     - name: "Pack operator"
       shell: |
         charmcraft pack -v --debug
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
       async: 1600
@@ -78,7 +78,7 @@
     - name: "list jannah-operator_ubuntu-22.04-amd64-arm64.charm"
       shell: |
         ls -lrt {{ Jannah.global.ansible.working_dir }}/charm/jannah-operator_ubuntu-22.04-amd64-arm64.charm
-      when: ansible_facts['os_family'] == "Ubuntu"
+      when: ansible_facts['os_family'] == "Debian"
       async: 600
       poll: 5
       tags:
