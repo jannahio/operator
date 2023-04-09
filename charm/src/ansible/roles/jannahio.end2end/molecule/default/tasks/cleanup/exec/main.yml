@@ -4,7 +4,7 @@
     - name: "jhack modem remove"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-           -- jhack model rm {{ Jannah.stages.bootstrap.build.juju.model.name }};
+        -- jhack model rm {{ Jannah.stages.bootstrap.build.juju.model.name }};
         exit 0;
       tags:
         - "multipass_infra"

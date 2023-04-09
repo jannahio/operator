@@ -18,30 +18,30 @@
       - name: 'TODO: do a kubectl describe'
         ansible.builtin.debug:
           msg: 'TODO: do a kubectl describe'
-    always:
-      - name: "Bootstrap Resources"
-        k8s_info:
-          api_version: '{{ item.api_version }}'
-          kind: '{{ item.kind }}'
-          namespace: '{{ Jannah.credentials[1].namespace }}'
-        loop:
-          - api_version: v1
-            kind: Pod
-          - api_version: apps/v1
-            kind: Deployment
-          - api_version: v1
-            kind: Secret
-          - api_version: v1
-            kind: ConfigMap
-          - api_version: v1
-            kind: ClusterIssuer
-          - api_version: v1
-            kind: Certificate
-          - api_version: v1
-            kind: Secret
-          - api_version: v1
-            kind: Issuer
-        register: debug_resources
+#    always:
+#      - name: "Bootstrap Resources"
+#        k8s_info:
+#          api_version: '{{ item.api_version }}'
+#          kind: '{{ item.kind }}'
+#          namespace: '{{ Jannah.credentials[1].namespace }}'
+#        loop:
+#          - api_version: v1
+#            kind: Pod
+#          - api_version: apps/v1
+#            kind: Deployment
+#          - api_version: v1
+#            kind: Secret
+#          - api_version: v1
+#            kind: ConfigMap
+#          - api_version: v1
+#            kind: ClusterIssuer
+#          - api_version: v1
+#            kind: Certificate
+#          - api_version: v1
+#            kind: Secret
+#          - api_version: v1
+#            kind: Issuer
+#        register: debug_resources
     #become: true
     ignore_errors: false
     

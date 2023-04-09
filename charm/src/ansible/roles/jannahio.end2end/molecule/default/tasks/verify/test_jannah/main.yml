@@ -1,0 +1,30 @@
+---
+- name: "Test deployments for Jannah"
+  block:
+    - name: "varify juju status"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju status;
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Test deployments for Jannah Exception"
+      ansible.builtin.debug:
+        msg: 'Test deployments for Jannah Exception'
+      tags:
+        - "multipass_infra"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "multipass_infra"
+        - "molecule_verify"
+        - "operator_e2e"
+  ignore_errors: false

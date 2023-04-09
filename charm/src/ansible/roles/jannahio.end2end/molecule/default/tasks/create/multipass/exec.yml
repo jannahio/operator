@@ -11,7 +11,7 @@
         -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
         -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
         -d "{{ Jannah.stages.bootstrap.build.vm.disk }}" \
-        "{{ Jannah.stages.bootstrap.build.vm.image }}";
+        22.10;
         exit 0;
       async: 600
       poll: 5
@@ -27,10 +27,12 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Initialize lxd"
+    - name: "Initialize lxd, lxc network set lxdbr0 ipv6.address none"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- lxd init --auto;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- lxc network set lxdbr0 ipv6.address none;
       async: 600
       poll: 5
       tags:
@@ -91,7 +93,7 @@
     - name: "Enable the necessary MicroK8s addons:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo microk8s enable hostpath-storage dns
+        -- sudo microk8s enable hostpath-storage dns;
         sleep 10;
       async: 1200
       poll: 15

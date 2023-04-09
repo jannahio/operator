@@ -2,22 +2,28 @@
 # ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
 - name: "Deploy Jannah"
   block:
-    - name: "Import multipass build infra tasks - Darwin"
-      include_tasks: '{{ item }}'
+    - name: "Import jannah deployment tasks - exec"
+      include_tasks: '{{ deploy_jannah_exec_task_items }}'
       with_fileglob:
-        - tasks/converge/deploy_jannah/exec_destroy.yml
+        - deploy_jannah/exec_deployment.yml
+      loop_control:
+        loop_var: deploy_jannah_exec_task_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
-        - "multipass_infra"
+        - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
-    - name: "Import Ubuntu inline infra tasks"
-      include_tasks: '{{ item }}'
+    - name: "Import jannah deployment tasks - inline"
+      include_tasks: '{{ deploy_jannah_inline_task_items }}'
       with_fileglob:
-        - tasks/converge/deploy_jannah/inline_destroy.yml
+        - deploy_jannah/inline_deployment.yml
+      loop_control:
+        loop_var: deploy_jannah_inline_task_items
 #     On MacOs M2, deploy dependencies inline Docker Desktop as well (as Multipass Ubuntu instance)
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
+      when: ansible_facts['os_family'] == "Debian"
       tags:
-        - "multipass_infra"
+        - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
   rescue:
     - name: "Deploy Jannah Exception"

@@ -16,6 +16,7 @@
             - "multipass_infra"
             - "molecule_create"
             - "operator_e2e"
+            - "dev_debug"
       rescue:
         - name: "Create multipass exception is thrown"
           ansible.builtin.debug:

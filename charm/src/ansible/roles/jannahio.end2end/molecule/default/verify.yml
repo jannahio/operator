@@ -13,12 +13,15 @@
   tasks:
     - block:
         - name: Import all test files from tasks/
-          include_tasks: '{{ item }}'
+          include_tasks: '{{ verify_task_items }}'
           with_fileglob:
-            - tasks/test_jannah/exec.yml
+            - tasks/verify/test_jannah/exec.yml
+          loop_control:
+            loop_var: verify_task_items
           tags:
-            - "bootstrap_kustomize"
-            - "bootstrap_get_kustomize"
+            - "multipass_infra"
+            - "molecule_verify"
+            - "operator_e2e"
       rescue:
         - name: Retrieve relevant resources
           k8s_info:

@@ -2,23 +2,33 @@
 - name: "Cleanup Jannah Environment Tasks"
   block:
     - name: "Import cleanup tasks - Darwin"
-      include_tasks: '{{ item }}'
+      include_tasks: '{{ cleanup_kind_task_darwin_items }}'
       with_fileglob:
-        - tasks/cleanup/exec/main.yml
+        - roles/jannahio.end2end/molecule/default/tasks/cleanup/exec/main.yml
+#        - roles/jannahio.end2end/molecule/default/tasks/cleanup/kind/main.yml
+      loop_control:
+        loop_var: cleanup_kind_task_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "multipass_infra"
+        - "kind_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "dev_debug"
     - name: "Import prepare tasks - Ubuntu"
-      include_tasks: '{{ item }}'
+      include_tasks: '{{ cleanup_kind_task_debian_items }}'
       with_fileglob:
         - tasks/cleanup/inline/main.yml
+#        - tasks/cleanup/kind/main.yml
+      loop_control:
+        loop_var: cleanup_kind_task_debian_items
       when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
       tags:
         - "multipass_infra"
+        - "kind_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "dev_debug"
   rescue:
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:

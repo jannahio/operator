@@ -4,13 +4,14 @@
   connection: local
   gather_facts: true
   tasks:
-    - name: "Import multipass infra tasks"
+    - name: "Import dependency and jannah and deployment tasks"
       include_tasks: '{{ item }}'
       with_fileglob:
         - tasks/converge/deploy_dependencies/main.yml
         - tasks/converge/deploy_jannah/main.yml
       tags:
         - "deploy_dependencies"
+        - "molecule_converge"
         - "deploy_jannah"
         - "operator_e2e"
 

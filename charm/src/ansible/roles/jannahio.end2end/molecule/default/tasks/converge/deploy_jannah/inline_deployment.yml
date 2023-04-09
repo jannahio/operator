@@ -1,11 +1,12 @@
 ---
 # Implements:
 # https://juju.is/docs/sdk/set-up-your-development-environment
-- name: "Kubernetes on Ubuntu Multipass VM environment"
+- name: "block for  jannah deployment tasks - inline"
   block:
-    - name: "Deploy operator - Inline"
+    - name: "Deploy operator - inline juju"
       shell: |
-        juju deploy --debug=true --logging-config=true  --show-log=true \
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju deploy --debug=true --logging-config=true  --show-log=true \
         --verbose=true \
         --model={{ Jannah.stages.bootstrap.build.juju.controller.name }}:{{ Jannah.stages.bootstrap.build.juju.model.name }} \
         ./jannah-operator_ubuntu-22.04-amd64-arm64.charm \
@@ -13,15 +14,14 @@
         --resource ubuntu=jujusolutions/jujud-operator:2.9.42 \
         --resource demoserver=ghcr.io/beliaev-maksim/api_demo_server:0.0.9;
         exit 0
-      when: ansible_facts['os_family'] == "Debian"
       async: 1600
       poll: 15
       tags:
         - "deploy_jannah"
-        - "multipass_infra"
+        - "molecule_converge"
         - "operator_e2e"
 
-    - name: "kubectl get pods -A"
+    - name: "jannah deployment - kubectl get pods -A - inline"
       shell: |
         kubectl get pods -A
         exit 0;
@@ -29,12 +29,13 @@
       async: 600
       poll: 5
       tags:
-        - "multipass_infra"
+        - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
   rescue:
-    - name: "Multipass Infra Exception"
+    - name: "Block for  Jannah Deployment Tasks - Inline exception"
       ansible.builtin.debug:
-        msg: 'Multipass Infra Exception'
+        msg: "Block for  Jannah Deployment Tasks - Inline exception"
     - name: Re-emit failure
       vars:
         failed_task:

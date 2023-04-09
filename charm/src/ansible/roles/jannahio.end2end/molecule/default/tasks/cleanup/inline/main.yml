@@ -9,3 +9,4 @@
         - "multipass_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "dev_debug"

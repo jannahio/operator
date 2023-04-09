@@ -31,7 +31,7 @@
         - "multipass_infra"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Install juju controller into microk8s cloud"
+    - name: "Install juju controller into microk8s cloud - inline"
       shell: |
         juju bootstrap --show-log=true --verbose=true microk8s \
         {{ Jannah.stages.bootstrap.build.juju.controller.name }};
@@ -86,10 +86,9 @@
         - "molecule_prepare"
         - "operator_e2e"
   rescue:
-    - name: "Multipass Infra Exception"
+    - name: "Inline Prepare Operator Exception"
       ansible.builtin.debug:
-        msg: 'Multipass Infra Exception'
-      register: multipass_infra_debug_resources
+        msg: 'Inline Prepare Operator Exception'
     - name: Re-emit failure
       vars:
         failed_task:

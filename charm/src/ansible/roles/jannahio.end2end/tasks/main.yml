@@ -41,17 +41,34 @@
         - "bootstrap_kustomize"
         - "bootstrap_get_kustomize"
 
-    - name: "Import multipass infra tasks"
+    - name: "Import cleanup tasks - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:
         - molecule/default/tasks/cleanup/main.yml
-        - multipass/exec.yml
       tags:
-        - "multipass_infra"
-        - "deploy_dependencies"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
 
+    - name: "Import create tasks (molecule create) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/create/main.yml
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "dev_debug"
+
+    - name: "Import dependency and jannah and deployment tasks (molecule converge) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/converge/deploy_dependencies/main.yml
+        - ../molecule/default/tasks/converge/deploy_jannah/main.yml
+      tags:
+        - "deploy_dependencies"
+        - "deploy_jannah"
+        - "operator_e2e"
+        - "dev_debug"
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

@@ -1,5 +1,4 @@
 all:
-  hosts:
-    localhost:
-#      ansible_python_interpreter: /usr/local/bin/python3
-      ansible_connection: local
+    hosts:
+        localhost:
+            ansible_connection: local

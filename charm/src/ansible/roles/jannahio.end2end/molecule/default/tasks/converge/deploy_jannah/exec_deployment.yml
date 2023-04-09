@@ -1,9 +1,9 @@
 ---
 # Implements:
 # https://juju.is/docs/sdk/set-up-your-development-environment
-- name: "Kubernetes on Ubuntu Multipass VM environment"
+- name: "block for  jannah deployment tasks - exec"
   block:
-    - name: "Deploy operator"
+    - name: "Deploy operator - exec juju"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- juju deploy --debug=true --logging-config=true  --show-log=true \
@@ -18,6 +18,7 @@
       poll: 15
       tags:
         - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
 
     - name: "kubectl get pods -A"
@@ -28,7 +29,8 @@
       async: 600
       poll: 5
       tags:
-        - "multipass_infra"
+        - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
   rescue:
     - name: "Multipass Infra Exception"
@@ -37,7 +39,8 @@
       register: multipass_infra_debug_resources
     - debug: var=multipass_infra_debug_resources
       tags:
-        - "multipass_infra"
+        - "deploy_jannah"
+        - "molecule_converge"
         - "operator_e2e"
     - name: Re-emit failure
       vars:
@@ -45,4 +48,8 @@
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
+      tags:
+        - "deploy_jannah"
+        - "molecule_converge"
+        - "operator_e2e"
   ignore_errors: false
