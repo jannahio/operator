@@ -4,7 +4,7 @@
     - name: "Import dependencies deployment tasks - exec"
       include_tasks: '{{ deploy_deps_exec_task_items }}'
       with_fileglob:
-        - exec_deployment.yml
+        - exec_dependencies_deployment.yml
       loop_control:
         loop_var: deploy_deps_exec_task_items
       when: ansible_facts['os_family'] == "Darwin"
@@ -16,7 +16,7 @@
     - name: "Import dependencies deployment tasks - inline"
       include_tasks: '{{ deploy_deps_inline_task_items }}'
       with_fileglob:
-        - inline_deployment.yml
+        - inline_dependencies_deployment.yml
       loop_control:
         loop_var: deploy_deps_inline_task_items
       when: ansible_facts['os_family'] == "Debian"

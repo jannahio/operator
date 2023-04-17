@@ -5,7 +5,7 @@
     - name: "Import jannah deployment tasks - exec"
       include_tasks: '{{ deploy_jannah_exec_task_items }}'
       with_fileglob:
-        - deploy_jannah/exec_deployment.yml
+        - exec_jannah_deployment.yml
       loop_control:
         loop_var: deploy_jannah_exec_task_items
       when: ansible_facts['os_family'] == "Darwin"
@@ -16,7 +16,7 @@
     - name: "Import jannah deployment tasks - inline"
       include_tasks: '{{ deploy_jannah_inline_task_items }}'
       with_fileglob:
-        - deploy_jannah/inline_deployment.yml
+        - inline_jannah_deployment.yml
       loop_control:
         loop_var: deploy_jannah_inline_task_items
 #     On MacOs M2, deploy dependencies inline Docker Desktop as well (as Multipass Ubuntu instance)

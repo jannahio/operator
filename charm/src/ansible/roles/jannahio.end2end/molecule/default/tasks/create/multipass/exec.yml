@@ -27,12 +27,10 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Initialize lxd, lxc network set lxdbr0 ipv6.address none"
+    - name: "Initialize lxd"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- lxd init --auto;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- lxc network set lxdbr0 ipv6.address none;
       async: 600
       poll: 5
       tags:

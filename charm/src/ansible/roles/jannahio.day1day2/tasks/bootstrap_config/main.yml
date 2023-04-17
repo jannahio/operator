@@ -92,7 +92,7 @@
     - name: "Generate roles/jannahio.end2end/defaults/exec.yml"
       template:
         src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
-        dest: "roles/jannahio.end2end/defaults/exec.yml"
+        dest: "roles/jannahio.end2end/defaults/main.yml"
         backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"
@@ -104,7 +104,7 @@
     - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY directory"
       file:
         path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
-        state: directory
+        state: absent
         mode: 0755
       tags:
         - "d1d2-generate-molecule-configurations"

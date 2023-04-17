@@ -123,7 +123,7 @@ charm-reset: jannah-config
 	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) reset;\
 
-charm-destroy: jannah-config
+charm-destroy: charm-reset
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) destroy;\
