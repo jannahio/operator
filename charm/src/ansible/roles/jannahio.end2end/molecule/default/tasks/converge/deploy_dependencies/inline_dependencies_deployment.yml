@@ -22,7 +22,7 @@
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
-    - name: "juju deploy postgresql-k8s - inline"
+    - name: "juju deploy mattermost-k8s - inline"
       shell: |
         juju deploy mattermost-k8s;
       async: 1600
@@ -34,7 +34,7 @@
         - "dev_debug"
     - name: "juju deploy postgresql-k8s - inline"
       shell: |
-        juju deploy postgresql-k8s;
+        juju deploy postgresql-k8s --channel 14/stable --trust;
       async: 1600
       poll: 15
       tags:

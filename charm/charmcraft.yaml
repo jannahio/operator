@@ -21,7 +21,7 @@ parts:
 #    charm-binary-python-packages: <list of package names>
     prime:
 #     Include the ansible directory
-      - ansible
+      - src/ansible
 
 
 

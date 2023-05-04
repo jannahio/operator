@@ -5,10 +5,12 @@
   gather_facts: true
   tasks:
     - name: "Import dependency and jannah and deployment tasks"
-      include_tasks: '{{ item }}'
+      include_tasks: '{{ converge_task_item }}'
       with_fileglob:
         - tasks/converge/deploy_dependencies/main.yml
         - tasks/converge/deploy_jannah/main.yml
+      loop_control:
+        loop_var: converge_task_item
       tags:
         - "deploy_dependencies"
         - "molecule_converge"
