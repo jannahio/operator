@@ -56,7 +56,7 @@
       tags:
         - "multipass_infra"
         - "molecule_create"
-        - "operator_e2e";
+        - "operator_e2e"
       async: 1200
       poll: 5
       tags:
