@@ -49,22 +49,16 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "apt install ubuntu-desktop xrdp"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- echo "ubuntu:{{ Jannah.credentials.dockerhub.PASSWORD }}" | chpasswd
-      async: 1200
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
-      async: 1200
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
+#    - name: "apt install ubuntu-desktop xrdp"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- echo "ubuntu:ubuntu" | /usr/sbin/chpasswd
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
     - name: "install charmcraft"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
