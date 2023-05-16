@@ -2,13 +2,24 @@
 # ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
 - name: "Deploy Jannah"
   block:
+    - name: "Import dev environment tasks - exec"
+      include_tasks: '{{ dev_environment_exec_task_items }}'
+      with_fileglob:
+        - exec_dev_environment_deployment.yml
+      loop_control:
+        loop_var: dev_environment_exec_task_items
+      when: ansible_facts['os_family'] == "Darwin" and {{ Jannah.stages.dev.active }} == true
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "Import jannah deployment tasks - exec"
       include_tasks: '{{ deploy_jannah_exec_task_items }}'
       with_fileglob:
         - exec_jannah_deployment.yml
       loop_control:
         loop_var: deploy_jannah_exec_task_items
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts['os_family'] == "Darwin" and {{ Jannah.stages.dev.active }} == false
       tags:
         - "deploy_jannah"
         - "molecule_converge"
@@ -20,7 +31,7 @@
       loop_control:
         loop_var: deploy_jannah_inline_task_items
 #     On MacOs M2, deploy dependencies inline Docker Desktop as well (as Multipass Ubuntu instance)
-      when: ansible_facts['os_family'] == "Debian"
+      when: ansible_facts['os_family'] == "Debian" and {{ Jannah.stages.dev.active }} == false
       tags:
         - "deploy_jannah"
         - "molecule_converge"

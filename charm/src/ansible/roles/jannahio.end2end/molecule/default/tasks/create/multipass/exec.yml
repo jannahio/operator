@@ -37,6 +37,32 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
+    - name: "apt install ubuntu-desktop xrdp"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo apt install ubuntu-desktop xrdp;
+      async: 1200
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "apt install ubuntu-desktop xrdp"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- echo "ubuntu:{{ Jannah.credentials.dockerhub.PASSWORD }}" | chpasswd
+      async: 1200
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e";
+      async: 1200
+      poll: 5
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e"
     - name: "install charmcraft"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -91,7 +117,7 @@
     - name: "Enable the necessary MicroK8s addons:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo microk8s enable hostpath-storage dns;
+        -- sudo microk8s enable hostpath-storage dns storage ingress metallb:10.64.140.43-10.64.140.49;
         sleep 10;
       async: 1200
       poll: 15

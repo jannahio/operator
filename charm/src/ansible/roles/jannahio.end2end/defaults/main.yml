@@ -42,6 +42,8 @@ provisioner:
                   cpus: 9
                   disk: 50G
                   memory: 20G
+            dev:
+              active: true
             bootstrap:
               laptop:
                 provision_scripts:
@@ -251,11 +253,11 @@ provisioner:
                 root_cert:
                   name: myregistrycert
                   key: myregistrycertkeydebug
-                  path:
+                  path: stages/bootstrap/build/secrets/root_cert
                   namespace: default
-              testing:
-                melecule:
-                  MOLECULE_PROJECT_DIRECTORY:
+                  #              testing:
+                  #                melecule:
+                  #                  MOLECULE_PROJECT_DIRECTORY:
               charm:
                 metadata:
                   name: Jannah

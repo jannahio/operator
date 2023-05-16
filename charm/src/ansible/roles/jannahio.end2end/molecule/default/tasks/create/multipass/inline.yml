@@ -65,7 +65,7 @@
         - "operator_e2e"
     - name: "Enable the necessary MicroK8s addons:  - Inline/Ubuntu"
       shell: |
-        sudo microk8s enable hostpath-storage dns;
+        sudo microk8s enable hostpath-storage dns storage ingress metallb:10.64.140.43-10.64.140.49;
         sleep 10;
       when: ansible_facts['os_family'] == "Debian"
       async: 1200

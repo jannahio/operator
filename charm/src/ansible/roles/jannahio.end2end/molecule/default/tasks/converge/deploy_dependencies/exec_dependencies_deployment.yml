@@ -13,18 +13,18 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
-        - "dev_debug"
+    # juju deploy kubeflow --trust;
     - name: "juju deploy kubeflow --trust - exec"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju deploy kubeflow --trust;
+        -- juju deploy kubeflow --trust  --channel=1.7/stable;
       async: 1600
       poll: 15
       tags:
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
-        - "dev_debug"
+
     - name: "juju deploy postgresql-k8s - exec"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -35,7 +35,6 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
-        - "dev_debug"
     - name: "juju deploy postgresql-k8s - exec"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -46,7 +45,6 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
-        - "dev_debug"
     - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
@@ -57,7 +55,22 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
-        - "dev_debug"
+    - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju config dex-auth public-url=http://10.64.140.43.nip.io;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju config oidc-gatekeeper public-url=http://10.64.140.43.nip.io;
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju config dex-auth static-username=admin
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- juju config dex-auth static-password=Jannahio;
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
   rescue:
     - name: "Deploy dependencies for Jannah Exception"
       ansible.builtin.debug:
