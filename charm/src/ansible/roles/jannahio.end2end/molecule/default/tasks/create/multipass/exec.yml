@@ -37,18 +37,18 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "apt install ubuntu-desktop xrdp"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo apt update -y;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo apt install -y ubuntu-desktop xrdp;
-      async: 1200
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
+#    - name: "apt install ubuntu-desktop xrdp"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo apt update -y;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo apt install -y ubuntu-desktop xrdp;
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
 #    - name: "apt install ubuntu-desktop xrdp"
 #      shell: |
 #        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
