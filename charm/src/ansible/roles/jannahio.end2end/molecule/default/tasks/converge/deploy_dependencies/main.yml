@@ -24,6 +24,7 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
+        - "dev_debug"
     - name: "Import dependencies deployment tasks - exec"
       include_tasks: '{{ deploy_deps_exec_task_items }}'
       with_fileglob:

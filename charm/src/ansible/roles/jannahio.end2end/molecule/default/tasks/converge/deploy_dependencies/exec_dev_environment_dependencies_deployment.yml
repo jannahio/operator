@@ -1,16 +1,27 @@
 ---
 - name: "Deploy dependencies for Jannah dev environment"
   block:
-    - name: "snap install node - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install node --classic;
-      async: 1600
-      poll: 15
+    - name: "Create {{ Jannah.global.ansible.working_dir }}/dev/ directory"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/dev/"
+        state: directory
+        mode: 0755
       tags:
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
+        - "dev_environment"
+        - "dev_debug"
+#    - name: "snap install node - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap install node --classic;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
   rescue:
     - name: "Deploy dependencies for Jannah Development Exception"
       ansible.builtin.debug:

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>520</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -67,7 +67,8 @@ brew install wget
 brew install operator-sdk
 brew install hashicorp/tap/hashicorp-vagrant
 brew install --cask multipass
-brew install kdoctor  cocoapods</string>
+brew install kdoctor  cocoapods
+npm install -g @ionic/cli</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -76,6 +77,30 @@ brew install kdoctor  cocoapods</string>
 					<string>/bin/zsh</string>
 					<key>source</key>
 					<string></string>
+				</dict>
+				<key>ActionRuntimeParameters</key>
+				<dict>
+					<key>COMMAND_STRING</key>
+					<string>source ~/.zprofile
+brew install ansible molecule
+brew install virtualenv
+brew upgrade;
+brew install wget
+brew install operator-sdk
+brew install hashicorp/tap/hashicorp-vagrant
+brew install --cask multipass
+brew install kdoctor  cocoapods
+npm install -g @ionic/cli</string>
+					<key>CheckedForUserDefaultShell</key>
+					<true/>
+					<key>inputMethod</key>
+					<integer>0</integer>
+					<key>shell</key>
+					<string>/bin/zsh</string>
+					<key>source</key>
+					<string></string>
+					<key>temporary items path</key>
+					<string>/var/folders/d1/r6pf5xtd16l2ryq5jjqdbjfw0000gn/T/5FC71547-4503-493B-B4A9-7E5E9008DAAD/1/com.apple.RunShellScript</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
@@ -184,7 +209,7 @@ brew install kdoctor  cocoapods</string>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>309.000000:184.000000</string>
+				<string>575.750000:184.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
