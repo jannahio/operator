@@ -1,4 +1,5 @@
 ---
+# Implements https://microk8s.io/docs/oidc-dex
 - name: "Debug Deploy dependencies for Jannah"
   block:
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/stages/bootstrap/build/secrets/root_cert directory"
@@ -11,9 +12,10 @@
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
+
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/stages/bootstrap/build/github directory"
       file:
-        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex"
+        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise"
         state: directory
         mode: 0755
       tags:
@@ -21,17 +23,35 @@
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
+        - "dev_debug_deploy_dex000"
 
-    - name: "Clone Dex repository for debugging"
-      ansible.builtin.git:
-        repo: https://github.com/dexidp/dex.git
-        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/"
+    - name: "Generate {{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/dex_config.yml"
+      environment:
+        DNS_1: "{{ ansible_facts['all_ipv4_addresses'][1] }}"
+        IP_1: "{{ ansible_facts['all_ipv4_addresses'][1] }}"
+        DNS_2: "{{ ansible_facts['all_ipv4_addresses'][0] }}"
+        IP_2: "{{ ansible_facts['all_ipv4_addresses'][0] }}"
+      template:
+        src: "files/templates/dex_config.yml"
+        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/config.yml"
+        backup: yes
       tags:
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
+        - "dev_debug_deploy_dex00"
 
+    - name: "Copy ca.crt to /var/snap/microk8s/current/certs/dex-ca.crt"
+      ansible.builtin.copy:
+        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/dex_config/ssl/ca.crt"
+        dest: "/var/snap/microk8s/current/certs/dex-ca.crt"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex0"
 
     - name: "Generate MOLECULE_EPHEMERAL_DIRECTORY/stages/bootstrap/build/secrets/root_cert/certificate.sh"
       environment:
@@ -48,6 +68,18 @@
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
+        - "dev_debug_deploy_dex1"
+
+    - name: "Clone Dex repository for debugging"
+      ansible.builtin.git:
+        repo: https://github.com/dexidp/dex.git
+        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+
 
     - name: "run MOLECULE_EPHEMERAL_DIRECTORY/stages/bootstrap/build/secrets/root_cert/certificate.sh - exec"
       shell: |
@@ -72,6 +104,260 @@
         - "molecule_converge"
         - "operator_e2e"
         - "dev_debug"
+
+    - name: "create a Kubernetes TLS secret named dex-certs, containing the certificate and key for Dex - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s kubectl create secret tls dex-certs --cert={{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/ssl/tls.crt --key={{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/ssl/tls.key
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex"
+
+    - name: "Deploy Dex - microk8s enable helm3 - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s enable helm3;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+
+    - name: "Deploy Dex - microk8s.helm3 repo add dex https://charts.dexidp.io - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s.helm3 repo add dex https://charts.dexidp.io;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+
+    - name: "Deploy Dex - microk8s.helm3 repo update - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s.helm3 repo update;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/secrets/root_cert/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+
+    - name: "Deploy Dex - microk8s.helm3 install dex  - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s.helm3 install dex dex/dex -f config.yml;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex2a"
+
+    - name: "Get the application URL - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services dex); export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}");echo http://$NODE_IP:$NODE_PORT;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+
+    - name: "Add --oidc-issuer-url to /var/snap/microk8s/current/args/kube-apiserver"
+      ansible.builtin.lineinfile:
+        path: /var/snap/microk8s/current/args/kube-apiserver
+        insertafter: 'EOF'
+        line: "--oidc-issuer-url=https://{{ ansible_facts['all_ipv4_addresses'][1] }}:31000/dex"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex2"
+
+    - name: "Add --oidc-ca-file to /var/snap/microk8s/current/args/kube-apiserver"
+      ansible.builtin.lineinfile:
+        path: /var/snap/microk8s/current/args/kube-apiserver
+        insertafter: 'EOF'
+        line: "--oidc-ca-file=${SNAP_DATA}/certs/dex-ca.crt"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex3"
+
+    - name: "Add --oidc-username-claim to /var/snap/microk8s/current/args/kube-apiserver"
+      ansible.builtin.lineinfile:
+        path: /var/snap/microk8s/current/args/kube-apiserver
+        insertafter: 'EOF'
+        line: "--oidc-username-claim=name"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex4"
+
+    - name: "Add --oidc-username-prefix to /var/snap/microk8s/current/args/kube-apiserver"
+      ansible.builtin.lineinfile:
+        path: /var/snap/microk8s/current/args/kube-apiserver
+        insertafter: 'EOF'
+        line: "--oidc-username-prefix=oidc"
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug"
+        - "dev_debug_deploy_dex5"
+
+    - name: "Deploy Dex - snap restart microk8s - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap restart microk8s
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex6"
+
+    - name: "Generate a kubeconfig file for clients authenticating via OIDC - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- microk8s config > {{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/oidc-kubeconfig
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex7"
+
+    - name: "Generate a kubeconfig file for clients authenticating via OIDC - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- Remove the admin user;
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex8"
+
+    - name: "Remove the admin user from kubeconfig file - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- kubectl --kubeconfig={{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/oidc-kubeconfig config delete-user admin;
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex9"
+
+    - name: "dynamically retrieves OIDC tokens using kubectl oidc-login get-token - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- kubectl --kubeconfig=./oidc-kubeconfig config set-credentials oidc \
+          --exec-api-version=client.authentication.k8s.io/v1beta1 \
+          --exec-command=kubectl \
+          --exec-arg=oidc-login \
+          --exec-arg=get-token \
+          --exec-arg=--certificate-authority=./dex-ca.crt \
+          --exec-arg=--oidc-issuer-url=https://{{ ansible_facts['all_ipv4_addresses'][1] }}:31000/dex \
+          --exec-arg=--oidc-client-id=kubernetes \
+          --exec-arg=--oidc-client-secret=super-safe-client-secret \
+          --exec-arg=--oidc-extra-scope=email \
+          --exec-arg=--oidc-extra-scope=profile
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex10"
+
+    - name: "Now use the oidc user by default - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- kubectl --kubeconfig={{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/oidc-kubeconfig config set-context --current --user=oidc;
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex11"
+
+    - name: "Install kubectl - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap install kubectl --classic;
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex12"
+
+    - name: "Download kubelogin and install in PATH as kubectl-oidc_login  - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- curl -fsSL https://github.com/int128/kubelogin/releases/download/v1.25.0/kubelogin_linux_amd64.zip > kubelogin.zip;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex13"
+
+    - name: "sudo install -c ./kubelogin /usr/local/bin/kubectl-oidc_login - exec"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo install -c ./kubelogin /usr/local/bin/kubectl-oidc_login;
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/stages/bootstrap/build/github/dex/jannah_customise/"
+      async: 1600
+      poll: 15
+      tags:
+        - "deploy_dependencies"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "dev_debug_deploy_dex14"
 
   rescue:
     - name: "Debug Deploy dependencies for Jannah Exception"

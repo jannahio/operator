@@ -121,10 +121,20 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
+#    - name: "Set up a short alias for the Kubernetes CLI:"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- sudo snap alias microk8s.kubectl kubectl;
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
     - name: "Set up a short alias for the Kubernetes CLI:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap alias microk8s.kubectl kubectl;
+        -- sudo snap install kubectl --classic;
       async: 600
       poll: 5
       tags:

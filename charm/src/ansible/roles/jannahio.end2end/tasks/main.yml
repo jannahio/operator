@@ -69,6 +69,7 @@
         - "deploy_jannah"
         - "operator_e2e"
         - "dev_debug"
+        - "dev_debug_deploy_dex"
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

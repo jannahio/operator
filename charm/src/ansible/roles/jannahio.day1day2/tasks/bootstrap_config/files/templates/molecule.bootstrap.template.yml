@@ -244,16 +244,21 @@ provisioner:
                       - name: middlware
                         giturl: https://github.com/jannahio/middleware.git
                         image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
+                dependency:
+                  helm:
+                    dex:
+                      config:
+
               secrets:
                 image_registry:
                   name: myregistrykey
                   namespace: default
                   apiVersion: v1
                 root_cert:
-                  name: myregistrycert
-                  key: myregistrycertkeydebug
-                  path: stages/bootstrap/build/secrets/root_cert
-                  namespace: default
+                  name: dex-certs
+                  cert: ssl/tls.crt
+                  key: ssl/tls.key
+#                  namespace: default
 #              testing:
 #                melecule:
 #                  MOLECULE_PROJECT_DIRECTORY:
