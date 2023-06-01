@@ -1,29 +1,39 @@
 ---
-# ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
 - name: "Deploy Jannah"
   block:
     - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
       include_tasks: '{{ create_inline_mistipass_exec_task_items }}'
       with_fileglob:
-        - tasks/create/multipass/exec.yml
+        - tasks/create/docker_desktop/main.yml
       loop_control:
-        loop_var: create_inline_mistipass_exec_task_items
+        loop_var: create_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Import Ubuntu inline infra tasks"
-      include_tasks: '{{ create_inline_mistipass_inline_task_items }}'
-      with_fileglob:
-        - tasks/create/multipass/inline.yml
-      loop_control:
-        loop_var: create_inline_mistipass_inline_task_items
-      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
+#    - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
+#      include_tasks: '{{ create_inline_mistipass_exec_task_items }}'
+#      with_fileglob:
+#        - tasks/create/multipass/exec.yml
+#      loop_control:
+#        loop_var: create_inline_mistipass_exec_task_items
+#      when: ansible_facts['os_family'] == "Darwin"
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
+#    - name: "Import Ubuntu inline infra tasks"
+#      include_tasks: '{{ create_inline_mistipass_inline_task_items }}'
+#      with_fileglob:
+#        - tasks/create/multipass/inline.yml
+#      loop_control:
+#        loop_var: create_inline_mistipass_inline_task_items
+#      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
 
 #    - name: "Import kind inline tasks"
 #      include_tasks: '{{ create_inline_kind_inline_task_items }}'

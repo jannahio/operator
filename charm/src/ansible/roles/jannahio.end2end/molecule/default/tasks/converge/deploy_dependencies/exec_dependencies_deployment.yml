@@ -1,76 +1,85 @@
 ---
 - name: "Deploy dependencies for Jannah"
   block:
-    - name: "juju add-model kubeflow - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju add-model kubeflow;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju models;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
-    # juju deploy kubeflow --trust;
-    - name: "juju deploy kubeflow --trust - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju deploy kubeflow --trust  --channel=1.7/stable;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
-
-    - name: "juju deploy postgresql-k8s - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju deploy mattermost-k8s;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "juju deploy postgresql-k8s - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju deploy postgresql-k8s --channel 14/stable --trust;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju integrate mattermost-k8s postgresql-k8s:db;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju config dex-auth public-url=http://10.64.140.43.nip.io;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju config oidc-gatekeeper public-url=http://10.64.140.43.nip.io;
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju config dex-auth static-username=admin
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- juju config dex-auth static-password=Jannahio;
-      async: 1600
-      poll: 15
-      tags:
-        - "deploy_dependencies"
-        - "molecule_converge"
-        - "operator_e2e"
+#    - name: "juju add-model kubeflow - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju add-model kubeflow;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju models;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#    # juju deploy kubeflow --trust;
+#    - name: "juju deploy kubeflow --trust - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju deploy kubeflow --trust  --channel=1.7/stable;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#
+#    - name: "juju deploy postgresql-k8s - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju deploy mattermost-k8s;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#    - name: "juju deploy postgresql-k8s - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju deploy postgresql-k8s --channel 14/stable --trust;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#    - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju integrate mattermost-k8s postgresql-k8s:db;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#    - name: "juju integrate mattermost-k8s postgresql-k8s:db - exec"
+#      shell: |
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju config dex-auth public-url=http://10.64.140.43.nip.io;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju config oidc-gatekeeper public-url=http://10.64.140.43.nip.io;
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju config dex-auth static-username=admin
+#        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+#        -- juju config dex-auth static-password=Jannahio;
+#      async: 1600
+#      poll: 15
+#      tags:
+#        - "deploy_dependencies"
+#        - "molecule_converge"
+#        - "operator_e2e"
+#    - name: "Single command install"
+#      shell: |
+#        while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+#      args:
+#        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow/manifests"
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
   rescue:
     - name: "Deploy dependencies for Jannah Exception"
       ansible.builtin.debug:

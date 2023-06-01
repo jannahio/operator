@@ -4,23 +4,34 @@
 - name: "Prepare Jannah Tasks"
   block:
     - name: "Import prepare tasks - Darwin"
-      include_tasks: '{{ item }}'
+      include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
       with_fileglob:
-        - tasks/prepare/exec_prepare.yml
-      when: ansible_facts['os_family'] == "Darwin"
+        - macos_docker_desktop.yml
+      loop_control:
+        loop_var: prepare_macos_docker_desktop_task_items
       tags:
-        - "multipass_infra"
+        - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Import prepare tasks - Ubuntu"
-      include_tasks: '{{ item }}'
-      with_fileglob:
-        - tasks/prepare/inline_prepare.yml
-      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
-      tags:
-        - "multipass_infra"
-        - "molecule_prepare"
-        - "operator_e2e"
+        - "dev_debug"
+#    - name: "Import prepare tasks - Darwin"
+#      include_tasks: '{{ item }}'
+#      with_fileglob:
+#        - tasks/prepare/exec_prepare.yml
+#      when: ansible_facts['os_family'] == "Darwin"
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#    - name: "Import prepare tasks - Ubuntu"
+#      include_tasks: '{{ item }}'
+#      with_fileglob:
+#        - tasks/prepare/inline_prepare.yml
+#      when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
   rescue:
     - name: "Prepare Jannah Tasks Exception"
       ansible.builtin.debug:

@@ -11,6 +11,28 @@
         - "multipass_infra"
         - "molecule_destroy"
         - "operator_e2e"
+
+#    - name: "multipass stop --all"
+#      shell: |
+#        multipass stop --all;
+#        exit 0;
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#
+#    - name: "multipass delete --all -p"
+#      shell: |
+#        multipass delete --all -p;
+#        exit 0;
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
   rescue:
     - name: "Exec destroy infra Exception"
       ansible.builtin.debug:

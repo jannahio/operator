@@ -40,7 +40,6 @@
         - "bootstrap_catalog"
         - "bootstrap_kustomize"
         - "bootstrap_get_kustomize"
-
     - name: "Import cleanup tasks - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:
@@ -49,7 +48,6 @@
         - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
-
     - name: "Import create tasks (molecule create) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:
@@ -58,7 +56,14 @@
         - "molecule_create"
         - "operator_e2e"
         - "dev_debug"
-
+    - name: "Import prepare tasks (molecule prepare) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/prepare/main.yml
+      tags:
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
     - name: "Import dependency and jannah and deployment tasks (molecule converge) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:
@@ -69,7 +74,6 @@
         - "deploy_jannah"
         - "operator_e2e"
         - "dev_debug"
-        - "dev_debug_deploy_dex"
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

@@ -14,6 +14,7 @@
             loop_var: prepare_task_item
           tags:
             - "multipass_infra"
+            - "docker_desktop_infra"
             - "molecule_prepare"
             - "operator_e2e"
       rescue:

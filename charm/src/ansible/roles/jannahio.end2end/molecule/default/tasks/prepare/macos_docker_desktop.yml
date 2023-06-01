@@ -1,0 +1,221 @@
+---
+# Implements https://github.com/kubeflow/manifests#installation
+- name: "Inline prepare operator - MacOs Docker Desktop"
+  block:
+#    - name: "install juju"
+#      shell: |
+#        brew install juju;
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "brew install charmcraft"
+#      shell: |
+#        brew install charmcraft;
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "kubectl config use-context docker-desktop"
+#      shell: |
+#        kubectl config use-context docker-desktop;
+#      async: 600
+#      poll: 5
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "Install juju controller into docker-desktop cloud - inline"
+#      shell: |
+#        juju bootstrap --show-log=true --verbose=true docker-desktop \
+#        {{ Jannah.stages.bootstrap.build.juju.controller.name }};
+#        exit 0;
+#      async: 1600
+#      poll: 3
+#      register: multipass_infra_install_juju_controller_into_microk8s_cloud
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "Create a workspace/model, on the controller"
+#      shell: |
+#        juju add-model {{ Jannah.stages.bootstrap.build.juju.model.name }};
+#        exit 0;
+#      async: 1600
+#      poll: 3
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "juju status"
+#      shell: |
+#        juju status;
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+#
+#    - name: "Pack operator"
+#      shell: |
+#        charmcraft pack -v --debug
+#      args:
+#        chdir: "{{ Jannah.global.ansible.working_dir }}/charm/"
+#      async: 9800
+#      poll: 15
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+    - name: "Create install_kustomize download directory"
+      file:
+        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+        state: directory
+        mode: 0755
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    # 08/22/2022 - Osmanj - The latest version of Kustomize is buggy?
+    # It does not recognize the --load_restrictor='LoadRestrictionsNone' flog
+    # Current workaround is to install v3.8.7
+    - name: "echo ansible_facts['architecture']"
+      shell: |
+        echo "{{ ansible_facts['architecture'] }}";
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "wget kustomize_v5.0.3_darwin_amd64.tar.gz Darwin/x86_64"
+      shell: |
+        wget  \
+        https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_amd64.tar.gz;
+      async: 600
+      poll: 5
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "wget kustomize_v5.0.3_darwin_amd64.tar.gz Darwin/amd64"
+      shell: |
+        wget  \
+        https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_arm64.tar.gz;
+      async: 600
+      poll: 5
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "tar xvf kustomize_v5.0.3_darwin_amd64.tar.gz"
+      shell: |
+        tar xvf kustomize_v5.0.3_darwin_amd64.tar.gz
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "tar xvf kustomize_v5.0.3_darwin_arm64.tar.gz"
+      shell: |
+        tar xvf kustomize_v5.0.3_darwin_arm64.tar.gz
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "mv kustomize /usr/local/bin/kustomize"
+      shell: |
+        mv kustomize /usr/local/bin/kustomize
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/install_kustomize"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Create kubeflow download directory"
+      file:
+        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow"
+        state: directory
+        mode: 0755
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Read-write git checkout kubeflow/manifests.git"
+      ansible.builtin.git:
+        repo: "https://github.com/kubeflow/manifests.git"
+        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+#    - name: "Single command install"
+#      shell: |
+#        while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+#      args:
+#        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow/manifests"
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+
+
+#    - name: "kubeflow: Install individual components - cert-manager"
+#      shell: |
+#        kustomize build common/cert-manager/cert-manager/base | kubectl apply -f -;
+#        kubectl wait --for=condition=ready pod -l 'app in (cert-manager,webhook)' --timeout=180s -n cert-manager;
+#        kustomize build common/cert-manager/kubeflow-issuer/base | kubectl apply -f -;
+#      args:
+#        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow/manifests"
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+
+#
+#    - name: "kubeflow: Install individual components - cert-manager"
+#      shell: |
+#        kustomize build common/cert-manager/cert-manager/base | kubectl apply -f -;
+#        kubectl wait --for=condition=ready pod -l 'app in (cert-manager,webhook)' --timeout=180s -n cert-manager;
+#        kustomize build common/cert-manager/kubeflow-issuer/base | kubectl apply -f -;
+#      args:
+#        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/kubeflow/manifests"
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
+  rescue:
+    - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
+      ansible.builtin.debug:
+        msg: 'Inline Prepare Operator MacOs Docker Desktop Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "multipass_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

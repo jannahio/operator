@@ -13,6 +13,7 @@
         - "deploy_dependencies"
         - "molecule_converge"
         - "operator_e2e"
+        - "dev_debug"
     - name: "Import jannah deployment tasks - exec"
       include_tasks: '{{ deploy_jannah_exec_task_items }}'
       with_fileglob:

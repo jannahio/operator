@@ -78,6 +78,23 @@ jannah-python: jannah-boot-credentials
     $(JANNAH_PYTHON)/bin/pip3 install -r $(WORKING_DIR)/charm/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 
+#jannah-molecule: jannah-python
+#	if [ -d "$(JANNAH_PYTHON)/github/molecule" ]; \
+#	then \
+#	   echo "$(JANNAH_PYTHON)/github/molecule."; \
+#	else \
+#	   mkdir -vp $(JANNAH_PYTHON)/github; \
+#	   pushd $(JANNAH_PYTHON)/github/ && \
+#       git clone -n https://github.com/ansible-community/molecule;\
+#       popd; \
+#	fi
+#	pushd $(JANNAH_PYTHON)/github/molecule && \
+#	git checkout -b Jannah_Ansible 01dc3f75356c6401f2fc077847b354c8a298b458;\
+#	popd;\
+#	. $(JANNAH_PYTHON)/bin/activate;\
+#    $(JANNAH_PYTHON)/bin/python3 -m pip install -U setuptools pip tox molecule molecule-plugins[podman] molecule-plugins[docker];\
+#    $(JANNAH_PYTHON)/bin/pip3 install -e $(JANNAH_PYTHON)/github/molecule;
+
 jannah-config: jannah-python
 	# Make sure the molecule config is available
 	if [ -f "$(HOME)/jannah-operator/molecule.yml" ]; \
@@ -118,7 +135,7 @@ charm-clean: jannah-config
 	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
 	popd;
 
-charm-reset: jannah-config
+charm-reset:
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd charm/src/ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) reset;\

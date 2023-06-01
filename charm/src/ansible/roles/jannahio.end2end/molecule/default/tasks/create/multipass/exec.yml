@@ -3,7 +3,13 @@
 # https://juju.is/docs/sdk/set-up-your-development-environment
 - name: "Kubernetes on Ubuntu Multipass VM environment"
   block:
-    # Create a VM, and mount local repository path,
+#    - name: "multipass set local.driver=qemu"
+#      shell: |
+#        multipass set local.driver=qemu;
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_create"
+#        - "operator_e2e"
     - name: "Create an Ubuntu VM, an environment for building container images"
       shell: |
         multipass launch \
@@ -11,8 +17,7 @@
         -m "{{ Jannah.stages.bootstrap.build.vm.memory }}" \
         -c "{{ Jannah.stages.bootstrap.build.vm.cpus }}" \
         -d "{{ Jannah.stages.bootstrap.build.vm.disk }}" \
-        22.10;
-        exit 0;
+        "22.10";
       async: 600
       poll: 5
       tags:
@@ -23,6 +28,8 @@
       shell: |
         multipass mount {{ Jannah.global.ansible.working_dir }} \
         {{ Jannah.stages.bootstrap.build.vm.name }}:{{ Jannah.global.ansible.working_dir }}
+      async: 600
+      poll: 5
       tags:
         - "multipass_infra"
         - "molecule_create"
@@ -69,12 +76,13 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
+    # -- sudo snap install microk8s --channel 1.25-strict/stable
     - name: "install microk8s"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install microk8s --channel 1.25-strict/stable
-      async: 1200
-      poll: 5
+        -- sudo snap install microk8s --classic
+      async: 3600
+      poll: 25
       tags:
         - "multipass_infra"
         - "molecule_create"
@@ -104,19 +112,29 @@
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
         -- newgrp snap_microk8s;
-      async: 600
-      poll: 5
+      async: 2400
+      poll: 15
       tags:
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
+    # -- sudo microk8s enable hostpath-storage dns storage ingress metallb:10.64.140.43-10.64.140.49;
     - name: "Enable the necessary MicroK8s addons:"
       shell: |
         multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo microk8s enable hostpath-storage dns storage ingress metallb:10.64.140.43-10.64.140.49;
-        sleep 10;
-      async: 1200
+        -- sudo microk8s enable hostpath-storage dns;
+      async: 3600
       poll: 15
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Set up a short alias for the Kubernetes CLI:"
+      shell: |
+        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
+        -- sudo snap alias microk8s.kubectl kubectl;
+      async: 600
+      poll: 5
       tags:
         - "multipass_infra"
         - "molecule_create"
@@ -124,23 +142,13 @@
 #    - name: "Set up a short alias for the Kubernetes CLI:"
 #      shell: |
 #        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-#        -- sudo snap alias microk8s.kubectl kubectl;
+#        -- sudo snap install kubectl --classic;
 #      async: 600
 #      poll: 5
 #      tags:
 #        - "multipass_infra"
 #        - "molecule_create"
 #        - "operator_e2e"
-    - name: "Set up a short alias for the Kubernetes CLI:"
-      shell: |
-        multipass exec {{ Jannah.stages.bootstrap.build.vm.name }} \
-        -- sudo snap install kubectl --classic;
-      async: 600
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
     - name: "multipass stop"
       shell: |
         multipass stop {{ Jannah.stages.bootstrap.build.vm.name }};

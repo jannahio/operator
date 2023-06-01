@@ -223,7 +223,9 @@ provisioner:
                   #                  <image> can be a partial image hash or
                   #                  an Ubuntu release version, codename or
                   #                  alias.
-                  image: 22.10
+
+                  #                  image: 22.10
+                  image: charm-dev
                   kind:
                     wait: 5m
                     control_plane:
