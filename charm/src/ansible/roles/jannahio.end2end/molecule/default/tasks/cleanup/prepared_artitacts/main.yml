@@ -1,14 +1,12 @@
 ---
-#   On MacOs M2 or Multipass/Ubuntu, prepare inline for Docker Desktop.
-# ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
-- name: "Prepare Jannah Tasks"
+- name: "Cleanup prepared Jannah Tasks"
   block:
-    - name: "Import prepare  docker desktop tasks - Darwin"
-      include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
+    - name: "Import clean prepared docker desktop tasks - Darwin"
+      include_tasks: '{{ cleanup_prepared_macos_docker_desktop_task_items }}'
       with_fileglob:
-        - macos_docker_desktop.yml
+        - cleanup_macos_docker_desktop.yml
       loop_control:
-        loop_var: prepare_macos_docker_desktop_task_items
+        loop_var: cleanup_prepared_macos_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "docker_desktop_infra"

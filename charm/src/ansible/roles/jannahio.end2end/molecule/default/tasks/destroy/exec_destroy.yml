@@ -1,17 +1,17 @@
 ---
-- name: "Exec destroy infra - Darwin"
-  block:
-    - name: "delete multipass instance"
-      shell: |
-        multipass delete -p "{{ Jannah.stages.bootstrap.build.vm.name }}";
-        exit 0;
-      async: 1200
-      poll: 5
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
-
+#- name: "Exec destroy infra - Darwin"
+#  block:
+#    - name: "delete multipass instance"
+#      shell: |
+#        multipass delete -p "{{ Jannah.stages.bootstrap.build.vm.name }}";
+#        exit 0;
+#      async: 1200
+#      poll: 5
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#
 #    - name: "multipass stop --all"
 #      shell: |
 #        multipass stop --all;
@@ -33,18 +33,18 @@
 #        - "multipass_infra"
 #        - "molecule_destroy"
 #        - "operator_e2e"
-  rescue:
-    - name: "Exec destroy infra Exception"
-      ansible.builtin.debug:
-        msg: 'Exec destroy infra Exception'
-      tags:
-        - "multipass_infra"
-        - "molecule_destroy"
-        - "operator_e2e"
-    - name: Re-emit failure
-      vars:
-        failed_task:
-          result: '{{ ansible_failed_result }}'
-      fail:
-        msg: '{{ failed_task }}'
-  ignore_errors: false
+#  rescue:
+#    - name: "Exec destroy infra Exception"
+#      ansible.builtin.debug:
+#        msg: 'Exec destroy infra Exception'
+#      tags:
+#        - "multipass_infra"
+#        - "molecule_destroy"
+#        - "operator_e2e"
+#    - name: Re-emit failure
+#      vars:
+#        failed_task:
+#          result: '{{ ansible_failed_result }}'
+#      fail:
+#        msg: '{{ failed_task }}'
+#  ignore_errors: false

@@ -1,22 +1,22 @@
 ---
-- name: "uninstall juju"
-  shell: |
-    brew uninstall juju;
-    exit 0;
-  async: 600
-  poll: 5
-  tags:
-    - "multipass_infra"
-    - "molecule_prepare"
-    - "operator_e2e"
-
-- name: "uninstall charmcraft"
-  shell: |
-    brew uninstall charmcraft;
-    exit 0;
-  async: 600
-  poll: 5
-  tags:
-    - "multipass_infra"
-    - "molecule_prepare"
-    - "operator_e2e"
+#- name: "uninstall juju"
+#  shell: |
+#    brew uninstall juju;
+#    exit 0;
+#  async: 600
+#  poll: 5
+#  tags:
+#    - "multipass_infra"
+#    - "molecule_prepare"
+#    - "operator_e2e"
+#
+#- name: "uninstall charmcraft"
+#  shell: |
+#    brew uninstall charmcraft;
+#    exit 0;
+#  async: 600
+#  poll: 5
+#  tags:
+#    - "multipass_infra"
+#    - "molecule_prepare"
+#    - "operator_e2e"

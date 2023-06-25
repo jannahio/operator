@@ -1,0 +1,95 @@
+---
+- name: "Builds ubuntu middleware docker images for use in Helm Chart"
+  block:
+    - name: "Create /images/ubuntu/middleware directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
+        state: directory
+        mode: 0755
+      tags:
+        - "build_images"
+        - "build_middleware_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Git checkout https://github.com/jannahio/middleware.git"
+      ansible.builtin.git:
+        repo: "https://github.com/jannahio/middleware.git"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
+        version: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql"
+      tags:
+        - "build_images"
+        - "build_middleware_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Generate middleware/ubuntu.middleware.Dockerfile"
+      template:
+        src: "files/templates/ubuntu/middleware/ubuntu.middleware.Dockerfile"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Generate ubuntu/ubuntu.middleware.Dockerfile.dockerignore"
+      template:
+        src: "files/templates/ubuntu/middleware/ubuntu.middleware.Dockerfile.dockerignore"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile.dockerignore"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
+      shell: |
+        docker buildx build \
+          --builder=kube \
+          -t jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1 \
+          --platform=linux/arm64 \
+          -f ubuntu.middleware.Dockerfile \
+          --load .
+      async: 1200
+      poll: 5
+#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
+      shell: |
+        docker buildx build \
+          --builder=kube \
+          -t jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1 \
+          --platform=linux/amd64 \
+          -f ubuntu.middleware.Dockerfile \
+          --load .
+      async: 1200
+      poll: 5
+#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+  rescue:
+    - name: "Builds an Ubuntu Middleware Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Builds Ubuntu Middleware Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "build_images"
+        - "build_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

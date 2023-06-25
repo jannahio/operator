@@ -2,7 +2,7 @@
 - name: "Deploy Jannah"
   block:
     - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
-      include_tasks: '{{ create_inline_mistipass_exec_task_items }}'
+      include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:
         - tasks/create/docker_desktop/main.yml
       loop_control:

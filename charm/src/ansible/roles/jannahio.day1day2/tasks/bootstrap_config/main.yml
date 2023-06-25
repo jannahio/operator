@@ -1,17 +1,6 @@
 ---
 - name: "Using keys/values from the all file, generate molecule file for downstream bootstrapping purposes"
   block:
-#    - name: "Generate molecule.yml for jannahio.bootstrap"
-#      template:
-#        src: "files/templates/molecule.bootstrap.template.yml"
-#        dest: "roles/jannahio.bootstrap/molecule/default/molecule.yml"
-#        backup: yes
-#      tags:
-#        - "d1d2-generate-molecule-configurations"
-#        - "d1d2-configurations"
-#        - "molecule-notest"
-#        - "never"
-
     - name: "Generate molecule.yml for Charmed jannah-opertor"
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
@@ -62,18 +51,6 @@
         - "molecule-notest"
         - "never"
 
-#    - name: "Generate .env for jannahio.bootstrap"
-#      template:
-#        src: "files/templates/env.template"
-#        dest: "roles/jannahio.bootstrap/molecule/default/.env"
-#        backup: yes
-#      tags:
-#        - "d1d2-generate-molecule-configurations"
-#        - "d1d2-generate-molecule-environment-variables"
-#        - "d1d2-configurations"
-#        - "molecule-notest"
-#        - "never"
-
     - name: "Generate .env for jannahio.end2end"
       template:
         src: "files/templates/env.template"
@@ -86,10 +63,9 @@
         - "molecule-notest"
         - "never"
 
-    # We need the defaults/exec.yml for running the Ansible playbooks outside of Molecule
+    # We need the defaults/main.yml for running the Ansible playbooks outside of Molecule
     # i.e. running with ansible-playbook
-
-    - name: "Generate roles/jannahio.end2end/defaults/exec.yml"
+    - name: "Generate roles/jannahio.end2end/defaults/main.yml"
       template:
         src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
         dest: "roles/jannahio.end2end/defaults/main.yml"

@@ -17,6 +17,7 @@
             - "docker_desktop_infra"
             - "molecule_prepare"
             - "operator_e2e"
+            - "dev_debug"
       rescue:
         - name: "Prepare exception is thrown"
           ansible.builtin.debug:

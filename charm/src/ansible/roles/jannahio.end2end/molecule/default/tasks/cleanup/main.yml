@@ -4,8 +4,9 @@
     - name: "Import cleanup tasks - Darwin"
       include_tasks: '{{ cleanup_kind_task_darwin_items }}'
       with_fileglob:
-        - tasks/cleanup/exec/main.yml
-        - tasks/cleanup/macos_docker_desktop/main.yml
+#        - tasks/cleanup/exec/main.yml
+#        - tasks/cleanup/macos_docker_desktop/main.yml
+        - tasks/cleanup/prepared_artifacts/main.yml
 #        - roles/jannahio.end2end/molecule/default/tasks/cleanup/kind/main.yml
       loop_control:
         loop_var: cleanup_kind_task_darwin_items
