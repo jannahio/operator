@@ -86,6 +86,7 @@
     - name: "kubectl create namespace buildkit"
       shell: |
         kubectl delete namespace buildkit;
+        exit 0;
       tags:
         - "cleanup_base_images"
         - "molecule_cleanup"

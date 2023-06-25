@@ -127,7 +127,7 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Build base image-load - arm64"
+    - name: "Build base image jallohmediabuild/jannah-base-arm64:v0.0.1"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
@@ -139,7 +139,6 @@
           --load .
       async: 1200
       poll: 5
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
@@ -147,7 +146,7 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Build base image-load - amd64"
+    - name: "Build base image jallohmediabuild/jannah-base-amd64:v0.0.1"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
@@ -159,7 +158,6 @@
           --load .
       async: 1200
       poll: 5
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
