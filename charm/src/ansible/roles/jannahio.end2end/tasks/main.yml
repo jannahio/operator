@@ -13,8 +13,6 @@
 # https://github.com/operator-framework/operator-registry/blob/v1.16.1/docs/design/operator-bundle.md
 # https://olm.operatorframework.io/docs/reference/file-based-catalogs/
 # https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site#creating-your-site
-
-#Currently implementing with inspiration from https://juju.is/docs/sdk/ops
 - name: "Bootstrapping Playbooks"
   block:
     # Import the bootrapping roles

@@ -1,0 +1,94 @@
+---
+- name: "Remove streamos docker images"
+  block:
+    - name: "Remove images/streamos directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos"
+        state: absent
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove images/streamos/streamos.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/streamos.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/streamos.Dockerfile"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/streamos.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove streamos/streamos.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/streamos.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/streamos.Dockerfile.dockerignore"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/streamos.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove build for StreamOs image jannah-streamos-operator-arm64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-streamos-operator-arm64:v0.0.1;
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Build StreamOs image jannah-streamos-operator-amd64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-streamos-operator-amd64:v0.0.1;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Import cleanup prepared build image tasks - streamos middleware and frontend"
+      include_tasks: '{{ cleanup_prepared_streamos_middleware_and_frontend_task_items }}'
+      with_fileglob:
+        - cleanup_build_streamos_middleware_images.yml
+        - cleanup_build_streamos_frontend_images.yml
+      loop_control:
+        loop_var: cleanup_prepared_streamos_middleware_and_frontend_task_items
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  rescue:
+    - name: "Cleanup Builds for StreamOs Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Cleanup Builds for StreamOs Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "cleanup_streamos_build_images"
+        - "build_streamos_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  ignore_errors: false

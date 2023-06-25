@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - jannahio.bootstrap
+    - jannahio.end2end

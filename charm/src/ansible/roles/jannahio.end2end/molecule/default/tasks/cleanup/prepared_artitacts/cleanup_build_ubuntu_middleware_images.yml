@@ -1,0 +1,64 @@
+---
+- name: "Remove Builds from Ubuntu middleware docker images"
+  block:
+    - name: "Remove /images/ubuntu/middleware directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
+        state: absent
+      tags:
+        - "build_images"
+        - "build_middleware_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Remove middleware/ubuntu.middleware.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile"
+        state: absent
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Remove ubuntu/ubuntu.middleware.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Remove Build for Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
+      shell: |
+        docker image rm jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+      async: 600
+      poll: 5
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Remove Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Remove Builds Ubuntu Middleware Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Remove Builds Ubuntu Middleware Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "build_images"
+        - "build_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

@@ -78,7 +78,7 @@
         - "operator_e2e"
         - "dev_debug"
   rescue:
-    - name: "Builds an Ubuntu Middleware Docker Images Exception"
+    - name: "Builds Ubuntu Middleware Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Middleware Docker Images Exception'
     - name: Re-emit failure

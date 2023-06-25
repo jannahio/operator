@@ -10,51 +10,51 @@
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Import prepare build_base_image tasks - Darwin"
-      include_tasks: '{{ prepare_build_base_image_task_items }}'
+    - name: "Import cleanup prepared build_base_image tasks - Darwin"
+      include_tasks: '{{ cleanup_prepared_build_base_image_task_items }}'
       with_fileglob:
-        - build_base_image.yml
+        - cleanup_build_base_image.yml
       loop_control:
-        loop_var: prepare_build_base_image_task_items
+        loop_var: cleanup_prepared_build_base_image_task_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Import prepare build streamos images tasks - StreamOS"
-      include_tasks: '{{ prepare_build_streamos_images_task_items }}'
+    - name: "Import cleanup prepared build streamos images tasks - StreamOS"
+      include_tasks: '{{ cleanup_prepare_build_streamos_images_task_items }}'
       with_fileglob:
-        - build_streamos_images.yml
+        - cleanup_build_streamos_images.yml
       loop_control:
-        loop_var: prepare_build_streamos_images_task_items
+        loop_var: cleanup_prepare_build_streamos_images_task_items
       when: ansible_facts['os_family'] != "Darwin" and ansible_facts['os_family'] != "Debian"
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Import prepare build ubuntu images tasks - Darwin"
-      include_tasks: '{{ prepare_build_ubuntu_images_task_items }}'
+    - name: "Import cleanup prepared build ubuntu images tasks - Darwin"
+      include_tasks: '{{ cleanup_prepared_build_ubuntu_images_task_items }}'
       with_fileglob:
-        - build_ubuntu_images.yml
+        - cleanup_build_ubuntu_images.yml
       loop_control:
-        loop_var: prepare_build_ubuntu_images_task_items
+        loop_var: cleanup_prepared_build_ubuntu_images_task_items
       when: ansible_facts['os_family'] == "Debian"
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "dev_debug"
   rescue:
-    - name: "Prepare Jannah Tasks Exception"
+    - name: "Cleanup prepared Jannah Tasks Exception"
       ansible.builtin.debug:
-        msg: 'Prepare Jannah Tasks Exception'
-      register: preparea_jannah_tasks_debug_resources
-    - debug: var=preparea_jannah_tasks_debug_resources
+        msg: 'Cleanup prepared Jannah Tasks Exception'
+      register: cleanup_prepared_jannah_tasks_debug_resources
+    - debug: var=cleanup_prepared_jannah_tasks_debug_resources
       tags:
         - "perpare_jannah"
         - "operator_e2e"

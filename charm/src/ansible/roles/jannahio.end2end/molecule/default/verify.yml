@@ -15,11 +15,10 @@
         - name: Import all test files from tasks/
           include_tasks: '{{ verify_task_items }}'
           with_fileglob:
-            - tasks/verify/test_jannah/exec.yml
+            - tasks/verify/main.yml
           loop_control:
             loop_var: verify_task_items
           tags:
-            - "multipass_infra"
             - "molecule_verify"
             - "operator_e2e"
       rescue:

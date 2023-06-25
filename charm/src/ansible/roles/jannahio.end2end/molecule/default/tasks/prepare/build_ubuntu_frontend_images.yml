@@ -60,17 +60,17 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "dev_debug"
-    - name: "Build Ubuntu frontend image"
+    - name: "Build Ubuntu frontend imag - jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
       shell: |
         docker buildx build \
           --builder=kube \
-          -t docker.io/jallohmediabuild/jannah-ubuntu-frontend-web:v0.0.1 \
+          -t jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1 \
           --platform=linux/arm64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
       async: 1200
       poll: 5
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
       tags:
@@ -78,9 +78,25 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
+    - name: "Build Ubuntu frontend imag - jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+      shell: |
+        docker buildx build \
+          --builder=kube \
+          -t jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1 \
+          --platform=linux/amd64 \
+          -f ubuntu.frontend.Dockerfile \
+          --load .
+      async: 1200
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_prepare"
+        - "operator_e2e"
   rescue:
-    - name: "Builds an Ubuntu Frontend Docker Images Exception"
+    - name: "Builds Ubuntu Frontend Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Frontend Docker Images Exception'
     - name: Re-emit failure

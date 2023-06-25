@@ -7,8 +7,9 @@
     - name: "Import dependency and jannah and deployment tasks"
       include_tasks: '{{ converge_task_item }}'
       with_fileglob:
-        - tasks/converge/deploy_dependencies/main.yml
-        - tasks/converge/deploy_jannah/main.yml
+#        - tasks/converge/deploy_dependencies/main.yml
+#        - tasks/converge/deploy_jannah/main.yml
+        - tasks/converge/main.yml
       loop_control:
         loop_var: converge_task_item
       tags:

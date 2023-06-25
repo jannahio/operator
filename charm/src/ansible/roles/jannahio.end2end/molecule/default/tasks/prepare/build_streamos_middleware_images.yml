@@ -78,7 +78,7 @@
         - "operator_e2e"
         - "dev_debug"
   rescue:
-    - name: "Builds an StreamOs Middleware Docker Images Exception"
+    - name: "Builds StreamOs Middleware Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds StreamOs Middleware Docker Images Exception'
     - name: Re-emit failure

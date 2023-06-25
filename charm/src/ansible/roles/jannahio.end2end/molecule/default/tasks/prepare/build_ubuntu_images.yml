@@ -73,7 +73,7 @@
       shell: |
         docker buildx build \
           --builder=kube \
-          -t docker.io/jallohmediabuild/jannah-ubuntu-operator-amd64:v0.0.1 \
+          -t jallohmediabuild/jannah-ubuntu-operator-amd64:v0.0.1 \
           --platform=linux/amd64 \
           -f ubuntu.Dockerfile \
           --load .
@@ -100,7 +100,7 @@
         - "operator_e2e"
         - "dev_debug"
   rescue:
-    - name: "Builds an Ubuntu Docker Images Exception"
+    - name: "Builds Ubuntu Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Docker Images Exception'
     - name: Re-emit failure

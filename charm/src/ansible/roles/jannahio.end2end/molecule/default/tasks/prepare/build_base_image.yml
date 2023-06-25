@@ -133,7 +133,7 @@
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-base:v0.0.1 \
+          -t jallohmediabuild/jannah-base-arm64:v0.0.1 \
           --platform=linux/arm64 \
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .
@@ -153,7 +153,7 @@
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-base:v0.0.1 \
+          -t jallohmediabuild/jannah-base-amd64:v0.0.1 \
           --platform=linux/amd64 \
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .

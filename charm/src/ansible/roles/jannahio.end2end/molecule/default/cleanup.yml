@@ -10,20 +10,12 @@
         - name: Import all tasks/cleanup by order
           include_tasks: '{{ cleanup_task_item }}'
           with_fileglob:
-#            - tasks/cleanup/secrets_cleanup.yml
-#            - tasks/cleanup/namespaces_cleanup.yml
-#            - tasks/cleanup/docker_buildx_cleanup.yml
             - tasks/cleanup/main.yml
           loop_control:
             loop_var: cleanup_task_item
           tags:
-            - "bootstrap_namespace_cleanup"
-            - "bootstrap_prepared_tasks_cleanup"
-            - "bootstrap_secretes_cleanup"
-            - "bootstrap_kustomize_cleanup"
-            - "multipass_infra"
+            - "molecule_cleanup"
             - "operator_e2e"
-            - "dev_debug"
       rescue:
         - name: Re-emit failure
           vars:

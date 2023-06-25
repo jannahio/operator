@@ -14,7 +14,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import prepare build_base_image tasks - Darwin"
       include_tasks: '{{ prepare_build_base_image_task_items }}'
       with_fileglob:
@@ -26,7 +25,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import prepare build streamos images tasks - StreamOS"
       include_tasks: '{{ prepare_build_streamos_images_task_items }}'
       with_fileglob:
@@ -38,8 +36,7 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
-    - name: "Import prepare build ubuntu images tasks - Darwin"
+    - name: "Import prepare build ubuntu images tasks"
       include_tasks: '{{ prepare_build_ubuntu_images_task_items }}'
       with_fileglob:
         - build_ubuntu_images.yml
@@ -50,13 +47,12 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Prepare Jannah Tasks Exception"
       ansible.builtin.debug:
         msg: 'Prepare Jannah Tasks Exception'
-      register: preparea_jannah_tasks_debug_resources
-    - debug: var=preparea_jannah_tasks_debug_resources
+      register: prepare_jannah_tasks_debug_resources
+    - debug: var=prepare_jannah_tasks_debug_resources
       tags:
         - "perpare_jannah"
         - "operator_e2e"

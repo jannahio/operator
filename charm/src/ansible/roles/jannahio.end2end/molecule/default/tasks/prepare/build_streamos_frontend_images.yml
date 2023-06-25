@@ -99,7 +99,7 @@
         - "operator_e2e"
         - "dev_debug"
   rescue:
-    - name: "Builds an StreamOs Frontend Docker Images Exception"
+    - name: "Builds StreamOs Frontend Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds StreamOs Frontend Docker Images Exception'
     - name: Re-emit failure
