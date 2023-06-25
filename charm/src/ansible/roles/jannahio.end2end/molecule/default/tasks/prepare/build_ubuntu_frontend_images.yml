@@ -68,6 +68,7 @@
           --platform=linux/arm64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
+      when: ansible_facts['architecture'] != "x86_64"
       async: 1200
       poll: 5
 #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
@@ -86,6 +87,7 @@
           --platform=linux/amd64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
+      when: ansible_facts['architecture'] == "x86_64"
       async: 1200
       poll: 5
       args:

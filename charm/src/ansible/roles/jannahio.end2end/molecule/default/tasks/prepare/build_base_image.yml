@@ -137,6 +137,7 @@
           --platform=linux/arm64 \
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .
+      when: ansible_facts['architecture'] != "x86_64"
       async: 1200
       poll: 5
       args:
@@ -156,6 +157,7 @@
           --platform=linux/amd64 \
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .
+      when: ansible_facts['architecture'] == "x86_64"
       async: 1200
       poll: 5
       args:
