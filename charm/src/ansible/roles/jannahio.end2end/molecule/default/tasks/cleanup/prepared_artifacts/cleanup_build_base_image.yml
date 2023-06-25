@@ -70,6 +70,7 @@
     - name: "docker buildx stop"
       shell: |
         docker buildx stop kube;
+        exit 0;
       tags:
         - "cleanup_base_images"
         - "molecule_cleanup"
@@ -77,6 +78,7 @@
     - name: "docker buildx stop/create"
       shell: |
         docker buildx rm kube;
+        exit 0;
       tags:
         - "cleanup_base_images"
         - "molecule_cleanup"
