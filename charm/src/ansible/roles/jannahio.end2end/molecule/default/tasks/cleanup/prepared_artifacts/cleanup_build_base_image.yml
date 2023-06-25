@@ -35,7 +35,7 @@
         - "operator_e2e"
     - name: "Remove project/base.Dockerfile.dockerignore"
       file:
-        file: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_base_images"
