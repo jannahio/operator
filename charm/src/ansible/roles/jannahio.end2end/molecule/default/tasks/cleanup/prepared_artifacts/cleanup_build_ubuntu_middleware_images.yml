@@ -28,7 +28,7 @@
         - "operator_e2e"
     - name: "Remove Build for Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
-        docker image rm jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+        docker image rm -f jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600

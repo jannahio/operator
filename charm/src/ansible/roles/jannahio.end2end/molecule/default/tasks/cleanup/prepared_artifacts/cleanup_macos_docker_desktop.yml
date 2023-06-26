@@ -28,6 +28,7 @@
     - name: "istio-system uninstall"
       shell: |
         kubectl delete all --all -n istio-system
+        exit 0;
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
@@ -40,6 +41,14 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
+#    - name: "native-serving uninstall"
+#      shell: |
+#        kubectl delete all --all -n native-serving
+#        exit 0;
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_prepare"
+#        - "operator_e2e"
     - name: "Remove install_kustomize download directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"

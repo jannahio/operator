@@ -45,7 +45,7 @@
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
-        docker rm -f jallohmediabuild/jannah-base-arm64:v0.0.1
+        docker image rm -f jallohmediabuild/jannah-base-arm64:v0.0.1
       async: 600
       poll: 5
       tags:
@@ -56,7 +56,7 @@
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
-        docker rm -f jallohmediabuild/jannah-base-amd64:v0.0.1;
+        docker image rm -f jallohmediabuild/jannah-base-amd64:v0.0.1;
       async: 600
       poll: 5
       tags:
@@ -79,7 +79,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "kubectl create namespace buildkit"
+    - name: "kubectl delete namespace buildkit"
       shell: |
         kubectl delete namespace buildkit;
         exit 0;
