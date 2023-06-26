@@ -9,37 +9,37 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-#    - name: "knative-eventing uninstall"
-#      shell: |
-#        kubectl delete all --all -n knative-eventing;
-#        exit 0;
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#    - name: "cert-manager uninstall"
-#      shell: |
-#        kubectl delete all --all -n cert-manager;
-#        exit 0;
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#    - name: "istio-system uninstall"
-#      shell: |
-#        kubectl delete all --all -n istio-system
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#    - name: "auth uninstall"
-#      shell: |
-#        kubectl delete all --all -n auth;
-#        exit 0;
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_prepare"
-#        - "operator_e2e"
+    - name: "knative-eventing uninstall"
+      shell: |
+        kubectl delete all --all -n knative-eventing;
+        exit 0;
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "cert-manager uninstall"
+      shell: |
+        kubectl delete all --all -n cert-manager;
+        exit 0;
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "istio-system uninstall"
+      shell: |
+        kubectl delete all --all -n istio-system
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "auth uninstall"
+      shell: |
+        kubectl delete all --all -n auth;
+        exit 0;
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
     - name: "Remove install_kustomize download directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"

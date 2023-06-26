@@ -29,6 +29,7 @@
     - name: "Remove Build for Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
         docker image rm jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+        exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -39,6 +40,7 @@
     - name: "Remove Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+        exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
