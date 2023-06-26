@@ -42,8 +42,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_prepare"

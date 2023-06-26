@@ -61,8 +61,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "remove_ubuntu_base_images"
         - "molecule_cleanup"

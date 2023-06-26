@@ -44,8 +44,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 1200
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
       tags:
         - "cleanup_streamos_middleware_images"
         - "molecule_prepare"
