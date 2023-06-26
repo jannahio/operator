@@ -7,31 +7,15 @@
   tasks:
     - name: "Destroy environment for Jannah"
       block:
-        - name: "Import destroy tasks - Darwin"
-          include_tasks: '{{ destroy_exec_task_item }}'
+        - name: "Import destroy tasks"
+          include_tasks: '{{ destroy_task_items }}'
           with_fileglob:
-            - tasks/destroy/exec_destroy.yml
+            - tasks/destroy/main.yml
           loop_control:
-            loop_var: destroy_exec_task_item
-          when: ansible_facts['os_family'] == "Darwin"
+            loop_var: destroy_task_items
           tags:
-            - "multipass_infra"
             - "molecule_destroy"
             - "operator_e2e"
-        - name: "Import destroy tasks - Ubuntu, Darwin arm64"
-          include_tasks: '{{ destroy_inline_task_item }}'
-          with_fileglob:
-            - tasks/destroy/inline_destroy.yml
-          loop_control:
-            loop_var: destroy_inline_task_item
-          when: ansible_facts['os_family'] != "Darwin" or ansible_facts['architecture'] == "arm64"
-          tags:
-            - "multipass_infra"
-            - "molecule_destroy"
-            - "operator_e2e"
-#        - name: "Print os_family"
-#          ansible.builtin.debug:
-#            var: ansible_facts['os_family']
       rescue:
         - name: "Prepare exception is thrown"
           ansible.builtin.debug:
