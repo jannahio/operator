@@ -29,6 +29,7 @@
     - name: "Remove Build StreamOs middleware image - jallohmediabuild/jannah-streamos-middleware-arm64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
       args:
@@ -40,6 +41,7 @@
     - name: "Remove Build StreamOs middleware image - jallohmediabuild/jannah-streamos-middleware-amd64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
       async: 1200
       poll: 5
       args:

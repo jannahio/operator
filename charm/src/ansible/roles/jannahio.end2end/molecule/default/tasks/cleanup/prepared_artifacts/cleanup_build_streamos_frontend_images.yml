@@ -31,6 +31,7 @@
     - name: "Remove Build for StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-arm64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
       args:
@@ -44,6 +45,7 @@
     - name: "Remove Build for StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
       args:
