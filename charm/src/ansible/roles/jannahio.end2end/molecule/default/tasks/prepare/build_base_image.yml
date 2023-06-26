@@ -79,7 +79,7 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "dev_debug"
-    - name: "docker buildx create--platform=linux/arm64 append"
+    - name: "docker buildx create append --platform=linux/arm64 append"
       shell: |
         docker buildx create \
         --append \
