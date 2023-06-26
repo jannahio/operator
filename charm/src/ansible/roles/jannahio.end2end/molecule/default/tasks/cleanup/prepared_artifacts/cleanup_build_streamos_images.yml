@@ -63,8 +63,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "cleanup_streamos_build_images"
         - "molecule_cleanup"

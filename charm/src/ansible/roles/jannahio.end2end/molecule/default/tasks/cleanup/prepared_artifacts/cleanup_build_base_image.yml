@@ -48,8 +48,6 @@
         docker rm -f jallohmediabuild/jannah-base-arm64:v0.0.1
       async: 600
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "cleanup_base_images"
         - "molecule_cleanup"
@@ -61,8 +59,6 @@
         docker rm -f jallohmediabuild/jannah-base-amd64:v0.0.1;
       async: 600
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "cleanup_base_images"
         - "molecule_cleanup"

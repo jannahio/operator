@@ -35,8 +35,6 @@
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "cleanup_streamos_middleware_images"
         - "build_frontend_images"
