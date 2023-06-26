@@ -21,7 +21,7 @@
 *.jekyll-metadata
 
 # Generated molecule configurations
-charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.yml
+ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.yml
 # Operator SDK - Ignore operator bundle backups
 *bundle-*
 # Operator SDK - Ignore operator molecule.yml

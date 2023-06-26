@@ -1,5 +1,4 @@
 # syntax=docker/dockerfile:1
-
 FROM quay.io/centos/centos:stream9
 RUN dnf module install -y nodejs:18/common
 RUN dnf install -y git

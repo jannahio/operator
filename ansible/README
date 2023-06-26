@@ -12,10 +12,3 @@ ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defa
 
 https://gravitl.com/static/media/Kubernetes_Over_VPN_GRAVITL.e233720d.pdf
 https://docs.netmaker.org/
-
-
-juju deploy ./jannah-operator_ubuntu-22.04-amd64.charm --resource \
-     jannahmiddleware=59bf49664d2a43c13edccb3a1fa5c28e6f2e92067bd44fb1d6eb323b19346c79.tar.gz \
-     --resource \
-     jannahfrontend=5b723a2c79d8615b79d572952225b0d211f062057d2d981c488c3656b244efe9.tar.gz
-

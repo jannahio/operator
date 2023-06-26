@@ -12,7 +12,7 @@ include boot.env.sh
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
 	mkdir -vp "$(JANNAHHOME)/jannah-operator/"
-	ls -lrt $(WORKING_DIR)/charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
+	ls -lrt $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	# Make sure $(JANNAHHOME)/jannah-operator/ is available
 	if [ -d "$(JANNAHHOME)/jannah-operator/" ]; \
 	then \
@@ -22,7 +22,7 @@ jannah-boot-credentials:
 	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
 	fi
 
-	cp $(WORKING_DIR)/charm/src/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
+	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
 	$(JANNAHHOME)/jannah-operator/molecule.yml
 
 	@echo $(ANSIBLE_VAULT_DEFAULT_PASSWORD) > $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)
@@ -77,7 +77,7 @@ jannah-python: jannah-boot-credentials
 		virtualenv --always-copy $(JANNAH_PYTHON);\
 	fi
 	. $(JANNAH_PYTHON)/bin/activate;\
-    $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/charm/requirements.txt;\
+    $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 
 jannah-config: jannah-python
@@ -99,10 +99,10 @@ jannah-config: jannah-python
 	   echo "Please provide ANSIBLE_VAULT_DEFAULT_PASS_FILE at: $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)"; \
 	fi
 
-	cp -v $(JANNAHHOME)/jannah-operator/molecule.yml $(WORKING_DIR)/charm/src/ansible/group_vars/all
+	cp -v $(JANNAHHOME)/jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all
 
 	. $(JANNAH_PYTHON)/bin/activate;
-	pushd charm/src/ansible && \
+	pushd ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
     popd;\
     echo "WORKING_DIR: $(WORKING_DIR)"
@@ -113,42 +113,42 @@ jannah-day1-day2: jannah-config
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
     popd;
 
-charm-clean: jannah-config
+molecule-clean: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
 	popd;
 
-charm-reset:
+molecule-reset:
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) reset;\
 
-charm-destroy: charm-reset
+molecule-destroy: molecule-reset
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) destroy;\
 	popd;
 
 # default molecule scenario test matrix: dependency, create, prepare
-charm-create: jannah-config charm-reset charm-destroy
+molecule-create: jannah-config molecule-reset molecule-destroy
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) create;\
 
 
 
-charm-converge:  jannah-config
+molecule-converge:  jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
 	popd;
 
-charm-test: jannah-config
+molecule-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd charm/src/ansible/roles/jannahio.end2end && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
 
-clean: charm-destroy jannah-python-clean
+clean: molecule-destroy jannah-python-clean
