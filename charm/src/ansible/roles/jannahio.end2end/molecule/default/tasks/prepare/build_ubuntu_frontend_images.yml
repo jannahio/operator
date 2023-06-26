@@ -33,7 +33,7 @@
       poll: 5
       #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/ios"
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/ios"
       tags:
         - "build_images"
         - "build_frontend_images"
