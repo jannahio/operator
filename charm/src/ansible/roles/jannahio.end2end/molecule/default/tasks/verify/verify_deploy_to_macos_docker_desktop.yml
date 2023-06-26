@@ -4,8 +4,6 @@
     - name: "kubectl get pods -n kubeflow"
       shell: |
         kubectl get pods -n kubeflow
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
       tags:
         - "docker_desktop_infra"
         - "molecule_verify"
@@ -13,8 +11,6 @@
     - name: "kubectl get deployment -n kubeflow"
       shell: |
         kubectl get deployment -n kubeflow
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
       tags:
         - "docker_desktop_infra"
         - "molecule_verify"
@@ -25,8 +21,6 @@
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "verify_images"
         - "molecule_verify"
@@ -37,8 +31,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "verify_images"
         - "molecule_verify"
@@ -49,8 +41,6 @@
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
       tags:
         - "verify_images"
         - "molecule_verify"
@@ -61,8 +51,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
       tags:
         - "verify_images"
         - "molecule_verify"
@@ -95,8 +83,6 @@
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "verify_images"
         - "build_frontend_images"
@@ -109,8 +95,6 @@
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "verify_images"
         - "build_frontend_images"

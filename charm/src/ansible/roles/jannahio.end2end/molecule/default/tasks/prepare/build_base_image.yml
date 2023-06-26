@@ -81,6 +81,7 @@
         - "dev_debug"
     - name: "docker buildx create append --platform=linux/arm64 append"
       shell: |
+        sleep 120;
         docker buildx create \
         --append \
         --bootstrap \
@@ -131,6 +132,7 @@
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
+        sleep 120;
         docker buildx build \
           --builder=kube \
           -t jallohmediabuild/jannah-base-arm64:v0.0.1 \
@@ -151,6 +153,7 @@
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
+        sleep 120;
         docker buildx build \
           --builder=kube \
           -t jallohmediabuild/jannah-base-amd64:v0.0.1 \
