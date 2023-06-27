@@ -1,6 +1,4 @@
 ---
-#   On MacOs M2 or Multipass/Ubuntu, prepare inline for Docker Desktop.
-# ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
 - name: "Prepare Jannah Tasks"
   block:
     - name: "Import prepare  docker desktop tasks - Darwin"

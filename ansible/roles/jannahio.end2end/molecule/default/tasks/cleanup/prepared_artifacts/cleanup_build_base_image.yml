@@ -41,7 +41,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove base image-load - arm64"
+    - name: "Remove base image - arm64"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
@@ -52,7 +52,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Build base image-load - amd64"
+    - name: "Remove base image - amd64"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
@@ -63,7 +63,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "docker buildx stop"
+    - name: "docker buildx stop kube"
       shell: |
         docker buildx stop kube;
         exit 0;
@@ -71,7 +71,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "docker buildx stop/create"
+    - name: "docker buildx rm kube"
       shell: |
         docker buildx rm kube;
         exit 0;

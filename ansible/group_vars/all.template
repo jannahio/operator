@@ -7,7 +7,7 @@ Jannah:
       GITHUB_TOKEN:
     k8:
       namespace: jannah-operator-bootstrap
-      kubeconfig: /Users/osmanj/dev/runtime/01252022/logs/integration0125/kube_config_whelp-gke-integration0125-1cf.yaml
+      kubeconfig:
       state: present
       ClusterIssuer:
         name: jannah-operator-issuer

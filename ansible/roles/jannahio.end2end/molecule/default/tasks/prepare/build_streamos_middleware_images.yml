@@ -16,7 +16,7 @@
       ansible.builtin.git:
         repo: "https://github.com/jannahio/middleware.git"
         dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware"
-        version: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql"
+        version: "main"
       tags:
         - "build_images"
         - "build_middleware_images"
