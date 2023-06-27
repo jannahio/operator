@@ -1,0 +1,55 @@
+---
+- name: "Destroy Jannah Environment Tasks"
+  block:
+    - name: "docker container prune -f -a"
+      shell: |
+        docker container prune -f
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "docker image prune -f -a"
+      shell: |
+        docker image prune -f -a
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}"
+        state: absent
+      tags:
+        - "cleanup_ephemeral_directory"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove {{ Jannah.global.ansible.working_dir }}/tmp"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp"
+        state: absent
+      tags:
+        - "cleanup_tmp_directory"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  rescue:
+    - name: "Destroy Jannah Environment Exception"
+      ansible.builtin.debug:
+        msg: 'Destroy Jannah Environment Exception'
+    - name: "Print return information from the previous task"
+      ansible.builtin.debug:
+        var: ansible_facts['architecture']
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  ignore_errors: false

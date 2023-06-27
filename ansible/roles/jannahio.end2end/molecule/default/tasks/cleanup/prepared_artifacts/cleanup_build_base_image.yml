@@ -1,0 +1,104 @@
+---
+- name: "Removes artifacts from builds/push base images"
+  block:
+    - name: "Remove install_kustomize download directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base"
+        state: absent
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove base.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/base.Dockerfile"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove base.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/base.Dockerfile.dockerignore"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove base image-load - arm64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-base-arm64:v0.0.1
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Build base image-load - amd64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-base-amd64:v0.0.1;
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "docker buildx stop"
+      shell: |
+        docker buildx stop kube;
+        exit 0;
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "docker buildx stop/create"
+      shell: |
+        docker buildx rm kube;
+        exit 0;
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete namespace buildkit"
+      shell: |
+        kubectl delete namespace buildkit;
+        exit 0;
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  rescue:
+    - name: "Remove Builds/Push Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Remove Builds/Push Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  ignore_errors: false

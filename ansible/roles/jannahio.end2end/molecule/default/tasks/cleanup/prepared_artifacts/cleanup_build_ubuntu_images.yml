@@ -1,0 +1,98 @@
+---
+- name: "Remove Builds for ubuntu docker images"
+  block:
+    - name: "Remove images/ubuntu directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        state: absent
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove images/ubuntu/ubuntu.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile"
+        state: absent
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/ubuntu.Dockerfile"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile"
+        state: absent
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove ubuntu/ubuntu.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove project/ubuntu.Dockerfile.dockerignore"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove Build Ubuntu image - jallohmediabuild/jannah-ubuntu-operator-arm64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-ubuntu-operator-arm64:v0.0.1;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Build Ubuntu image - jallohmediabuild/jannah-ubuntu-operator-amd64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-ubuntu-operator-amd64:v0.0.1;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "remove_ubuntu_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Import prepare build image tasks - ubuntu middleware and frontend"
+      include_tasks: '{{ cleanup_prepared_ubuntu_middleware_and_frontend_task_items }}'
+      with_fileglob:
+        - cleanup_build_ubuntu_middleware_images.yml
+        - cleanup_build_ubuntu_frontend_images.yml
+      loop_control:
+        loop_var: cleanup_prepared_ubuntu_middleware_and_frontend_task_items
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "dev_debug"
+  rescue:
+    - name: "Builds Ubuntu Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Builds Ubuntu Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "remove_ubuntu_base_images"
+        - "build_ubuntu_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  ignore_errors: false

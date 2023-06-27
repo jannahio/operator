@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>520</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -60,10 +60,21 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>source ~/.zprofile
-brew install ansible
+brew install ansible molecule
 brew install virtualenv
+brew upgrade;
 brew install wget
-brew install operator-sdk</string>
+brew install operator-sdk
+brew install hashicorp/tap/hashicorp-vagrant
+brew install --cask multipass
+multipass stop --all
+multipass set local.driver=qemu;
+brew install kdoctor  cocoapods helm
+helm repo add bitnami https://charts.bitnami.com/bitnami
+npm install -g @ionic/cli@latest native-run
+
+
+</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -72,25 +83,6 @@ brew install operator-sdk</string>
 					<string>/bin/zsh</string>
 					<key>source</key>
 					<string></string>
-				</dict>
-				<key>ActionRuntimeParameters</key>
-				<dict>
-					<key>COMMAND_STRING</key>
-					<string>source ~/.zprofile
-brew install ansible
-brew install virtualenv
-brew install wget
-brew install operator-sdk</string>
-					<key>CheckedForUserDefaultShell</key>
-					<true/>
-					<key>inputMethod</key>
-					<integer>0</integer>
-					<key>shell</key>
-					<string>/bin/zsh</string>
-					<key>source</key>
-					<string></string>
-					<key>temporary items path</key>
-					<string>/var/folders/d1/r6pf5xtd16l2ryq5jjqdbjfw0000gn/T/3A38E5A1-8E2F-408B-A34D-F59A6B265172/1/com.apple.RunShellScript</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
@@ -199,7 +191,7 @@ brew install operator-sdk</string>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>575.750000:364.000000</string>
+				<string>575.500000:184.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>

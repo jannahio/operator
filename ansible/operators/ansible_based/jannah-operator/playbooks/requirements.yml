@@ -1,5 +1,0 @@
----
-# https://jupyter-enterprise-gateway.readthedocs.io/en/latest/operators/deploy-kubernetes.html
-- hosts: localhost
-  roles:
-    - roles/requirements

@@ -31,15 +31,18 @@ provisioner:
               url: https://index.docker.io/v1/
               USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME }}"
               PASSWORD: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD }}"
+              EMAIL: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL }}"
           stages:
             day1day2:
               sub_dir:
               charm:
                 vm:
                   name: d1d2-charm-operator
-                  cpus: 4
-                  disk: 30G
-                  memory: 10G
+                  cpus: 9
+                  disk: 50G
+                  memory: 20G
+            dev:
+              active: true
             bootstrap:
               laptop:
                 provision_scripts:
@@ -122,7 +125,7 @@ provisioner:
                       source ~/.zprofile;
                       brew install yq
                     comments: |
-                        Install yq for yaml command line editing.
+                      Install yq for yaml command line editing.
                   - name: 10_Install_Ansible
                     description: |
                       source ~/.zprofile;
@@ -141,6 +144,7 @@ provisioner:
                       Encrypts GITHUB_TOKEN as an Ansible vault variable;
                       Encrypts DOCKERHUB_USERNAME as an Ansible vault variable;
                       Encrypts DOCKERHUB_TOKEN as an Ansible vault variable;
+                      Encrypts DOCKERHUB_EMAIL as an Ansible vault variable;
                   - name: make jannah-python-backup;
                     description: |
                       make jannah-boot-credentials;
@@ -156,19 +160,7 @@ provisioner:
                       Creates a python virtual environment for working with Jannah.
                       Installs required Python modules for bootstrapping.
                   - name: make jannah-config;
-                    description: |
-                      Generates molecule configuration files for all down stream Ansible Playbook roles.
-                      The same molecule yaml file is used to hydrate the configuration of the Python Charm.
-                      This keeps one source of configuration for all down stream components. 
-                      - roles/jannahio.bootstrap/molecule/default/molecule.yml.
-                      - operators/ansible_based/jannah-operator/molecule/default/molecule.yml.
-                      - roles/jannahio.bootstrap/molecule/default/.env.
-                      - operators/ansible_based/jannah-operator/molecule/default/.env.
-                      - operators/ansible_based/jannah-operator/roles/install/defaults/main.yml.
-                      - operators/ansible_based/jannah-operator/roles/requirements/defaults/main.yml.
-                      
-                      Ansible role tags: 
-                      - d1d2-generate-molecule-configurations
+                    description: "Generates molecule configuration files for all down stream Ansible Playbook roles.\nThe same molecule yaml file is used to hydrate the configuration of the Python Charm.\nThis keeps one source of configuration for all down stream components. \n- roles/jannahio.bootstrap/molecule/default/molecule.yml.\n- operators/ansible_based/jannah-operator/molecule/default/molecule.yml.\n- roles/jannahio.bootstrap/molecule/default/.env.\n- operators/ansible_based/jannah-operator/molecule/default/.env.\n- operators/ansible_based/jannah-operator/roles/install/defaults/exec.yml.\n- operators/ansible_based/jannah-operator/roles/requirements/defaults/exec.yml.\n\nAnsible role tags: \n- d1d2-generate-molecule-configurations\n"
                   - name: make jannah-day1-day2;
                     description: |
                       brew upgrade;
@@ -186,7 +178,7 @@ provisioner:
                 - name: "[IntelliJ IDE]"
                   url: "https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002"
                 - name: "[VS Code IDE]"
-                  url:  "https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip"
+                  url: "https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip"
                 - name: "[Google Chrome]"
                   url: "https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
                 - name: "[Docker Desktop]"
@@ -210,19 +202,67 @@ provisioner:
                 BUNDLE_IMG: docker.io/jallohmediabuild/jannah-operator-bundle:v0.0.1
                 CATALOG_IMG: docker.io/jallohmediabuild/jannah-operator-catalog:v0.0.1
                 IMAGE_TAG_BASE: docker.io/jallohmediabuild/jannah-operator
+                juju:
+                  controller:
+                    name: jannah-charm-operator-controller
+                  model:
+                    name: jannah-charm-operator-workflow-model
+                  containers:
+                    base:
+                      name: jannahbase
+                    middleware:
+                      name: jannahmiddleware
+                    frontend:
+                      name: jannahfrontend
+                vm:
+                  name: jannah-charm-operator
+                  cpus: 8
+                  disk: 100G
+                  memory: 18G
+                  #                  <image> can be a partial image hash or
+                  #                  an Ubuntu release version, codename or
+                  #                  alias.
+#                  image: 22.10
+                  image: charm-dev
+                  kind:
+                    wait: 5m
+                    control_plane:
+                      image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
+                    nodes:
+                      arm64:
+                        image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
+                        arch: arm64
+                      amd64:
+                        image: kindest/node:v1.26.3@sha256:94eb63275ad6305210041cdb5aca87c8562cc50fa152dbec3fef8c58479db4ff
+                        arch: amd64
+                builderx:
+                  - name: jannah_builder
+                    driver: kubernetes
+                    services:
+                      - name: frontend
+                        giturl: https://github.com/jannahio/frontend.git
+                        image: docker.io/jallohmediabuild/jannah-frontend:v0.0.1
+                      - name: middlware
+                        giturl: https://github.com/jannahio/middleware.git
+                        image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
+                dependency:
+                  helm:
+                    dex:
+                      config:
+
               secrets:
                 image_registry:
                   name: myregistrykey
                   namespace: default
                   apiVersion: v1
                 root_cert:
-                  name: myregistrycert
-                  key: myregistrycertkeydebug
-                  path:
-                  namespace: default
-              testing:
-                melecule:
-                  MOLECULE_PROJECT_DIRECTORY:
+                  name: dex-certs
+                  cert: ssl/tls.crt
+                  key: ssl/tls.key
+#                  namespace: default
+#              testing:
+#                melecule:
+#                  MOLECULE_PROJECT_DIRECTORY:
               charm:
                 metadata:
                   name: Jannah
@@ -256,10 +296,7 @@ provisioner:
                 config:
                   options:
                     log-level:
-                      description: |
-                        Configures the log level of gunicorn. 
-
-                        Acceptable values are: "info", "debug", "warning", "error" and "critical"
+                      description: "Configures the log level of gunicorn. \n\nAcceptable values are: \"info\", \"debug\", \"warning\", \"error\" and \"critical\"\n"
                       default: "info"
                       type: string
             network:
@@ -285,8 +322,7 @@ provisioner:
                 - name: Google Integration
                 - name: Jupyter Lab Cloud
                 - name: TensorFlow Integration
-                  utilities:
-                    Apache Airflow
+                  utilities: Apache Airflow
             ux:
               tasks:
                 - name: Kotlin Multiplatform Mobile Base
@@ -297,7 +333,6 @@ provisioner:
             feedback:
               tasks:
                 - name: Build Machine Learning Models of Jannah Services
-
     host_vars:
       localhost:
         name: osmanj-mac-0
@@ -310,10 +345,6 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: /tmp/EPHEMERAL
+    MOLECULE_EPHEMERAL_DIRECTORY: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
 verifier:
   name: ansible
-
-
-
-

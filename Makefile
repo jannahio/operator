@@ -1,50 +1,59 @@
+SHELL=/bin/bash
 WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3)
 PIP3_BIN=$(shell which pip3)
-ANSIBLE_VAULT_DEFAULT_PASS_FILE=$(HOME)/.jannah-operator/ansible_defaultpass.txt
+JANNAHHOME ?= $(HOME)
+ANSIBLE_VAULT_DEFAULT_PASS_FILE ?= $(JANNAHHOME)/jannah-operator/ansible_defaultpass.txt
 JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
+BREAK_PACKAGES ?=
 
+include boot.env.sh
 # encrypts credentials from environment values and store into molecule config file
 jannah-boot-credentials:
+	mkdir -vp "$(JANNAHHOME)/jannah-operator/"
 	ls -lrt $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
-	# Make sure $(HOME)/.jannah-operator/ is available
-	if [ -d "$(HOME)/.jannah-operator/" ]; \
+	# Make sure $(JANNAHHOME)/jannah-operator/ is available
+	if [ -d "$(JANNAHHOME)/jannah-operator/" ]; \
 	then \
-	   echo "found $(HOME)/.jannah-operator/.  Assuming laptop has been provisioned"; \
+	   echo "found $(JANNAHHOME)/jannah-operator/.  Assuming laptop has been provisioned"; \
 	else \
-	   echo "Error: $(HOME)/.jannah-operator/ not found"; \
+	   echo "Error: $(JANNAHHOME)/jannah-operator/ not found"; \
 	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
 	fi
 
 	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
-	$(HOME)/.jannah-operator/molecule.yml
+	$(JANNAHHOME)/jannah-operator/molecule.yml
 
 	@echo $(ANSIBLE_VAULT_DEFAULT_PASSWORD) > $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)
 
-	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(GITHUB_USERNAME)" --output=$(HOME)/.jannah-operator/GITHUB_USERNAME_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= load("$(HOME)/.jannah-operator/GITHUB_USERNAME_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
-	@rm $(HOME)/.jannah-operator/GITHUB_USERNAME_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(GITHUB_USERNAME)" --output=$(JANNAHHOME)/jannah-operator/GITHUB_USERNAME_ECRYPTED.txt
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= load("$(JANNAHHOME)/jannah-operator/GITHUB_USERNAME_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml
+	@rm $(JANNAHHOME)/jannah-operator/GITHUB_USERNAME_ECRYPTED.txt
 
-	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(GITHUB_TOKEN)" --output=$(HOME)/.jannah-operator/GITHUB_TOKEN_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN |= load("$(HOME)/.jannah-operator/GITHUB_TOKEN_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
-	@rm $(HOME)/.jannah-operator/GITHUB_TOKEN_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(GITHUB_TOKEN)" --output=$(JANNAHHOME)/jannah-operator/GITHUB_TOKEN_ECRYPTED.txt
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN |= load("$(JANNAHHOME)/jannah-operator/GITHUB_TOKEN_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml
+	@rm $(JANNAHHOME)/jannah-operator/GITHUB_TOKEN_ECRYPTED.txt
 
-	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_USERNAME)" --output=$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= load("$(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
-	@rm $(HOME)/.jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_USERNAME)" --output=$(JANNAHHOME)/jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt;
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME |= load("$(JANNAHHOME)/jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml;
+	@rm $(JANNAHHOME)/jannah-operator/DOCKERHUB_USERNAME_ECRYPTED.txt;
 
-	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_TOKEN)" --output=$(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= load("$(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt")'  ~/.jannah-operator/molecule.yml
-	@rm $(HOME)/.jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
-	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/.jannah-operator/molecule.yml
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_TOKEN)" --output=$(JANNAHHOME)/jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
+	@ansible-vault encrypt_string --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) "$(DOCKERHUB_EMAIL)" --output=$(JANNAHHOME)/jannah-operator/DOCKERHUB_EMAIL_ECRYPTED.txt
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= load("$(JANNAHHOME)/jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= load("$(JANNAHHOME)/jannah-operator/DOCKERHUB_EMAIL_ECRYPTED.txt")'  ~/jannah-operator/molecule.yml
+	@rm $(JANNAHHOME)/jannah-operator/DOCKERHUB_TOKEN_ECRYPTED.txt
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "$(WORKING_DIR)/tmp/EPHEMERAL"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter = "$(JANNAH_PYTHON)/bin/python3"' ~/jannah-operator/molecule.yml
 
 
 jannah-python-backup: jannah-boot-credentials
 	if [ -d "/tmp/jannah-python.backup" ]; \
     then \
     	mv -f $(JANNAH_PYTHON) /tmp/$(JANNAH_PYTHON).backup; \
-    	cp $(HOME)/.jannah-operator/molecule.yml /tmp/molecule.yml.backup; \
+    	cp $(JANNAHHOME)/jannah-operator/molecule.yml /tmp/molecule.yml.backup; \
     fi
 
 jannah-python-clean: jannah-python-backup
@@ -63,22 +72,22 @@ jannah-python: jannah-boot-credentials
 		echo "$(JANNAH_PYTHON) is present";\
 		else \
 		echo "$(JANNAH_PYTHON) is NOT present. Creating it now:";\
-		$(PIP3_BIN) install --upgrade pip;\
-		$(PIP3_BIN) install virtualenv;\
+		$(PIP3_BIN) install $(BREAK_PACKAGES) --upgrade pip;\
+		$(PIP3_BIN) install $(BREAK_PACKAGES) virtualenv;\
 		virtualenv --always-copy $(JANNAH_PYTHON);\
 	fi
 	. $(JANNAH_PYTHON)/bin/activate;\
-    $(JANNAH_PYTHON)/bin/pip3 install -r $(WORKING_DIR)/requirements/requirements.txt;\
+    $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 
 jannah-config: jannah-python
 	# Make sure the molecule config is available
-	if [ -f "$(HOME)/.jannah-operator/molecule.yml" ]; \
+	if [ -f "$(JANNAHHOME)/jannah-operator/molecule.yml" ]; \
     then \
-       echo "found all: $(HOME)/.jannah-operator/molecule.yml"; \
+       echo "found all: $(JANNAHHOME)/jannah-operator/molecule.yml"; \
     else \
-       echo "Error: all not found at: $(HOME)/.jannah-operator/molecule.yml"; \
-       echo "Please provide all at: $(HOME)/.jannah-operator/molecule.yml"; \
+       echo "Error: all not found at: $(JANNAHHOME)/jannah-operator/molecule.yml"; \
+       echo "Please provide all at: $(JANNAHHOME)/jannah-operator/molecule.yml"; \
     fi
 
     # Make sure the ANSIBLE_VAULT_DEFAULT_PASS_FILE is available
@@ -90,86 +99,56 @@ jannah-config: jannah-python
 	   echo "Please provide ANSIBLE_VAULT_DEFAULT_PASS_FILE at: $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)"; \
 	fi
 
-	chown -R $(USER) $(WORKING_DIR)/
-	cp -v $(HOME)/.jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all
+	cp -v $(JANNAHHOME)/jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all
 
-	. $(JANNAH_PYTHON)/bin/activate;\
-    which molecule;\
-    which ansible-playbook;
+	. $(JANNAH_PYTHON)/bin/activate;
 	pushd ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
-    popd;
+    popd;\
+    echo "WORKING_DIR: $(WORKING_DIR)"
+
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \
     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
     popd;
 
-jannah-requirements: jannah-config
-	pushd ansible/operators/ansible_based/jannah-operator && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ playbooks/requirements.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
-    popd;
-
-bootstrap-clean: jannah-config
+molecule-clean: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
 	popd;
 
-bootstrap-destroy: bootstrap-clean
+molecule-reset:
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
+	pushd ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) reset;\
+
+molecule-destroy: molecule-reset
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) destroy;\
 	popd;
 
-bootstrap-prepare: bootstrap-destroy
+# default molecule scenario test matrix: dependency, create, prepare
+molecule-create: jannah-config molecule-reset molecule-destroy
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
+	pushd ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) create;\
 
-bootstrap-converge:  jannah-config
+
+
+molecule-converge:  jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
 	popd;
 
-bootstrap-test: jannah-config
+molecule-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.bootstrap && \
+	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
 
-charm-clean: jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) cleanup;\
-	popd;
-
-charm-destroy: bootstrap-clean
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
-
-charm-prepare: bootstrap-destroy
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) prepare;\
-	popd;
-
-charm-converge:  jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
-	popd;
-
-charm-test: jannah-config
-	. $(JANNAH_PYTHON)/bin/activate;\
-	pushd ansible/roles/jannahio.charm && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
-	popd;
-
-
-clean: jannah-python-clean
+clean: molecule-destroy jannah-python-clean

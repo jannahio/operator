@@ -66,22 +66,22 @@
 #      tags:
 #        - "d1d2-juju-olm-install-one-time-event"
 #        - "d1d2-operator"
-    - name: "Initialized Python charm operator"
-      shell: |
-        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
-        -- charmcraft init -p {{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm;
-#      args:
-#        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm"
-      async: 600
-      poll: 5
-      register: bootstrap_charm_init
-      tags:
-        - "d1d2-juju-olm-install-one-time-event"
-        - "d1d2-operator"
-    - debug: var=bootstrap_charm_init
-      tags:
-        - "d1d2-juju-olm-install-one-time-event"
-        - "d1d2-operator"
+#    - name: "Initialized Python charm operator"
+#      shell: |
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- charmcraft init -p {{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm;
+##      args:
+##        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm"
+#      async: 600
+#      poll: 5
+#      register: bootstrap_charm_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - debug: var=bootstrap_charm_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
 #    # NOTE: 04/17/2022 - Osmanj
 #    # This is a one time operation to bootstrap the initial Openshift based operator for Jannah
 #    - name: "operator working directory"

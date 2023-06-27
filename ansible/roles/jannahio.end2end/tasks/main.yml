@@ -1,0 +1,91 @@
+---
+#####################################Inspired from##############################
+# https://sdk.operatorframework.io/docs/building-operators/ansible/development-tips/
+# https://olm.operatorframework.io/docs/tasks/
+# https://olm.operatorframework.io/docs/tasks/creating-a-catalog/
+# https://github.com/operator-framework/enhancements/blob/master/enhancements/operator-sdk-builds-catalogs.md
+# - https://olm.operatorframework.io/docs/reference/file-based-catalogs/
+# - https://docs.openshift.com/container-platform/4.9/operators/admin/olm-managing-custom-catalogs.html#olm-managing-custom-catalogs
+# https://olm.operatorframework.io/docs/tasks/make-catalog-available-on-cluster/
+# https://olm.operatorframework.io/docs/concepts/crds/operatorgroup/
+# https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#the-downward-api
+# https://sdk.operatorframework.io/docs/olm-integration/generation/
+# https://github.com/operator-framework/operator-registry/blob/v1.16.1/docs/design/operator-bundle.md
+# https://olm.operatorframework.io/docs/reference/file-based-catalogs/
+# https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site#creating-your-site
+- name: "Bootstrapping Playbooks"
+  block:
+    # Import the bootrapping roles
+    - name: Import bootstrap tasks/
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - none
+      tags:
+        - "bootstrap_jannah_namespace"
+        - "bootstrap_olm_install"
+        - "bootstrap_olm_status"
+        - "bootstrap_make_bundle"
+        - "bootstrap_docker_secrets"
+        - "bootstrap_patch_serviceaccount_secrets"
+        - "bootstrap_get_serviceaccount_file"
+        - "bootstrap_comment_out_resourceVersion"
+        - "bootstrap_replace_serviceaccount"
+        - "bootstrap_docker_root_cert_secret"
+        - "bootstrap_patch_delete_serviceaccount_secrets"
+        - "bootstrap_docker_root_cert_secret_debug"
+        - "bootstrap_secrets_infra"
+        - "secrets_infra"
+        - "bootstrap_catalog"
+        - "bootstrap_kustomize"
+        - "bootstrap_get_kustomize"
+    - name: "Import cleanup tasks - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - molecule/default/tasks/cleanup/main.yml
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Import create tasks (molecule create) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/create/main.yml
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Import prepare tasks (molecule prepare) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/prepare/main.yml
+      tags:
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Import dependency and jannah and deployment tasks (molecule converge) - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/converge/deploy_dependencies/main.yml
+        - ../molecule/default/tasks/converge/deploy_jannah/main.yml
+      tags:
+        - "deploy_dependencies"
+        - "deploy_jannah"
+        - "operator_e2e"
+        - "dev_debug"
+  rescue:
+    - name: "An exception is thrown"
+      ansible.builtin.debug:
+        msg: 'Bootstrap failed'
+
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  always:
+    - name: "Bootstrap"
+      ansible.builtin.debug:
+        msg: 'Bootstrap'
+  ignore_errors: false
+
