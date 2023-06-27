@@ -69,8 +69,10 @@ brew install hashicorp/tap/hashicorp-vagrant
 brew install --cask multipass
 multipass stop --all
 multipass set local.driver=qemu;
-brew install kdoctor  cocoapods
+brew install kdoctor  cocoapods helm
+helm repo add bitnami https://charts.bitnami.com/bitnami
 npm install -g @ionic/cli@latest native-run
+
 
 </string>
 					<key>CheckedForUserDefaultShell</key>
@@ -189,7 +191,7 @@ npm install -g @ionic/cli@latest native-run
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>616.000000:184.000000</string>
+				<string>575.500000:184.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>

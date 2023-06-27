@@ -23,6 +23,22 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
+    - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}"
+        state: absent
+      tags:
+        - "cleanup_ephemeral_directory"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove {{ Jannah.global.ansible.working_dir }}/tmp"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp"
+        state: absent
+      tags:
+        - "cleanup_tmp_directory"
+        - "molecule_cleanup"
+        - "operator_e2e"
   rescue:
     - name: "Destroy Jannah Environment Exception"
       ansible.builtin.debug:
