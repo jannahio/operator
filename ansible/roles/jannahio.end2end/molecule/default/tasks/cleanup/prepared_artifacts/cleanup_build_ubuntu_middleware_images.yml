@@ -8,7 +8,7 @@
       tags:
         - "build_images"
         - "build_middleware_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Remove middleware/ubuntu.middleware.Dockerfile"
       file:
@@ -16,7 +16,7 @@
         state: absent
       tags:
         - "build_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.middleware.Dockerfile.dockerignore"
       file:
@@ -24,7 +24,7 @@
         state: absent
       tags:
         - "build_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Remove Build for Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
@@ -35,7 +35,7 @@
       poll: 5
       tags:
         - "build_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Remove Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
       shell: |
@@ -46,7 +46,7 @@
       poll: 5
       tags:
         - "build_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
   rescue:
     - name: "Remove Builds Ubuntu Middleware Docker Images Exception"
@@ -61,6 +61,6 @@
       tags:
         - "build_images"
         - "build_ubuntu_images"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false

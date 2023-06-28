@@ -7,7 +7,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "knative-eventing uninstall"
       shell: |
@@ -15,7 +15,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "cert-manager uninstall"
       shell: |
@@ -23,7 +23,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "istio-system uninstall"
       shell: |
@@ -31,7 +31,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "auth uninstall"
       shell: |
@@ -39,7 +39,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "native-serving uninstall"
       shell: |
@@ -47,7 +47,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "buildkit uninstall"
       shell: |
@@ -55,7 +55,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_prepare"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Remove install_kustomize download directory"
       file:
@@ -75,7 +75,7 @@
         - "operator_e2e"
     - name: "Remove kubeflow download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow"
         state: absent
       tags:
         - "docker_desktop_infra"
