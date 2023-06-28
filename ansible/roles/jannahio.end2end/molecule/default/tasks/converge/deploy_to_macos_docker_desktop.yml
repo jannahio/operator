@@ -10,18 +10,17 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
-      shell: |
-        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80 &;
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
+#    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
+#      shell: |
+#        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
+#      tags:
+#        - "docker_desktop_infra"
+#        - "deploy_images"
+#        - "molecule_converge"
+#        - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
-        docker run -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+        docker run --name jannah-ubuntu-middleware-arm64 -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -33,7 +32,7 @@
         - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-amd64"
       shell: |
-        docker run -d jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+        docker run --name jannah-ubuntu-middleware-amd64 -d jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -45,7 +44,7 @@
         - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-streamos-middleware-arm64"
       shell: |
-        docker run -d jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
+        docker run --name jannah-streamos-middleware-arm64 -d jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -57,7 +56,7 @@
         - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-streamos-middleware-amd64"
       shell: |
-        docker run -d jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
+        docker run --name jannah-streamos-middleware-amd64 -d jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -69,7 +68,7 @@
         - "operator_e2e"
     - name: "Docker Run jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
       shell: |
-        docker run -d jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
+        docker run --name jannah-ubuntu-frontend-web-arm64 -d jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -80,7 +79,7 @@
         - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
       shell: |
-        docker run -d jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
+        docker run --name jannah-ubuntu-frontend-web-amd64 -d jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -91,7 +90,7 @@
         - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-arm64"
       shell: |
-        docker run -d jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
+        docker run --name jannah-streamos-frontend-web-arm64 -d jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -105,7 +104,7 @@
         - "dev_debug"
     - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
-        docker run -d jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
+        docker run --name jannah-streamos-frontend-web-amd64 -d jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5

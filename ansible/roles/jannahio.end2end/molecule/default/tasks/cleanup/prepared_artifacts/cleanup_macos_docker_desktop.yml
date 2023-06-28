@@ -1,6 +1,101 @@
 ---
 - name: "Cleanup artifacts from MacOs Docker Desktop"
   block:
+    - name: "Docker stop jallohmediabuild/jannah-ubuntu-middleware-arm64"
+      shell: |
+        docker container stop jannah-ubuntu-middleware-arm64;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-ubuntu-middleware-amd64"
+      shell: |
+        docker container stop jannah-ubuntu-middleware-amd64;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-streamos-middleware-arm64"
+      shell: |
+        docker container stop jannah-streamos-middleware-arm64;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-streamos-middleware-amd64"
+      shell: |
+        docker container stop jannah-streamos-middleware-amd64;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+      shell: |
+        docker container stop jannah-ubuntu-frontend-web-arm64;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+      shell: |
+        docker container stop jannah-ubuntu-frontend-web-amd64;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker stop jallohmediabuild/jannah-streamos-frontend-web-arm64"
+      shell: |
+        docker container stop jannah-streamos-frontend-web-arm64;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Docker stop jallohmediabuild/jannah-streamos-frontend-web-amd64"
+      shell: |
+        docker container stop jannah-streamos-frontend-web-amd64;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: "Kubeflow uninstall"
       shell: |
         kubectl delete all --all -n kubeflow;

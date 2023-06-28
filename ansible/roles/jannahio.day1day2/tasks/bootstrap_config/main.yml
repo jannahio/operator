@@ -76,18 +76,6 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
-    - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY directory"
-      file:
-        path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
-        state: absent
-        mode: 0755
-      tags:
-        - "d1d2-generate-molecule-configurations"
-        - "d1d2-configurations"
-        - "molecule-notest"
-        - "never"
-
   rescue:
     - name: "D1D2 Bootstrapping Exception"
       ansible.builtin.debug:

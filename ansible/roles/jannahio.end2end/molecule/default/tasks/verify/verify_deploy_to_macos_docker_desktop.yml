@@ -17,7 +17,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
-        docker logs jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+        docker logs jannah-ubuntu-middleware-arm64;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -27,7 +27,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-ubuntu-middleware-amd64"
       shell: |
-        docker logs jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+        docker logs jannah-ubuntu-middleware-amd64;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -37,7 +37,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-streamos-middleware-arm64"
       shell: |
-        docker logs jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
+        docker logs jannah-streamos-middleware-arm64;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -47,7 +47,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-streamos-middleware-amd64"
       shell: |
-        docker logs jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
+        docker logs jannah-streamos-middleware-amd64;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -57,7 +57,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
       shell: |
-        docker logs jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
+        docker logs jannah-ubuntu-frontend-web-arm64;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -68,7 +68,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
       shell: |
-        docker logs jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
+        docker logs jannah-ubuntu-frontend-web-amd64;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
@@ -79,7 +79,7 @@
         - "operator_e2e"
     - name: "Docker logs jallohmediabuild/jannah-streamos-frontend-web-arm64"
       shell: |
-        docker logs jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
+        docker logs jannah-streamos-frontend-web-arm64;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
@@ -91,7 +91,7 @@
         - "dev_debug"
     - name: "Docker logs jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
-        docker logs jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
+        docker logs jannah-streamos-frontend-web-amd64;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5

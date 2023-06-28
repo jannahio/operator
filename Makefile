@@ -144,6 +144,12 @@ molecule-converge:  jannah-config
 	molecule $(ANSIBLE_VERBOSE_LEVEL) converge;\
 	popd;
 
+molecule-verify: jannah-config
+	. $(JANNAH_PYTHON)/bin/activate;\
+	pushd ansible/roles/jannahio.end2end && \
+	molecule $(ANSIBLE_VERBOSE_LEVEL) verify;\
+	popd;
+
 molecule-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd ansible/roles/jannahio.end2end && \
