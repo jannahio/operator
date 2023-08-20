@@ -63,8 +63,6 @@ jannah-python-clean: jannah-python-backup
         rm $(ANSIBLE_VAULT_DEFAULT_PASS_FILE);\
     fi
 
-
-
 jannah-python: jannah-boot-credentials
 	echo "$(PYTHONPATH)";
 	if [ -d "$(JANNAH_PYTHON)" ]; \
@@ -74,7 +72,7 @@ jannah-python: jannah-boot-credentials
 		echo "$(JANNAH_PYTHON) is NOT present. Creating it now:";\
 		$(PIP3_BIN) install $(BREAK_PACKAGES) --upgrade pip;\
 		$(PIP3_BIN) install $(BREAK_PACKAGES) virtualenv;\
-		virtualenv --always-copy $(JANNAH_PYTHON);\
+		virtualenv $(JANNAH_PYTHON);\
 	fi
 	. $(JANNAH_PYTHON)/bin/activate;\
     $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
