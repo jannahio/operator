@@ -1,5 +1,5 @@
 September 2023
-DevOps with Artificial Intelligence, Automation, and Blockchain:
+- Series Name: DevOps with Artificial Intelligence, Automation, and Blockchain
 - Topic: The Software Developer Environment
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io.
@@ -110,9 +110,9 @@ Demo:
                     - Compute Workflows: All workflows related to compute (application) components within Jannah infrastructure.
                     - UX Workflows: All workflows related to UX within the Jannah infrastructure.
                     - Feedback Workflows: All workflows related to Feedback components within the Jannah infrastructure.
-           8) Run 'ionic serve' command to install npm packages and start the web app locally.
-           9) Show applications and mobile app emulators for local Jannah development.
-           10) Ending with current milestone.
+        8) Run 'ionic serve' command to install npm packages and start the web app locally.
+        9) Show applications and mobile app emulators for local Jannah development.
+        10) Ending with current milestone.
                - Current problems needing solutions
                  - Debug Kotlin Apollo Connection between Android app and Django GraphQL API.
                  - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
@@ -157,29 +157,27 @@ Introducing the Jannah Software Accelerator project.
         - make jannah-config
         - make charm-converge
 ---------------------------------------------------------------------------------------------------
-====Road Map: Next Video ======
-----Zoom in on specific Jannah Components
-1) Start with the Django app
-- Models
-- Python implementation
-- Web Admin Implementation
-- Graphql API
-- Query implementation
-- Web dev/debug tool to test/verify queries
-
-2) Then Kubleflow UI 
-- Standalone Deployment
-    - https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/
-    - deploy to:
-        - docker desktop
-        - kind
-        - K3ai
-- Local Deployment
-    - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
-    - deploy to:
-        - docker desktop
-        - kind
-        - K3ai
+====Road Map: Details on Specific Jannah Components====== 
+- Start with the Django app
+    - Models
+    - Python implementation
+    - Web Admin Implementation
+    - Graphql API
+    - Query implementation
+    - Web dev/debug tool to test/verify queries
+- Then Kubleflow UI 
+  - Standalone Deployment
+      - https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/
+      - deploy to:
+          - docker desktop
+          - kind
+          - K3ai
+  - Local Deployment
+      - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
+      - deploy to:
+          - docker desktop
+          - kind
+          - K3ai
 - Full Kubeflow deployment
     - https://www.kubeflow.org/docs/components/pipelines/v1/installation/overview/#full-kubeflow-deployment
     - deploy to:
