@@ -1,9 +1,9 @@
-September 2023
+Jannah.io September 2023
+- Speaker: Osman Jalloh
+- Role: Software Architect at Jannah.io
+- www.jannah.io: A lab (laboratory) for developing cloud native software solutions.
 - Series: Software DevOps with Artificial Intelligence, Automation, and Blockchain
 - Episode: The Software Developer Environment
-- Speaker: Osman Jalloh
-- Role: Software Architect at Jannah.io.
-- Jannah.io: A lab (laboratory) for developing cloud native software solutions.
 - Github Repository: https://github.com/alchemiccoruja
 - Intended Audience:
     - Business Developers
