@@ -96,14 +96,14 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "kubeflow-user-example-com uninstall"
-      shell: |
-        kubectl delete all --all -n kubeflow-user-example-com;
-        exit 0;
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_cleanup"
-        - "operator_e2e"
+#    - name: "kubeflow-user-example-com uninstall"
+#      shell: |
+#        kubectl delete all --all -n kubeflow-user-example-com;
+#        exit 0;
+#      tags:
+#        - "docker_desktop_infra"
+#        - "molecule_cleanup"
+#        - "operator_e2e"
     - name: "Kubeflow uninstall"
       shell: |
         kubectl delete all --all -n kubeflow;

@@ -1,3 +1,4 @@
+September 2023
 DevOps with Artificial Intelligence, Automation, and Blockchain:
 - Topic: The Software Developer Environment
 - Speaker: Osman Jalloh
@@ -36,6 +37,20 @@ Demo:
         5) Run a 'make molecule-reset' command to reset the molecule state environment.
         6) Run a 'make molecule-converge' command'.
             - Clones Jannah frontend application code bases (web, iOS, Android).
+            - Use (https://docs.docker.com/build/buildkit/)[Docker Buildkit] 
+              - Builds foundation images for Jannah infrastructure:
+                - jallohmediabuild/jannah-base-amd64
+                - jallohmediabuild/jannah-ubuntu-frontend-web-arm64
+                - jallohmediabuild/jannah-ubuntu-middleware-arm64
+                - jallohmediabuild/jannah-ubuntu-operator-arm64
+                - jallohmediabuild/jannah-streamos-frontend-web-arm64
+                - jallohmediabuild/jannah-streamos-middleware-amd64
+                - jallohmediabuild/jannah-streamos-operator-amd6
+              - Buildkit will make these images accessible to the local Kubernetes instance on Docker Desktop.
+                - While the images are being built:
+                    - Open the VueJS web frontend application in VSCode IDE for local development.
+                    - Open the iOS mobile application in a Xcode IDE for local development.
+                    - Open the Android mobile application in an Android Studio IDE for local development.
             - Deploys Jannah dependencies (Kubeflow) on the local kubernetes cluster.
             - Deploys Jannah Django application as container on the demo machine (laptop).
             - Deploys Jannah Frontend web application as a container on the demo machine (laptop).
@@ -43,6 +58,29 @@ Demo:
             - Show the Django models implementation in Python
                 - Emphasize that these models are simplistic for now,
                   but will be evolving as the project moves forward.
+            - Show routing to admin and graphql urls
+                - /admin
+                - /graphql
+                    - sample query:
+                      - query UserList{
+                            users{
+                                    cursor,
+                                    hasMore,
+                                    users{
+                                            id,
+                                            username,
+                                            firstName,
+                                            lastName,
+                                            email,
+                                            isActive,
+                                            dateJoined,
+                                            avatar,
+                                            location,
+                                            website,
+                                         }
+                                    }
+                        }
+            - Run 'python manage.py runserver' command to start the Django application locally
             - Enter sample data via the Django Web admin.
                 1) Sites
                     - Site 1
@@ -52,9 +90,9 @@ Demo:
                     - Babar
                 3) Boot Layer Logs
                     - Boot Layer Operator Deployment Logs
-                        - All logs leading leading up the deployment of the operator Django
+                        - All logs leading up to the deployment of the operator Django application.
                 4) Network Layer Logs
-                    - All logs related to Networking services that suppose the Jannah infrastructure.
+                    - All logs related to Networking services that support the Jannah infrastructure.
                 5) Storage Layer Logs
                     - Log data for all storage components of the Jannah infrastructure.
                 6) Compute Layer Logs
@@ -66,16 +104,28 @@ Demo:
                 9) Workflow Metadata Layer
                     - Sites Workflows: The workflow representing the available Jannah Django sites.
                     - Users Workflows: The workflows representing user on the Jannah infrastructure.
-                    - Boots Workflows: The workflows relating to systems booting on the Jannah workflow.
+                    - Boots Workflows: The workflows relating to systems booting on the Jannah infrastructure.
                     - Network Workflows: Workflows related to Networking layer on the Jannah infrastructure.
                     - Storage Workflows: All workflows related to Storage (Data Persistent) within the Jannah infrastructure.
                     - Compute Workflows: All workflows related to compute (application) components within Jannah infrastructure.
                     - UX Workflows: All workflows related to UX within the Jannah infrastructure.
                     - Feedback Workflows: All workflows related to Feedback components within the Jannah infrastructure.
-        8) Open the VueJS web frontend application in VSCode IDE for local development.
-        9) Open the iOS mobile application in a Xcode IDE for local development.
-        10) Open the Android mobile application in an Android Studio IDE for local development.
+           8) Run 'ionic serve' command to install npm packages and start the web app locally.
+           9) Show applications and mobile app emulators for local Jannah development.
+           10) Ending with current milestone.
+               - Current problems needing solutions
+                 - Debug Kotlin Apollo Connection between Android app and Django GraphQL API.
+                 - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
+                 - 
+               - Challenge/Invitation to join team, and solve problems
+                 - Audience:
+                   - Business Developers
+                   - Venture Capitalists
+                   - Upcoming developers, (backend, frontend, devOps, Security, Data Scientists)
+                   - Experienced developers, (backend, frontend, devOps, Security, Data Scientists)
+                   
 -------------------------------------------------------------------------------------------------------
+April 17th, 20203
 Introducing the Jannah Software Accelerator project.
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io.
@@ -107,7 +157,7 @@ Introducing the Jannah Software Accelerator project.
         - make jannah-config
         - make charm-converge
 ---------------------------------------------------------------------------------------------------
-====Next Video Style======
+====Road Map: Next Video ======
 ----Zoom in on specific Jannah Components
 1) Start with the Django app
 - Models
@@ -116,4 +166,23 @@ Introducing the Jannah Software Accelerator project.
 - Graphql API
 - Query implementation
 - Web dev/debug tool to test/verify queries
-        
+
+2) Then Kubleflow UI 
+- Standalone Deployment
+    - https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/
+    - deploy to:
+        - docker desktop
+        - kind
+        - K3ai
+- Local Deployment
+    - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
+    - deploy to:
+        - docker desktop
+        - kind
+        - K3ai
+- Full Kubeflow deployment
+    - https://www.kubeflow.org/docs/components/pipelines/v1/installation/overview/#full-kubeflow-deployment
+    - deploy to:
+        - docker desktop
+        - kind
+        - K3ai
