@@ -11,7 +11,6 @@
         - "build_middleware_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Git checkout https://github.com/jannahio/middleware.git for streamos build"
       ansible.builtin.git:
         repo: "https://github.com/jannahio/middleware.git"
@@ -22,7 +21,6 @@
         - "build_middleware_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate middleware/streamos.middleware.Dockerfile"
       template:
         src: "files/templates/streamos/middleware/streamos.middleware.Dockerfile"
@@ -31,7 +29,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate streamos/streamos.middleware.Dockerfile.dockerignore"
       template:
         src: "files/templates/streamos/middleware/streamos.middleware.Dockerfile.dockerignore"
@@ -40,7 +37,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build StreamOs middleware image - jallohmediabuild/jannah-streamos-middleware-arm64"
       shell: |
         docker buildx build \
@@ -59,7 +55,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build StreamOs middleware image - jallohmediabuild/jannah-streamos-middleware-amd64"
       shell: |
         docker buildx build \
@@ -78,7 +73,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Builds StreamOs Middleware Docker Images Exception"
       ansible.builtin.debug:

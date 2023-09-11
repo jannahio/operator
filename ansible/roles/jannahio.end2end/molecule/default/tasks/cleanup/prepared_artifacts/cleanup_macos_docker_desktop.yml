@@ -81,7 +81,6 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Docker stop jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker container stop jannah-streamos-frontend-web-amd64;

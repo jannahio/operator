@@ -14,7 +14,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate base.Dockerfile"
       template:
         src: "files/templates/base.Dockerfile"
@@ -23,7 +22,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate project/base.Dockerfile"
       template:
         src: "files/templates/base.Dockerfile"
@@ -32,7 +30,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate base.Dockerfile.dockerignore"
       template:
         src: "files/templates/base.Dockerfile.dockerignore"
@@ -41,7 +38,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate project/base.Dockerfile.dockerignore"
       template:
         src: "files/templates/base.Dockerfile.dockerignore"
@@ -50,7 +46,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "kubectl create namespace buildkit"
       shell: |
         kubectl create namespace buildkit;
@@ -61,7 +56,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "docker buildx create--platform=linux/amd64"
       shell: |
         docker buildx create \
@@ -78,7 +72,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "docker buildx create append --platform=linux/arm64 append"
       shell: |
         sleep 120;
@@ -97,7 +90,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "docker buildx ls"
       shell: |
         docker buildx ls;
@@ -107,7 +99,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "kubectl -n buildkit get deployments"
       shell: |
         kubectl -n buildkit get deployments;
@@ -117,7 +108,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "kubectl -n buildkit get pods"
       shell: |
         kubectl -n buildkit get pods;
@@ -127,7 +117,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build base image jallohmediabuild/jannah-base-arm64:v0.0.1"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
@@ -148,7 +137,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build base image jallohmediabuild/jannah-base-amd64:v0.0.1"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
@@ -169,7 +157,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Builds and Push Docker Images Exception"
       ansible.builtin.debug:

@@ -88,7 +88,6 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Docker logs jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker logs jannah-streamos-frontend-web-amd64;

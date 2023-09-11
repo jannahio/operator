@@ -11,7 +11,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Git checkout https://github.com/jannahio/frontend.git"
       ansible.builtin.git:
         repo: "https://github.com/jannahio/frontend.git"
@@ -22,7 +21,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     #   https://www.apollographql.com/docs/ios/tutorial/codegen-getting-started
     - name: "Download iOS Apollo CLI"
       shell: |
@@ -39,7 +37,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate frontend/ubuntu.frontend.Dockerfile"
       template:
         src: "files/templates/ubuntu/frontend/ubuntu.frontend.Dockerfile"
@@ -49,7 +46,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate ubuntu/ubuntu.frontend.Dockerfile.dockerignore"
       template:
         src: "files/templates/ubuntu/frontend/ubuntu.frontend.Dockerfile.dockerignore"
@@ -59,7 +55,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build Ubuntu frontend imag - jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
       shell: |
         docker buildx build \

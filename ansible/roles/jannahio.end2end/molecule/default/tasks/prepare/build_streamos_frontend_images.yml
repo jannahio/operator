@@ -11,7 +11,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Git checkout https://github.com/jannahio/frontend.git for streamos"
       ansible.builtin.git:
         repo: "https://github.com/jannahio/frontend.git"
@@ -22,7 +21,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
 #   https://www.apollographql.com/docs/ios/tutorial/codegen-getting-started
     - name: "Download iOS Apollo CLI"
       shell: |
@@ -39,7 +37,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate frontend/streamos.frontend.Dockerfile"
       template:
         src: "files/templates/streamos/frontend/streamos.frontend.Dockerfile"
@@ -49,7 +46,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate streamos/streamos.frontend.Dockerfile.dockerignore"
       template:
         src: "files/templates/streamos/frontend/streamos.frontend.Dockerfile.dockerignore"
@@ -59,7 +55,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-arm64"
       shell: |
         docker buildx build \
@@ -79,7 +74,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Build StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker buildx build \
@@ -99,7 +93,6 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Builds StreamOs Frontend Docker Images Exception"
       ansible.builtin.debug:

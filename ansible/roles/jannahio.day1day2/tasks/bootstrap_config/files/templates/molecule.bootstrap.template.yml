@@ -249,7 +249,13 @@ provisioner:
                   helm:
                     dex:
                       config:
-
+              deploy:
+                type: standalone
+                type: local
+                type: full
+                destination: docker-desktop
+                destination: kind
+                destination: k3ai
               secrets:
                 image_registry:
                   name: myregistrykey

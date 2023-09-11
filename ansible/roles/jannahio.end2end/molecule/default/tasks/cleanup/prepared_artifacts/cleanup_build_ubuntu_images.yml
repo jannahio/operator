@@ -67,7 +67,6 @@
         - "remove_ubuntu_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import prepare build image tasks - ubuntu middleware and frontend"
       include_tasks: '{{ cleanup_prepared_ubuntu_middleware_and_frontend_task_items }}'
       with_fileglob:
@@ -79,7 +78,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Builds Ubuntu Docker Images Exception"
       ansible.builtin.debug:
