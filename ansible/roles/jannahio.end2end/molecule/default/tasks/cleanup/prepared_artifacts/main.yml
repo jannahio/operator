@@ -12,7 +12,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import cleanup prepared build_base_image tasks - Darwin"
       include_tasks: '{{ cleanup_prepared_build_base_image_task_items }}'
       with_fileglob:
@@ -24,7 +23,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import cleanup prepared build streamos images tasks - StreamOS"
       include_tasks: '{{ cleanup_prepare_build_streamos_images_task_items }}'
       with_fileglob:
@@ -36,7 +34,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Import cleanup prepared build ubuntu images tasks - Darwin"
       include_tasks: '{{ cleanup_prepared_build_ubuntu_images_task_items }}'
       with_fileglob:
@@ -48,7 +45,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Cleanup prepared Jannah Tasks Exception"
       ansible.builtin.debug:

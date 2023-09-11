@@ -24,7 +24,6 @@
 #        - "multipass_infra"
 #        - "molecule_create"
 #        - "operator_e2e"
-#        - "dev_debug"
   rescue:
     - name: "Deploy Jannah Exception"
       ansible.builtin.debug:

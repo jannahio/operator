@@ -10,7 +10,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate images/streamos/streamos.Dockerfile"
       template:
         src: "files/templates/streamos/streamos.Dockerfile"
@@ -19,7 +18,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate project/streamos.Dockerfile"
       template:
         src: "files/templates/streamos/streamos.Dockerfile"
@@ -28,7 +26,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate streamos/streamos.Dockerfile.dockerignore"
       template:
         src: "files/templates/streamos/streamos.Dockerfile.dockerignore"
@@ -37,7 +34,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Generate project/streamos.Dockerfile.dockerignore"
       template:
         src: "files/templates/streamos/streamos.Dockerfile.dockerignore"
@@ -46,7 +42,6 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
 #    - name: "Build StreamOs image jannah-streamos-operator-arm64"
 #      environment:
 #        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
@@ -100,7 +95,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Builds and StreamOs Docker Images Exception"
       ansible.builtin.debug:

@@ -10,7 +10,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Install kind 0.18.0 - Ubuntu/amd64"
       shell: |
         curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.18.0/kind-linux-amd64
@@ -22,7 +21,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Install kind 0.18.0 - Ubuntu/armd64"
       shell: |
         go install sigs.k8s.io/kind@v0.18.0
@@ -32,8 +30,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
-
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
@@ -42,9 +38,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
-
-
     - name: "Generate kind_config.yml"
       template:
         src: "files/templates/kind_config.yml"
@@ -53,8 +46,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
-
 #    kind create cluster --name "{{ Jannah.stages.bootstrap.build.vm.name }}-kind" \
 #    --config=kind_config.yml -v 100 --wait {{ Jannah.stages.bootstrap.build.vm.kind.wait }};
     - name: "Create cluster - Darwin(arm64)"
@@ -71,7 +62,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "dev_debug"
   rescue:
     - name: "Kubernetes Kind Tooling Exception"
       ansible.builtin.debug:

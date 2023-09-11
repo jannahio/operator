@@ -40,7 +40,6 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "dev_debug"
     - name: "Remove Build for StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker image rm -f jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
