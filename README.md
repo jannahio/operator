@@ -1,9 +1,15 @@
 September 2023
-- Series Name: DevOps with Artificial Intelligence, Automation, and Blockchain
-- Topic: The Software Developer Environment
+- Series: Software DevOps with Artificial Intelligence, Automation, and Blockchain
+- Episode: The Software Developer Environment
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io.
 - Jannah.io: A lab (laboratory) for developing cloud native software solutions.
+- Github Repository: https://github.com/alchemiccoruja
+- Intended Audience:
+    - Business Developers
+    - Venture Capitalists
+    - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+    - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
 
 
 Recap:
@@ -121,8 +127,8 @@ Demo:
                  - Audience:
                    - Business Developers
                    - Venture Capitalists
-                   - Upcoming developers, (backend, frontend, devOps, Security, Data Scientists)
-                   - Experienced developers, (backend, frontend, devOps, Security, Data Scientists)
+                   - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+                   - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
                    
 -------------------------------------------------------------------------------------------------------
 April 17th, 20203
