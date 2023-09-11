@@ -140,7 +140,7 @@
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .
       when: ansible_facts['architecture'] != "x86_64"
-      async: 1200
+      async: 9800
       poll: 5
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}"
@@ -161,7 +161,7 @@
           -f {{ Jannah.global.ansible.working_dir }}/base.Dockerfile \
           --load .
       when: ansible_facts['architecture'] == "x86_64"
-      async: 1200
+      async: 9800
       poll: 5
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}"

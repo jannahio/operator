@@ -50,7 +50,7 @@
           -f ubuntu.middleware.Dockerfile \
           --load .
       when: ansible_facts['architecture'] != "x86_64"
-      async: 1200
+      async: 9800
       poll: 5
 #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
@@ -69,7 +69,7 @@
           -f ubuntu.middleware.Dockerfile \
           --load .
       when: ansible_facts['architecture'] == "x86_64"
-      async: 1200
+      async: 9800
       poll: 5
 #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:

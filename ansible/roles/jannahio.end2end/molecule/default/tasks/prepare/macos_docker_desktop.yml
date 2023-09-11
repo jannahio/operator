@@ -27,7 +27,7 @@
       shell: |
         wget  \
         https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_amd64.tar.gz;
-      async: 600
+      async: 1200
       poll: 5
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
@@ -40,7 +40,7 @@
       shell: |
         wget  \
         https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_arm64.tar.gz;
-      async: 600
+      async: 1200
       poll: 5
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
@@ -100,7 +100,7 @@
 #    - name: "arch -arm64 gem install ffi"
 #      shell: |
 #        arch -arm64 gem install ffi;
-#      async: 600
+#      async: 1200
 #      poll: 5
 #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
 #      args:
