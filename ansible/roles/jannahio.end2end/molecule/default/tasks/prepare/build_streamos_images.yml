@@ -47,48 +47,48 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "dev_debug"
-#    - name: "Build StreamOs image jannah-streamos-operator-arm64"
-#      environment:
-#        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
-#      shell: |
-#        docker buildx build \
-#          --builder=kube \
-#          -t jallohmediabuild/jannah-streamos-operator-arm64:v0.0.1 \
-#          --platform=linux/arm64 \
-#          -f streamos.Dockerfile \
-#          --load .
-#      when: ansible_facts['architecture'] != "x86_64"
-#      async: 9800
-#      poll: 5
-##      when: ansible_facts['os_family'] == "Darwin"
-#      args:
-#        chdir: "{{ Jannah.global.ansible.working_dir }}"
-#      tags:
-#        - "build_images"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#        - "dev_debug"
-#    - name: "Build StreamOs image jannah-streamos-operator-amd64"
-#      environment:
-#        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
-#      shell: |
-#        docker buildx build \
-#          --builder=kube \
-#          -t jallohmediabuild/jannah-streamos-operator-amd64:v0.0.1 \
-#          --platform=linux/amd64 \
-#          -f streamos.Dockerfile \
-#          --load .
-#      when: ansible_facts['architecture'] == "x86_64"
-#      async: 9800
-#      poll: 5
-##      when: ansible_facts['os_family'] == "Darwin"
-#      args:
-#        chdir: "{{ Jannah.global.ansible.working_dir }}"
-#      tags:
-#        - "build_images"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#        - "dev_debug"
+    - name: "Build StreamOs image jannah-streamos-operator-arm64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker buildx build \
+          --builder=kube \
+          -t jallohmediabuild/jannah-streamos-operator-arm64:v0.0.1 \
+          --platform=linux/arm64 \
+          -f streamos.Dockerfile \
+          --load .
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 9800
+      poll: 5
+#      when: ansible_facts['os_family'] == "Darwin"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
+    - name: "Build StreamOs image jannah-streamos-operator-amd64"
+      environment:
+        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
+      shell: |
+        docker buildx build \
+          --builder=kube \
+          -t jallohmediabuild/jannah-streamos-operator-amd64:v0.0.1 \
+          --platform=linux/amd64 \
+          -f streamos.Dockerfile \
+          --load .
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 9800
+      poll: 5
+#      when: ansible_facts['os_family'] == "Darwin"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "build_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "dev_debug"
     - name: "Import prepare build image tasks - streamos middleware and frontend"
       include_tasks: '{{ prepare_streamos_middleware_and_frontend_task_items }}'
       with_fileglob:
