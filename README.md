@@ -18,12 +18,12 @@ In our previous (introductory) video, we invited you to join us on a journey.
     - Software enginneering.
     - Data science.
     - Machine learning.
-    - Block chain. 
+    - Block chain.
 - Find our video series on Youtube at @Jannah_io
-  - Playlist at:
-    - https://youtube.com/playlist?list=PLalaYX-k2k3Ml625P-XFDcS3dAujrmaq4&si=z2ZKMZk4MaPp6_X5
+    - Playlist at:
+        - https://youtube.com/playlist?list=PLalaYX-k2k3Ml625P-XFDcS3dAujrmaq4&si=z2ZKMZk4MaPp6_X5
 - Where are we on this marvelous journey?
-  - Moving on from Juju, towards Django as the engine for our Kubernetes operator.
+    - Moving on from Juju, towards Django as the engine for our Kubernetes operator.
 - At the time of our introductory video, we used Canonical Juju (https://juju.is) as the engine to our operator.
 - Juju was useful in the proof of concept (POC) phase of our Journey.
     - Using a Python based Kubernetes operator.
@@ -43,20 +43,17 @@ Demo:
         5) Run a 'make molecule-reset' command to reset the molecule state environment.
         6) Run a 'make molecule-converge' command'.
             - Clones Jannah frontend application code bases (web, iOS, Android).
-            - Use (https://docs.docker.com/build/buildkit/)[Docker Buildkit] 
-              - Builds foundation images for Jannah infrastructure:
-                - jallohmediabuild/jannah-base-amd64
-                - jallohmediabuild/jannah-ubuntu-frontend-web-arm64
-                - jallohmediabuild/jannah-ubuntu-middleware-arm64
-                - jallohmediabuild/jannah-ubuntu-operator-arm64
-                - jallohmediabuild/jannah-streamos-frontend-web-arm64
-                - jallohmediabuild/jannah-streamos-middleware-amd64
-                - jallohmediabuild/jannah-streamos-operator-amd6
-              - Buildkit will make these images accessible to the local Kubernetes instance on Docker Desktop.
-                - While the images are being built:
-                    - Open the VueJS web frontend application in VSCode IDE for local development.
-                    - Open the iOS mobile application in a Xcode IDE for local development.
-                    - Open the Android mobile application in an Android Studio IDE for local development.
+            - Use (https://docs.docker.com/build/buildkit/)[Docker Buildkit]
+                - Builds foundation images for Jannah infrastructure:
+                    - jallohmediabuild/jannah-ubuntu-frontend-web-arm64
+                    - jallohmediabuild/jannah-ubuntu-middleware-arm64
+                    - jallohmediabuild/jannah-streamos-frontend-web-arm64
+                    - jallohmediabuild/jannah-streamos-middleware-amd64
+                - Buildkit will make these images accessible to the local Kubernetes instance on Docker Desktop.
+                    - While the images are being built:
+                        - Open the VueJS web frontend application in VSCode IDE for local development.
+                        - Open the iOS mobile application in a Xcode IDE for local development.
+                        - Open the Android mobile application in an Android Studio IDE for local development.
             - Deploys Jannah dependencies (Kubeflow) on the local kubernetes cluster.
             - Deploys Jannah Django application as container on the demo machine (laptop).
             - Deploys Jannah Frontend web application as a container on the demo machine (laptop).
@@ -68,24 +65,24 @@ Demo:
                 - /admin
                 - /graphql
                     - sample query:
-                      - query UserList{
-                            users{
-                                    cursor,
-                                    hasMore,
-                                    users{
-                                            id,
-                                            username,
-                                            firstName,
-                                            lastName,
-                                            email,
-                                            isActive,
-                                            dateJoined,
-                                            avatar,
-                                            location,
-                                            website,
-                                         }
-                                    }
-                        }
+                        - query UserList{
+                          users{
+                          cursor,
+                          hasMore,
+                          users{
+                          id,
+                          username,
+                          firstName,
+                          lastName,
+                          email,
+                          isActive,
+                          dateJoined,
+                          avatar,
+                          location,
+                          website,
+                          }
+                          }
+                          }
             - Run 'python manage.py runserver' command to start the Django application locally
             - Enter sample data via the Django Web admin.
                 1) Sites
@@ -119,17 +116,17 @@ Demo:
         8) Run 'ionic serve' command to install npm packages and start the web app locally.
         9) Show applications and mobile app emulators for local Jannah development.
         10) Ending with current milestone.
-               - Current problems needing solutions
-                 - Debug Kotlin Apollo Connection between Android app and Django GraphQL API.
-                 - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
-                 - 
-               - Challenge/Invitation to join team, and solve problems
-                 - Audience:
-                   - Business Developers
-                   - Venture Capitalists
-                   - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
-                   - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
-                   
+            - Current problems needing solutions
+                - Debug Kotlin Apollo Connection between Android app and Django GraphQL API.
+                - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
+                -
+            - Challenge/Invitation to join team, and solve problems
+                - Audience:
+                    - Business Developers
+                    - Venture Capitalists
+                    - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+                    - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+
 -------------------------------------------------------------------------------------------------------
 April 17th, 20203
 Introducing the Jannah Software Accelerator project.
@@ -163,7 +160,7 @@ Introducing the Jannah Software Accelerator project.
         - make jannah-config
         - make charm-converge
 ---------------------------------------------------------------------------------------------------
-====Road Map: Details on Specific Jannah Components====== 
+====Road Map: Details on Specific Jannah Components======
 - Start with the Django app
     - Models
     - Python implementation
@@ -171,19 +168,19 @@ Introducing the Jannah Software Accelerator project.
     - Graphql API
     - Query implementation
     - Web dev/debug tool to test/verify queries
-- Then Kubleflow UI 
-  - Standalone Deployment
-      - https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/
-      - deploy to:
-          - docker desktop
-          - kind
-          - K3ai
-  - Local Deployment
-      - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
-      - deploy to:
-          - docker desktop
-          - kind
-          - K3ai
+- Then Kubleflow UI
+    - Standalone Deployment
+        - https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/
+        - deploy to:
+            - docker desktop
+            - kind
+            - K3ai
+    - Local Deployment
+        - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
+        - deploy to:
+            - docker desktop
+            - kind
+            - K3ai
 - Full Kubeflow deployment
     - https://www.kubeflow.org/docs/components/pipelines/v1/installation/overview/#full-kubeflow-deployment
     - deploy to:
