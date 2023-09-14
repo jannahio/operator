@@ -1,5 +1,3 @@
-ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags dev_debug;
-
 Jannah.io September 2023
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
@@ -189,3 +187,6 @@ Introducing the Jannah Software Accelerator project.
         - docker desktop
         - kind
         - K3ai
+---------------------------------------------------------------------------------------------------------------
+Debug Utils
+ - ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags debug_task;

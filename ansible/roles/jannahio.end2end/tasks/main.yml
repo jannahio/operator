@@ -64,7 +64,7 @@
       with_fileglob:
 #        - ../molecule/default/tasks/converge/deploy_dependencies/main.yml
 #        - ../molecule/default/tasks/converge/deploy_jannah/main.yml
-        - ../molecule/default/tasks/converge/deploy_jannah/main.yml
+        - ../molecule/default/tasks/converge/main.yml
       tags:
         - "deploy_dependencies"
         - "deploy_jannah"
