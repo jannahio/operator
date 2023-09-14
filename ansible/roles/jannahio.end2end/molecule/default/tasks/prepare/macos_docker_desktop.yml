@@ -96,7 +96,15 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-
+    - name: "Kubeflow install"
+      shell: |
+        while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
 #    - name: "arch -arm64 gem install ffi"
 #      shell: |
 #        arch -arm64 gem install ffi;
