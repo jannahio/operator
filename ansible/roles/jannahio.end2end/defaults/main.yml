@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/working/developer_environment_presentation/operator"
+              working_dir: "/Users/osmanjalloh/working/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -251,6 +251,9 @@ provisioner:
                   helm:
                     dex:
                       config:
+              deploy:
+                type: standalone
+                destination: docker-desktop
               secrets:
                 image_registry:
                   name: myregistrykey
@@ -346,6 +349,6 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/working/developer_environment_presentation/operator/tmp/EPHEMERAL"
+    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/working/operator/tmp/EPHEMERAL"
 verifier:
   name: ansible
