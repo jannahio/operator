@@ -1,9 +1,0 @@
----
-- name: "operator-sdk olm uninstall"
-  shell: |
-    operator-sdk olm uninstall;
-    exit 0;
-  async: 600
-  poll: 5
-  tags:
-    - "bootstrap_prepared_tasks_cleanup"

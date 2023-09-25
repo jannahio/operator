@@ -1,7 +1,0 @@
----
- - hosts: localhost
-   roles:
-   - jannahio.bootstrap
-   - jannahio.day1day2
-   - jannahio.end2end
-

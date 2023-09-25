@@ -130,6 +130,7 @@ molecule-destroy: molecule-reset
 
 # default molecule scenario test matrix: dependency, create, prepare
 molecule-create: jannah-config molecule-reset molecule-destroy
+molecule-create:
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd ansible/roles/jannahio.end2end && \
 	molecule $(ANSIBLE_VERBOSE_LEVEL) create;\
