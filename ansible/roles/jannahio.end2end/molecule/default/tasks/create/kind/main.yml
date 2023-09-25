@@ -11,10 +11,10 @@
         - "molecule_create"
         - "operator_e2e"
         - "debug_task"
-    - name: "Install kind 0.18.0 - Ubuntu/armd64"
+    - name: "Install kind 0.18.0 - Darwin/armd64"
       shell: |
-        go install sigs.k8s.io/kind@v0.18.0
-      when: ansible_facts['os_family'] == "Debian" and ansible_facts['architecture'] == "x86_64"
+        brew install kind;
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
       tags:
@@ -59,6 +59,49 @@
         kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
         -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Create cluster - Darwin(amd64)"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+        -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "arm64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Create cluster - Darwin(amd64)"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kind export kubeconfig --name {{ Jannah.stages.bootstrap.deploy.kind.name }}
+      when: ansible_facts['os_family'] == "Darwin"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "kubectl get pods -A"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kubectl get pods -A
+      when: ansible_facts['os_family'] == "Darwin"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       async: 600
