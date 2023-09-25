@@ -222,19 +222,7 @@ provisioner:
                   #                  <image> can be a partial image hash or
                   #                  an Ubuntu release version, codename or
                   #                  alias.
-#                  image: 22.10
-                  image: charm-dev
-                  kind:
-                    wait: 5m
-                    control_plane:
-                      image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
-                    nodes:
-                      arm64:
-                        image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
-                        arch: arm64
-                      amd64:
-                        image: kindest/node:v1.26.3@sha256:94eb63275ad6305210041cdb5aca87c8562cc50fa152dbec3fef8c58479db4ff
-                        arch: amd64
+                #                  image: 22.10
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
@@ -252,6 +240,18 @@ provisioner:
               deploy:
                 type: standalone
                 destination: docker-desktop
+                kind:
+                  name: jannah_kind
+                  wait: 5m
+                  #                  control_plane:
+                  #                    image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
+                  nodes:
+                    arm64:
+                      image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
+                      arch: arm64
+                    amd64:
+                      image: kindest/node:v1.26.3@sha256:94eb63275ad6305210041cdb5aca87c8562cc50fa152dbec3fef8c58479db4ff
+                      arch: amd64
               secrets:
                 image_registry:
                   name: myregistrykey
@@ -261,10 +261,10 @@ provisioner:
                   name: dex-certs
                   cert: ssl/tls.crt
                   key: ssl/tls.key
-#                  namespace: default
-#              testing:
-#                melecule:
-#                  MOLECULE_PROJECT_DIRECTORY:
+              #                  namespace: default
+              #              testing:
+              #                melecule:
+              #                  MOLECULE_PROJECT_DIRECTORY:
               charm:
                 metadata:
                   name: Jannah

@@ -4,7 +4,7 @@ featureGates:
   FeatureGateName: true
 nodes:
   - role: control-plane
-    image: {{ Jannah.stages.bootstrap.build.vm.kind.control_plane.image }}
+    image: {{ Jannah.stages.bootstrap.deploy.kind.nodes.arm64.image }}
     extraPortMappings:
       - containerPort: 80
         hostPort: 80
@@ -14,12 +14,12 @@ nodes:
       - hostPath: {{ Jannah.global.ansible.working_dir }}
         containerPath: /jannah/operator
     labels:
-      kubernetes.io/arch: amd64
+      kubernetes.io/arch: arm64
   - role: worker
-    image: {{ Jannah.stages.bootstrap.build.vm.kind.nodes.arm64.image }}
+    image: {{ Jannah.stages.bootstrap.deploy.kind.nodes.arm64.image }}
     labels:
-      kubernetes.io/arch: {{ Jannah.stages.bootstrap.build.vm.kind.nodes.arm64.arch }}
+      kubernetes.io/arch: {{ Jannah.stages.bootstrap.deploy.kind.nodes.arm64.arch }}
   - role: worker
-    image: {{ Jannah.stages.bootstrap.build.vm.kind.nodes.amd64.image }}
+    image: {{ Jannah.stages.bootstrap.deploy.kind.nodes.amd64.image }}
     labels:
-      kubernetes.io/arch: {{ Jannah.stages.bootstrap.build.vm.kind.nodes.amd64.arch }}
+      kubernetes.io/arch: {{ Jannah.stages.bootstrap.deploy.kind.nodes.amd64.arch }}

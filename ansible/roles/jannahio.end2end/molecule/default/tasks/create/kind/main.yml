@@ -1,21 +1,10 @@
 ---
-- name: "Kubernetes Kind tooling - Inline"
+- name: "Kubernetes Kind cluster tooling"
   block:
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
-      async: 600
-      poll: 5
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
-    - name: "Install kind 0.18.0 - Ubuntu/amd64"
-      shell: |
-        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.18.0/kind-linux-amd64
-        chmod +x ./kind
-        sudo mv ./kind /usr/local/bin/kind
-      when: ansible_facts['os_family'] == "Debian" and ansible_facts['architecture'] != "arm64"
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
       tags:
@@ -24,7 +13,7 @@
     - name: "Install kind 0.18.0 - Ubuntu/armd64"
       shell: |
         go install sigs.k8s.io/kind@v0.18.0
-      when: ansible_facts['os_family'] == "Debian" and ansible_facts['architecture'] == "arm64"
+      when: ansible_facts['os_family'] == "Debian" and ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
       tags:
@@ -38,11 +27,21 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-    - name: "Generate kind_config.yml"
+    - name: "Generate kind_config_arm64.yml"
       template:
-        src: "files/templates/kind_config.yml"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config.yml"
+        src: "files/templates/kind_config_arm64.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml"
         backup: yes
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Generate kind_config_amd64.yml"
+      template:
+        src: "files/templates/kind_config_amd64.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml"
+        backup: yes
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "arm64"
       tags:
         - "molecule_create"
         - "operator_e2e"
@@ -52,8 +51,8 @@
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        kind create cluster --name "{{ Jannah.stages.bootstrap.build.vm.name }}-kind" \
-        -v 100 --wait {{ Jannah.stages.bootstrap.build.vm.kind.wait }};
+        kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+        -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"

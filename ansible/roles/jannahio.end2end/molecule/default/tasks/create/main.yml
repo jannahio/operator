@@ -7,23 +7,37 @@
         - tasks/create/docker_desktop/main.yml
       loop_control:
         loop_var: create_docker_desktop_task_items
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "docker-desktop"
       tags:
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-#    - name: "Import kind inline tasks"
-#      include_tasks: '{{ create_inline_kind_inline_task_items }}'
-#      with_fileglob:
-#        - roles/jannahio.end2end/molecule/default/tasks/create/kind/inline.yml
-#        - roles/jannahio.end2end/molecule/default/tasks/create/kind/exec.yml
-#      loop_control:
-#        loop_var: create_inline_kind_inline_task_items
-#      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
-#      tags:
-#        - "multipass_infra"
-#        - "molecule_create"
-#        - "operator_e2e"
+        - "debug_task"
+    - name: "Import kind cluster creation tasks"
+      include_tasks: '{{ create_kind_cluster_task_items }}'
+      with_fileglob:
+        - roles/jannahio.end2end/molecule/default/tasks/create/kind/main.yml
+      loop_control:
+        loop_var: create_kind_cluster_task_items
+      #      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
+      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "kind"
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e"
+    #        - "debug_task"
+    - name: "Import k3ai cluster creation tasks"
+      include_tasks: '{{ create_kind_cluster_task_items }}'
+      with_fileglob:
+        - roles/jannahio.end2end/molecule/default/tasks/create/k3ai/main.yml
+      loop_control:
+        loop_var: create_kind_cluster_task_items
+      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "k3ai"
+      tags:
+        - "multipass_infra"
+        - "molecule_create"
+        - "operator_e2e"
+  #        - "debug_task"
   rescue:
     - name: "Deploy Jannah Exception"
       ansible.builtin.debug:

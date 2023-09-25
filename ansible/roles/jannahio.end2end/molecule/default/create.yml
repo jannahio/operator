@@ -15,6 +15,7 @@
           tags:
             - "molecule_create"
             - "operator_e2e"
+            - "debug_task"
       rescue:
         - name: "Create multipass exception is thrown"
           ansible.builtin.debug:

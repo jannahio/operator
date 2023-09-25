@@ -189,4 +189,7 @@ Introducing the Jannah Software Accelerator project.
         - K3ai
 ---------------------------------------------------------------------------------------------------------------
 Debug Utils
- - ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags debug_task;
+- export ANSIBLE_VAULT_DEFAULT_PASS_FILE=~/jannah-operator/ansible_defaultpass.txt
+- source boot.env.sh
+- cd ansible
+- ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags debug_task;
