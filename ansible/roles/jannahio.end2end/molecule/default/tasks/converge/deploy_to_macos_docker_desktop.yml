@@ -1,0 +1,158 @@
+---
+# # while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+- name: "Deploy Operator to MacOs Docker Desktop"
+  block:
+    - name: "Kubeflow install (standlone deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
+        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION"
+      when:  "{{ Jannah.stages.bootstrap.deploy.type }}" == "standalone"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "standalone_implementation"
+    - name: "Kubeflow install (local deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
+        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+      when: "{{ Jannah.stages.bootstrap.deploy.type }}" == "local"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Kubeflow install (full deployment)"
+      shell: |
+        while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+      when: "{{ Jannah.stages.bootstrap.deploy.type }}" == "full"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+    #    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
+    #      shell: |
+    #        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
+    #      tags:
+    #        - "docker_desktop_infra"
+    #        - "deploy_images"
+    #        - "molecule_converge"
+    #        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-arm64"
+      shell: |
+        docker run --name jannah-ubuntu-middleware-arm64 -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-amd64"
+      shell: |
+        docker run --name jannah-ubuntu-middleware-amd64 -d jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-streamos-middleware-arm64"
+      shell: |
+        docker run --name jannah-streamos-middleware-arm64 -d jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-streamos-middleware-amd64"
+      shell: |
+        docker run --name jannah-streamos-middleware-amd64 -d jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Docker Run jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+      shell: |
+        docker run --name jannah-ubuntu-frontend-web-arm64 -d jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+      shell: |
+        docker run --name jannah-ubuntu-frontend-web-amd64 -d jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-arm64"
+      shell: |
+        docker run --name jannah-streamos-frontend-web-arm64 -d jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-amd64"
+      shell: |
+        docker run --name jannah-streamos-frontend-web-amd64 -d jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  rescue:
+    - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
+      ansible.builtin.debug:
+        msg: 'Inline Prepare Operator MacOs Docker Desktop Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "multipass_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+  ignore_errors: false

@@ -1,0 +1,14 @@
+---
+- name: "Clear download directory for kustomize"
+  file:
+    path: "/tmp/install_kustomize"
+    state: absent
+  tags:
+    - "bootstrap_kustomize_cleanup"
+
+- name: "Clear /usr/local/bin/kustomize"
+  file:
+    path: "/usr/local/bin/kustomize"
+    state: absent
+  tags:
+    - "bootstrap_kustomize_cleanup"

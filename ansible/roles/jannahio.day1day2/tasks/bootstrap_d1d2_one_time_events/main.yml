@@ -1,0 +1,126 @@
+---
+# Implements:
+# https://juju.is/docs/sdk/set-up-your-development-environment
+# https://juju.is/docs/sdk/from-zero-to-hero-write-your-first-kubernetes-charm
+- name: "Set up charm development environment"
+  block:
+    # NOTE: 02/09/2022 - Osmanj
+    # This is a one time operation to bootstrap the python charm operator
+    # Create a VM, and mount local repository path,
+    # use Charmcraft to initialize the charm operator.
+    # Commit the initialized charm into git.
+#    - name: "Create an Ubuntu VM, so we can use charmcraft to bootstrap python based operator"
+#      shell: |
+#        multipass launch \
+#        -n "{{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }}" \
+#        -m "{{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.memory }}" \
+#        -c "{{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.cpus }}" \
+#        -d "{{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.disk }}";
+#      async: 600
+#      poll: 5
+#      register: bootstrap_charm_multipass_launch
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - debug: var=bootstrap_charm_multipass_launch
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#
+#    - name: "Mount the charm path, so we can initialized it with charmcraft"
+#      shell: |
+#        multipass mount {{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm \
+#        {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }}:{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - name: "Initialize lxd"
+#      shell: |
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- lxd init --auto;
+#      async: 600
+#      poll: 5
+#      register: bootstrap_charm_lxd_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - debug: var=bootstrap_charm_lxd_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - name: "install charmcraft, microk8s, and juju"
+#      shell: |
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- sudo snap install charmcraft --classic;
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- sudo snap install microk8s --channel 1.25-strict/stable;
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- sudo snap install juju --channel 3.0/stable;
+#      async: 600
+#      poll: 5
+#      register: bootstrap_charm_install_charmcraft
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - debug: var=bootstrap_charm_install_charmcraft
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - name: "Initialized Python charm operator"
+#      shell: |
+#        multipass exec {{ provisioner.inventory.group_vars.all.Jannah.stages.day1day2.charm.vm.name }} \
+#        -- charmcraft init -p {{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm;
+##      args:
+##        chdir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}/ansible/charm"
+#      async: 600
+#      poll: 5
+#      register: bootstrap_charm_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    - debug: var=bootstrap_charm_init
+#      tags:
+#        - "d1d2-juju-olm-install-one-time-event"
+#        - "d1d2-operator"
+#    # NOTE: 04/17/2022 - Osmanj
+#    # This is a one time operation to bootstrap the initial Openshift based operator for Jannah
+#    - name: "operator working directory"
+#      file:
+#        path: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+#        state: directory
+#        mode: 0755
+#      tags:
+#        - "d1d1_operator_create_workdir"
+#        - "d1d2-operator"
+#        - "molecule-notest"
+#        - "never"
+#    # NOTE: 04/17/2022 - Osmanj
+#    # This is a one time operation to bootstrap the initial Openshift based operator for Jannah
+#    - name: "install operator-sdk init project"
+#      shell: |
+#        operator-sdk init --plugins={{ Jannah.bootstrap[0].operator_sdk.init.plugins }} --domain {{ Jannah.bootstrap[0].operator_sdk.init.domain }}
+#      args:
+#        chdir: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+#      tags:
+#        - "d1d2-operator-sdk-init-project"
+#        - "d1d2-operator"
+#        - "molecule-notest"
+#        - "never"
+#    # NOTE: 04/17/2022 - Osmanj
+#    # This is a one time operation to bootstrap the initial Openshift based operator for Jannah
+#    - name: "install operator-sdk create api"
+#      shell: |
+#        operator-sdk create api --group {{ Jannah.bootstrap[0].operator_sdk.init.group }} --version {{ Jannah.bootstrap[0].operator_sdk.init.version }}  --kind {{ Jannah.bootstrap[0].operator_sdk.init.kind }} --generate-role
+#      args:
+#        chdir: "{{ Jannah.bootstrap[0].JANNAH_WORKING_DIR }}{{ Jannah.bootstrap[0].sub_dir }}"
+#      tags:
+#        - "d1d2-operator-sdk-create-api"
+#        - "d1d2-operator"
+#        - "molecule-notest"
+#        - "never"
+  rescue:
+    - name: "D1D2 Charm Bootstrapping Exception"
+      ansible.builtin.debug:
+        msg: 'D1D2 Charm Bootstrapping Exception'
+      register: debug_resources
+  ignore_errors: false

@@ -1,0 +1,14 @@
+edit ansible config
+    ansible/ansible.cfg
+        ansible_python_interpreter = jannah-operator/bin/python3.9
+
+
+cd jannah-operator;
+source ./boot.sh;
+cd ansible/
+ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags d1d2-olm-install, d1d2-blog-service-install
+ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags bootstrap_docker_root_cert_secret_debug
+
+
+https://gravitl.com/static/media/Kubernetes_Over_VPN_GRAVITL.e233720d.pdf
+https://docs.netmaker.org/

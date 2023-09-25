@@ -1,0 +1,22 @@
+---
+- name: "Check operator-sdk olm status"
+  shell: |
+    operator-sdk olm status
+  async: 100
+  poll: 5
+  register: olm_status_results
+  tags:
+    - "bootstrap_olm_status"
+
+#- name: "Check Pull docker image"
+#  docker_image:
+#    name: docker.io/osmanj515/jannah-operator-bundle
+#    tag: v0.0.1
+#    state: present
+#  register: docker_pull_status
+#  tags:
+#    - "bootstrap_olm_status"
+#
+#- debug: var=docker_pull_status
+#  tags:
+#    - "bootstrap_olm_status"

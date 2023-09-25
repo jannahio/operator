@@ -1,0 +1,12 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        Jannah:
+          stages:
+            bootstrap:
+              laptop:
+                provision_scripts:
+      localhost:
+        name: localhost

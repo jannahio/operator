@@ -1,0 +1,71 @@
+---
+- name: "Remove Builds for streamos frontend docker images"
+  block:
+    - name: "Remove /images/streamos/frontend directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove frontend/streamos.frontend.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove streamos/streamos.frontend.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove Build for StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-arm64"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove Build for StreamOs frontend image - jallohmediabuild/jannah-streamos-frontend-web-amd64"
+      shell: |
+        docker image rm -f jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  rescue:
+    - name: "Remove Builds for StreamOs Frontend Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Remove Builds for StreamOs Frontend Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_frontend_images"
+        - "build_streamos_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+  ignore_errors: false

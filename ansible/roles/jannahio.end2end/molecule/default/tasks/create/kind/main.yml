@@ -1,0 +1,75 @@
+---
+- name: "Kubernetes Kind cluster tooling"
+  block:
+    - name: "Install kind 0.18.0 - Darwin(arm64)"
+      shell: |
+        brew install kind;
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Install kind 0.18.0 - Ubuntu/armd64"
+      shell: |
+        go install sigs.k8s.io/kind@v0.18.0
+      when: ansible_facts['os_family'] == "Debian" and ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Generate kind_config_arm64.yml"
+      template:
+        src: "files/templates/kind_config_arm64.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml"
+        backup: yes
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Generate kind_config_amd64.yml"
+      template:
+        src: "files/templates/kind_config_amd64.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml"
+        backup: yes
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "arm64"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+#    kind create cluster --name "{{ Jannah.stages.bootstrap.build.vm.name }}-kind" \
+#    --config=kind_config.yml -v 100 --wait {{ Jannah.stages.bootstrap.build.vm.kind.wait }};
+    - name: "Create cluster - Darwin(arm64)"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+        -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+  rescue:
+    - name: "Kubernetes Kind Tooling Exception"
+      ansible.builtin.debug:
+        msg: 'Kubernetes Kind Tooling Exception'
+      register: molecule_create_inline_debug_resources
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+  ignore_errors: false

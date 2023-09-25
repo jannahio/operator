@@ -1,0 +1,28 @@
+---
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+    - name: "Destroy environment for Jannah"
+      block:
+        - name: "Import destroy tasks"
+          include_tasks: '{{ destroy_task_items }}'
+          with_fileglob:
+            - tasks/destroy/main.yml
+          loop_control:
+            loop_var: destroy_task_items
+          tags:
+            - "molecule_destroy"
+            - "operator_e2e"
+      rescue:
+        - name: "Prepare exception is thrown"
+          ansible.builtin.debug:
+            msg: 'Prepare exception is thrown'
+        - name: Re-emit failure
+          vars:
+            failed_task:
+              result: '{{ ansible_failed_result }}'
+          fail:
+            msg: '{{ failed_task }}'
