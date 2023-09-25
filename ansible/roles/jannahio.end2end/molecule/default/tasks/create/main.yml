@@ -25,7 +25,7 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-    #        - "debug_task"
+        - "debug_task"
     - name: "Import k3ai cluster creation tasks"
       include_tasks: '{{ create_kind_cluster_task_items }}'
       with_fileglob:
@@ -37,7 +37,7 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
-  #        - "debug_task"
+        - "debug_task"
   rescue:
     - name: "Deploy Jannah Exception"
       ansible.builtin.debug:
