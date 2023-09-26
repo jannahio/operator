@@ -576,6 +576,8 @@ Jannah:
       deploy:
         type: standalone
         destination: kind
+        docker_desktop:
+          name: docker-desktop
         k3ai:
           name: jannah-k3ai
         kind:

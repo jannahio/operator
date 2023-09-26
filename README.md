@@ -189,6 +189,7 @@ Introducing the Jannah Software Accelerator project.
         - K3ai
 ---------------------------------------------------------------------------------------------------------------
 Debug Utils
+-Ansible
 - export ANSIBLE_VAULT_DEFAULT_PASS_FILE=~/jannah-operator/ansible_defaultpass.txt
 - source boot.env.sh
 - cd ansible
