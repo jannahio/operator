@@ -13,6 +13,7 @@
         - "molecule_converge"
         - "operator_e2e"
         - "standalone_implementation"
+        - "debug_task"
     - name: "Import tasks to deploy build to streamos nodes - StreamOS"
       include_tasks: '{{ converge_deploy_to_streamos_nodes_task_items }}'
       with_fileglob:

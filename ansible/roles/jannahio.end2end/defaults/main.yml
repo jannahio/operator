@@ -575,7 +575,7 @@ Jannah:
               config:
       deploy:
         type: standalone
-        destination: k3ai
+        destination: kind
         k3ai:
           name: jannah-k3ai
         kind:

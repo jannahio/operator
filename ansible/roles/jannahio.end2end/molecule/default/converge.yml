@@ -17,4 +17,5 @@
         - "molecule_converge"
         - "deploy_jannah"
         - "operator_e2e"
+        - "debug_task"
 
