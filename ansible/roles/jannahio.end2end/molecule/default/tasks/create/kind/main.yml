@@ -4,17 +4,7 @@
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
-        - "debug_task"
-    - name: "Install kind 0.18.0 - Darwin/armd64"
-      shell: |
-        brew install kind;
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['os_family'] == "Darwin"
       async: 600
       poll: 5
       tags:

@@ -240,6 +240,8 @@ provisioner:
               deploy:
                 type: standalone
                 destination: docker-desktop
+                k3ai:
+                  name: jannah-k3ai
                 kind:
                   name: jannah-kind
                   wait: 5m

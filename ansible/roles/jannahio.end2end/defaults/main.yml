@@ -575,7 +575,9 @@ Jannah:
               config:
       deploy:
         type: standalone
-        destination: kind
+        destination: k3ai
+        k3ai:
+          name: jannah-k3ai
         kind:
           name: jannah-kind
           wait: 5m
@@ -671,3 +673,7 @@ Jannah:
     feedback:
       tasks:
         - name: Build Machine Learning Models of Jannah Services
+  env:
+    K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
+    KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
+    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/IdeaProjects/debug/operator/tmp/EPHEMERAL"

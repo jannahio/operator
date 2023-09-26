@@ -2,11 +2,12 @@
 - name: "Cleanup Jannah Environment Tasks"
   block:
     - name: "Import cleanup tasks - Darwin"
-      include_tasks: '{{ cleanup_kind_task_darwin_items }}'
+      include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
         - prepared_artifacts/main.yml
+        - cleanup/clusters/kind/main.yml
       loop_control:
-        loop_var: cleanup_kind_task_darwin_items
+        loop_var: cleanup_task_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "molecule_cleanup"
