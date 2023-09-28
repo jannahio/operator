@@ -79,23 +79,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Create kubeflow download directory"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
-        state: directory
-        mode: 0755
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_prepare"
-        - "operator_e2e"
-    - name: "Read-write git checkout kubeflow/manifests.git"
-      ansible.builtin.git:
-        repo: "https://github.com/kubeflow/manifests.git"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_prepare"
-        - "operator_e2e"
 #    - name: "arch -arm64 gem install ffi"
 #      shell: |
 #        arch -arm64 gem install ffi;

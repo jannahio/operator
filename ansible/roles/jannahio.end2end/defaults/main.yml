@@ -574,7 +574,7 @@ Jannah:
             dex:
               config:
       deploy:
-        type: local
+        type: full
         destination: kind
         docker_desktop:
           name: docker-desktop

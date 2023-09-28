@@ -79,12 +79,33 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
+    - name: "Create kubeflow download directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+        state: directory
+        mode: 0755
+      when: jannah_stages_bootstrap_deploy_type == "full"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Read-write git checkout kubeflow/manifests.git"
+      ansible.builtin.git:
+        repo: "https://github.com/kubeflow/manifests.git"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+      when: jannah_stages_bootstrap_deploy_type == "full"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
     - name: "Kubeflow install (full deployment)"
       environment:
         - PIPELINE_VERSION: "2.0.1"
-        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        - KUBECONFIG: "config"
       shell: |
-        cp ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config ${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests;
+        cp ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config ${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests/;
         while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
       when: jannah_stages_bootstrap_deploy_type == "full"
       args:
