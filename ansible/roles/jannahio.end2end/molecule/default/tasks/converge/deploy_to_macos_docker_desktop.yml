@@ -10,13 +10,18 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment)"
+    - name: "Kubeflow install (standalone deployment) - cluster-scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
-      when: jannah_stages_bootstrap_deploy_type == "standalone"
+        kubectl apply -k \
+        "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
+      when: (
+            jannah_stages_bootstrap_deploy_type == "standalone"
+            or
+            jannah_stages_bootstrap_deploy_type == "local"
+            )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
@@ -25,14 +30,18 @@
         - "operator_e2e"
         - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment)"
+    - name: "Kubeflow install (standalone deployment) - wait for crd/applications.app.k8s.io"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
-      when: jannah_stages_bootstrap_deploy_type == "standalone"
+      when: (
+        jannah_stages_bootstrap_deploy_type == "standalone"
+        or
+        jannah_stages_bootstrap_deploy_type == "local"
+        )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
@@ -41,7 +50,7 @@
         - "operator_e2e"
         - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment)"
+    - name: "Kubeflow install (standalone deployment) - dev?ref"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -56,12 +65,10 @@
         - "operator_e2e"
         - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (local deployment)"
+    - name: "Kubeflow install (local deployment) - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
       shell: |
-        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
-        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
       when: jannah_stages_bootstrap_deploy_type == "local"
       tags:
