@@ -10,6 +10,14 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
     - name: "Kubeflow install (standalone deployment) - cluster-scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -40,7 +48,7 @@
       when: (
         jannah_stages_bootstrap_deploy_type == "standalone"
         or
-        jannah_stages_bootstrap_deploy_type == "local"
+        jannah_stages_bootstrap_deploy_type == "local"   
         )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
@@ -117,10 +125,12 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
+#    cp kubeconfig_path "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/";
+#    export KUBECONFIG="${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/config";
     - name: "Kubeflow install (full deployment)"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        cp kubeconfig_path "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/";
-        export KUBECONFIG="${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/config";
         while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
       when: jannah_stages_bootstrap_deploy_type == "full"
       args:
@@ -141,7 +151,7 @@
     - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
         docker run --name jannah-ubuntu-middleware-arm64 -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:
@@ -153,7 +163,7 @@
     - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-amd64"
       shell: |
         docker run --name jannah-ubuntu-middleware-amd64 -d jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:
@@ -165,7 +175,7 @@
     - name: "Docker run jallohmediabuild/jannah-streamos-middleware-arm64"
       shell: |
         docker run --name jannah-streamos-middleware-arm64 -d jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:
@@ -177,7 +187,7 @@
     - name: "Docker run jallohmediabuild/jannah-streamos-middleware-amd64"
       shell: |
         docker run --name jannah-streamos-middleware-amd64 -d jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:
@@ -189,7 +199,7 @@
     - name: "Docker Run jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
       shell: |
         docker run --name jannah-ubuntu-frontend-web-arm64 -d jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       tags:
@@ -200,7 +210,7 @@
     - name: "Docker run jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
       shell: |
         docker run --name jannah-ubuntu-frontend-web-amd64 -d jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       tags:
@@ -211,7 +221,7 @@
     - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-arm64"
       shell: |
         docker run --name jannah-streamos-frontend-web-arm64 -d jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:
@@ -224,7 +234,7 @@
     - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-amd64"
       shell: |
         docker run --name jannah-streamos-frontend-web-amd64 -d jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5
       args:

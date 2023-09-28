@@ -41,7 +41,7 @@
         - "remove_ubuntu_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Build Ubuntu image - jallohmediabuild/jannah-ubuntu-operator-arm64"
+    - name: "Remove jallohmediabuild/jannah-ubuntu-operator-arm64"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
@@ -54,7 +54,7 @@
         - "remove_ubuntu_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Build Ubuntu image - jallohmediabuild/jannah-ubuntu-operator-amd64"
+    - name: "Remove jallohmediabuild/jannah-ubuntu-operator-amd64"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
