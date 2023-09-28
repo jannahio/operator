@@ -1,6 +1,19 @@
 ---
 - name: "Kubernetes Kind cluster tooling cleanup"
   block:
+    - name: "Delete cluster"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kind delete clusters "{{ Jannah.stages.bootstrap.deploy.kind.name }}";
+        exit 0;
+      when: ansible_facts['os_family'] == "Darwin"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task"
     - name: "unalias k3ai"
       shell: |
         unalias k3ai;
@@ -26,19 +39,6 @@
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
         state: absent
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
-        - "debug_task"
-    - name: "Delete cluster"
-      environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
-      shell: |
-        kind delete clusters "{{ Jannah.stages.bootstrap.deploy.kind.name }}";
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
-      async: 600
-      poll: 5
       tags:
         - "molecule_create"
         - "operator_e2e"
