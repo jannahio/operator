@@ -42,12 +42,12 @@
         - "debug_task"
 #    kind create cluster --name "{{ Jannah.stages.bootstrap.build.vm.name }}-kind" \
 #    --config=kind_config.yml -v 100 --wait {{ Jannah.stages.bootstrap.build.vm.kind.wait }};
+# --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml" \
     - name: "Create cluster - Darwin(arm64)"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
-        --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml" \
         -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
       args:
@@ -58,12 +58,12 @@
         - "molecule_create"
         - "operator_e2e"
         - "debug_task"
+  # --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml" \
     - name: "Create cluster - Darwin(amd64)"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
-        --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml" \
         -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "arm64"
       args:
