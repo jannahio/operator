@@ -13,9 +13,12 @@
     - name: "Kubeflow install (standalone deployment)"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
       when: jannah_stages_bootstrap_deploy_type == "standalone"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
@@ -25,10 +28,13 @@
     - name: "Kubeflow install (standalone deployment)"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
       when: jannah_stages_bootstrap_deploy_type == "standalone"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
@@ -38,9 +44,12 @@
     - name: "Kubeflow install (standalone deployment)"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
       when: jannah_stages_bootstrap_deploy_type == "standalone"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
