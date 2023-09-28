@@ -239,7 +239,7 @@ provisioner:
                       config:
               deploy:
                 type: standalone
-                destination: docker-desktop
+                destination: kind
                 docker_desktop:
                   name: docker-desktop
                 k3ai:
