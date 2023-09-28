@@ -47,7 +47,7 @@
         - build_streamos_images.yml
       loop_control:
         loop_var: prepare_build_streamos_images_task_items
-      when: ansible_facts['os_family'] == "Darwin" or ansible_facts['os_family'] != "Debian"
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
@@ -58,7 +58,7 @@
         - build_ubuntu_images.yml
       loop_control:
         loop_var: prepare_build_ubuntu_images_task_items
-      when: ansible_facts['os_family'] == "Darwin" or ansible_facts['os_family'] == "Debian"
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
