@@ -68,8 +68,11 @@
     - name: "Kubeflow install (local deployment) - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       when: jannah_stages_bootstrap_deploy_type == "local"
       tags:
         - "docker_desktop_infra"
@@ -77,7 +80,11 @@
         - "operator_e2e"
         - "debug_task"
     - name: "Kubeflow install (full deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
+        cp ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config ${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests;
         while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
       when: jannah_stages_bootstrap_deploy_type == "full"
       args:
