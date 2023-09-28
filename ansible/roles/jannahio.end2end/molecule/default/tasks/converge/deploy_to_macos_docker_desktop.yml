@@ -2,73 +2,83 @@
 # # while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
 - name: "Deploy Operator to MacOs Docker Desktop"
   block:
-#    - name: "Kubeflow install (standlone deployment) A"
-#      environment:
-#        - PIPELINE_VERSION: "2.0.1"
-#      shell: |
-#        ls -lrt;
-#        echo "{{ Jannah.stages.bootstrap.deploy.type }}"
-##      when: "{{ Jannah.stages.bootstrap.deploy.type }}" == "standalone"
-#      tags:
-#        - "build_images"
-#        - "molecule_prepare"
-#        - "operator_e2e"
-#        - "debug_task"
-#    - name: "Kubeflow install (standlone deployment)"
-#      environment:
-#        - PIPELINE_VERSION: "2.0.1"
-#      shell: |
-#        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
-#        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
-#        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_converge"
-#        - "operator_e2e"
-#        - "standalone_implementation"
-#        - "debug_task1"
-#    - name: "Kubeflow install (local deployment)"
-#      environment:
-#        - PIPELINE_VERSION: "2.0.1"
-#      shell: |
-#        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
-#        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
-#        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
-#      when: "{{ Jannah.stages.bootstrap.deploy.type }}" == "local"
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_converge"
-#        - "operator_e2e"
-#        - "debug_task1"
-#    - name: "Kubeflow install (full deployment)"
-#      shell: |
-#        while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
-#      when: "{{ Jannah.stages.bootstrap.deploy.type }}" == "full"
-#      args:
-#        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_converge"
-#        - "operator_e2e"
-#        - "debug_task1"
-#    #    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
-#    #      shell: |
-#    #        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
-#    #      tags:
-#    #        - "docker_desktop_infra"
-#    #        - "deploy_images"
-#    #        - "molecule_converge"
-#    #        - "operator_e2e"
-    - name: "Debug Tasks"
-      shell: |
-        echo "Debug tasks"
-        echo "{{ Jannah.stages.bootstrap.deploy.type }}"
-      when: ansible_facts['architecture'] == "x86_64" and "{{ Jannah.stages.bootstrap.deploy.type }}" == "standalone"
+    - name: "set_fact jannah_stages_bootstrap_deploy_type"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
       tags:
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
+    - name: "Kubeflow install (standalone deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
+      when: jannah_stages_bootstrap_deploy_type == "standalone"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "standalone_implementation"
+        - "debug_task"
+    - name: "Kubeflow install (standalone deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
+        exit 0;
+      when: jannah_stages_bootstrap_deploy_type == "standalone"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "standalone_implementation"
+        - "debug_task"
+    - name: "Kubeflow install (standalone deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
+      when: jannah_stages_bootstrap_deploy_type == "standalone"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "standalone_implementation"
+        - "debug_task"
+    - name: "Kubeflow install (local deployment)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
+        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+      when: jannah_stages_bootstrap_deploy_type == "local"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Kubeflow install (full deployment)"
+      shell: |
+        while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
+      when: jannah_stages_bootstrap_deploy_type == "full"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    #    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
+    #      shell: |
+    #        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
+    #      tags:
+    #        - "docker_desktop_infra"
+    #        - "deploy_images"
+    #        - "molecule_converge"
+    #        - "operator_e2e"
     - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-arm64"
       shell: |
         docker run --name jannah-ubuntu-middleware-arm64 -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;

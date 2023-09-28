@@ -13,7 +13,6 @@
         name: '{{ Jannah.global.namespace }}'
   tags:
     - "bootstrap_jannah_namespace"
-    - ""
 
 - name: 'Create Bootstrap Configmap'
   kubernetes.core.k8s:

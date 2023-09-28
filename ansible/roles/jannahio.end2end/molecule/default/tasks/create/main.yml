@@ -1,13 +1,21 @@
 ---
 - name: "Deploy Jannah"
   block:
-    - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.type }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Import Kubernetes cluster create tasks"
       include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:
         - tasks/create/docker_desktop/main.yml
       loop_control:
         loop_var: create_docker_desktop_task_items
-      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "docker-desktop"
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "multipass_infra"
         - "molecule_create"
@@ -20,7 +28,7 @@
       loop_control:
         loop_var: create_kind_cluster_task_items
       #      when: (ansible_facts['os_family'] == "Debian") or (ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64")
-      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "kind"
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "multipass_infra"
         - "molecule_create"
@@ -32,7 +40,7 @@
         - roles/jannahio.end2end/molecule/default/tasks/create/k3ai/main.yml
       loop_control:
         loop_var: create_kind_cluster_task_items
-      when: ansible_facts['os_family'] == "Darwin" and "{{ Jannah.stages.bootstrap.deploy.destination }}" == "k3ai"
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "k3ai"
       tags:
         - "multipass_infra"
         - "molecule_create"
