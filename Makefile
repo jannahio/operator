@@ -78,7 +78,7 @@ jannah-python: jannah-boot-credentials
     $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 
-jannah-config: jannah-python
+jannah-config:
 	# Make sure the molecule config is available
 	if [ -f "$(JANNAHHOME)/jannah-operator/molecule.yml" ]; \
     then \
@@ -157,18 +157,29 @@ molecule-test: jannah-config
 docker-desktop-set-full-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
-
 docker-desktop-set-local-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
-
 docker-desktop-set-standalone-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+kind-set-full-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+kind-set-local-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+kind-set-standalone-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
 
-docker-desktop-full-mode: docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
-docker-desktop-local-mode: docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
-docker-desktop-standalone-mode: docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
+docker-desktop-full-mode: jannah-python docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+docker-desktop-local-mode: jannah-python docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+docker-desktop-standalone-mode: jannah-python docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
+
+kind-full-mode: jannah-python kind-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+kind-docker-desktopKIND-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
 
 clean: molecule-destroy jannah-python-clean
 
