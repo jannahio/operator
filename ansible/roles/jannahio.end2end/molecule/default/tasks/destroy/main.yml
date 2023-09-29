@@ -23,7 +23,7 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY"
+    - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}"
         state: absent
@@ -35,6 +35,7 @@
       file:
         path: "{{ Jannah.global.ansible.working_dir }}/tmp"
         state: absent
+      no_log: false
       tags:
         - "cleanup_tmp_directory"
         - "molecule_cleanup"
@@ -53,3 +54,4 @@
       fail:
         msg: '{{ failed_task }}'
   ignore_errors: false
+  no_log: false
