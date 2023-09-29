@@ -184,7 +184,7 @@ kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molec
 docker-desktop-matrix: docker-desktop-full-mode docker-desktop-local-mode docker-desktop-standalone-mode
 kind-matrix: kind-full-mode kind-docker-desktopKIND-local-mode kind-standalone-mode
 
-matrix: docker-desktop-matrix kind-matrix
+jannah-deployments: docker-desktop-matrix kind-matrix
 
 clean: molecule-destroy jannah-python-clean
 
