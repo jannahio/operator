@@ -239,7 +239,7 @@ provisioner:
                     dex:
                       config:
               deploy:
-                type: standalone
+                type: full
                 destination: kind
                 docker_desktop:
                   name: docker-desktop

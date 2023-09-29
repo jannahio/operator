@@ -54,7 +54,7 @@
         - "cleanup_streamos_build_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Build StreamOs image jannah-streamos-operator-amd64"
+    - name: "Remove StreamOs image jannah-streamos-operator-amd64"
       environment:
         - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
       shell: |
