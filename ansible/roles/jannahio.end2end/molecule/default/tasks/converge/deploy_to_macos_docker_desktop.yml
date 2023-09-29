@@ -145,7 +145,7 @@
       environment:
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/config"
       shell: |
-        KUBECONFIG=../config kubectl get pods -A
+        KUBECONFIG=../config while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
       when: jannah_stages_bootstrap_deploy_type == "full" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
