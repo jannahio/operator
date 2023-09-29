@@ -18,7 +18,7 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment) - cluster-scoped-resources"
+    - name: "Kubeflow install (standalone deployment) kind cluster scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -26,19 +26,42 @@
         kubectl apply -k \
         "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
       when: (
-            jannah_stages_bootstrap_deploy_type == "standalone"
-            or
-            jannah_stages_bootstrap_deploy_type == "local"
-            )
+             (
+              jannah_stages_bootstrap_deploy_type == "standalone"
+              or
+              jannah_stages_bootstrap_deploy_type == "local"
+             ) 
+            and
+            jannah_stages_bootstrap_deploy_destination == "kind"
+          )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment) - wait for crd/applications.app.k8s.io"
+    - name: "Kubeflow install (standalone deployment) docker-desktop cluster scoped-resources"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k \
+        "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
+      when: (
+        (
+        jannah_stages_bootstrap_deploy_type == "standalone"
+        or
+        jannah_stages_bootstrap_deploy_type == "local"
+        )
+        and
+        jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        )
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Kubeflow install (standalone deployment) kind cluster - wait for crd/applications.app.k8s.io"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -46,9 +69,13 @@
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
       when: (
+        (
         jannah_stages_bootstrap_deploy_type == "standalone"
         or
-        jannah_stages_bootstrap_deploy_type == "local"   
+        jannah_stages_bootstrap_deploy_type == "local"
+        )
+        and
+        jannah_stages_bootstrap_deploy_destination == "kind"
         )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
@@ -56,24 +83,53 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (standalone deployment) - dev?ref"
+    - name: "Kubeflow install (standalone deployment) docker-desktop cluster - wait for crd/applications.app.k8s.io"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
+        exit 0;
+      when: (
+        (
+        jannah_stages_bootstrap_deploy_type == "standalone"
+        or
+        jannah_stages_bootstrap_deploy_type == "local"
+        )
+        and
+        jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        )
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Kubeflow install (standalone deployment) - kind - dev?ref"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
-      when: jannah_stages_bootstrap_deploy_type == "standalone"
+      when: jannah_stages_bootstrap_deploy_type == "standalone" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "standalone_implementation"
         - "debug_task"
-    - name: "Kubeflow install (local deployment) - platform-agnostic-pns"
+    - name: "Kubeflow install (standalone deployment) - docker-desktop - dev?ref"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
+      when: jannah_stages_bootstrap_deploy_type == "standalone" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Kubeflow install (local deployment) - kind - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
         - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -81,7 +137,20 @@
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
-      when: jannah_stages_bootstrap_deploy_type == "local"
+      when: jannah_stages_bootstrap_deploy_type == "local" and jannah_stages_bootstrap_deploy_destination == "kind"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Kubeflow install (local deployment) - docker-desktop - platform-agnostic-pns"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+      shell: |
+        kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      when: jannah_stages_bootstrap_deploy_type == "local" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
