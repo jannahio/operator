@@ -13,9 +13,9 @@
     - name: "get-mac.k3ai.in - Darwin(amd64)"
       shell: |
         wget https://github.com/k3ai/k3ai/releases/download/1.0.1/k3ai.darwin.amd64
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin"
-      when: ansible_facts['os_family'] == "Darwin"
       async: 600
       poll: 5
       tags:
@@ -24,11 +24,36 @@
         - "debug_task1"
     - name: "get-mac.k3ai.in - Darwin(arm64)"
       shell: |
-        mv k3ai.darwin.amd64 k3ai;
-        chmod +x k3ai
+        wget https://github.com/k3ai/k3ai/releases/download/1.0.1/k3ai.darwin.armd64
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin"
-      when: ansible_facts['os_family'] == "Darwin"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task1"
+    - name: "get-mac.k3ai.in - Darwin(amd64)"
+      shell: |
+        mv k3ai.darwin.amd64 k3ai;
+        chmod +x k3ai
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin"
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "debug_task1"
+    - name: "get-mac.k3ai.in - Darwin(arm64)"
+      shell: |
+        mv k3ai.darwin.arm64 k3ai;
+        chmod +x k3ai
+      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin"
       async: 600
       poll: 5
       tags:

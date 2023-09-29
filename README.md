@@ -177,19 +177,16 @@ Introducing the Jannah Software Accelerator project.
         - deploy to:
             - docker desktop
             - kind
-            - K3ai
     - Local Deployment
         - https://www.kubeflow.org/docs/components/pipelines/v1/installation/localcluster-deployment/
         - deploy to:
             - docker desktop
             - kind
-            - K3ai
 - Full Kubeflow deployment
     - https://www.kubeflow.org/docs/components/pipelines/v1/installation/overview/#full-kubeflow-deployment
     - deploy to:
         - docker desktop
         - kind
-        - K3ai
 ---------------------------------------------------------------------------------------------------------------
 Debug Utils
 -Ansible

@@ -154,5 +154,21 @@ molecule-test: jannah-config
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
+docker-desktop-set-full-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+
+docker-desktop-set-local-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+
+docker-desktop-set-standalone-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+
+docker-desktop-full-mode: docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+docker-desktop-local-mode: docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+docker-desktop-standalone-mode: docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
 
 clean: molecule-destroy jannah-python-clean
+

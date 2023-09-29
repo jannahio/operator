@@ -19,36 +19,12 @@
                                                         jannah_stages_bootstrap_deploy_destination == "docker-desktop"
                                                         or
                                                         jannah_stages_bootstrap_deploy_destination == "kind"
-                                                        or
-                                                        jannah_stages_bootstrap_deploy_destination == "k3ai"
                                                         )
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Import tasks to deploy build to streamos nodes - StreamOS"
-      include_tasks: '{{ converge_deploy_to_streamos_nodes_task_items }}'
-      with_fileglob:
-        - deploy_to_streamos_nodes.yml
-      loop_control:
-        loop_var: converge_deploy_to_streamos_nodes_task_items
-      when: ansible_facts['os_family'] != "Darwin" and ansible_facts['os_family'] != "Debian"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Import tasks to deploy builds to ubuntu nodes"
-      include_tasks: '{{ converge_deploy_to_ubuntu_nodes_task_items }}'
-      with_fileglob:
-        - deploy_to_ubuntu_nodes.yml
-      loop_control:
-        loop_var: converge_deploy_to_ubuntu_nodes_task_items
-      when: ansible_facts['os_family'] == "Debian"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
   rescue:
     - name: "Deploy Jannah Tasks Exception"
       ansible.builtin.debug:

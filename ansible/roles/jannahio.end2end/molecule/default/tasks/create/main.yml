@@ -34,18 +34,6 @@
         - "molecule_create"
         - "operator_e2e"
         - "debug_task"
-    - name: "Import k3ai cluster creation tasks"
-      include_tasks: '{{ create_kind_cluster_task_items }}'
-      with_fileglob:
-        - tasks/create/k3ai/main.yml
-      loop_control:
-        loop_var: create_kind_cluster_task_items
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "k3ai"
-      tags:
-        - "multipass_infra"
-        - "molecule_create"
-        - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Deploy Jannah Exception"
       ansible.builtin.debug:
