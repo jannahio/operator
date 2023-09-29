@@ -13,7 +13,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "unalias k3ai"
       shell: |
         unalias k3ai;
@@ -24,7 +23,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task"
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew uninstall kind;
@@ -34,7 +32,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
@@ -42,7 +39,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Kubernetes Kind Tooling Cleanup Exception"
       ansible.builtin.debug:
@@ -51,7 +47,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -62,5 +57,4 @@
         - "molecule_create"
         - "operator_e2e"
         - "debug_task"
-        -
   ignore_errors: false

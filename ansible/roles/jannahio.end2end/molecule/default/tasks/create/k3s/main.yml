@@ -9,7 +9,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "get-mac.k3ai.in - Darwin(amd64)"
       shell: |
         wget https://github.com/k3ai/k3ai/releases/download/1.0.1/k3ai.darwin.amd64
@@ -21,7 +20,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "get-mac.k3ai.in - Darwin(arm64)"
       shell: |
         wget https://github.com/k3ai/k3ai/releases/download/1.0.1/k3ai.darwin.armd64
@@ -33,7 +31,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "get-mac.k3ai.in - Darwin(amd64)"
       shell: |
         mv k3ai.darwin.amd64 k3ai;
@@ -46,7 +43,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "get-mac.k3ai.in - Darwin(arm64)"
       shell: |
         mv k3ai.darwin.arm64 k3ai;
@@ -59,7 +55,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "alias k3ai"
       shell: |
         alias k3ai="${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin/k3ai";
@@ -69,7 +64,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task1"
     - name: "alias k3ai"
       shell: |
         ${MOLECULE_EPHEMERAL_DIRECTORY}/k3ai/bin/k3ai cluster deploy -t k3s -n "{{ Jannah.stages.bootstrap.deploy.k3ai.name }}";
@@ -79,7 +73,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task1"
   rescue:
     - name: "Kubernetes Kind Tooling Exception"
       ansible.builtin.debug:
@@ -88,7 +81,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -98,5 +90,4 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

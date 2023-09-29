@@ -8,7 +8,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "set_fact kind_cluster_kubeconfig"
       ansible.builtin.set_fact:
         kind_cluster_kubeconfig: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config
@@ -16,7 +15,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -24,7 +22,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
@@ -34,7 +31,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
       file:
         path: $MOLECULE_EPHEMERAL_DIRECTORY/kind/
@@ -43,7 +39,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
 #    - name: "Generate kind_config_arm64.yml"
 #      template:
 #        src: "files/templates/kind_config_arm64.yml"
@@ -53,7 +48,6 @@
 #      tags:
 #        - "molecule_create"
 #        - "operator_e2e"
-#        - "debug_task"
 #    - name: "Generate kind_config_amd64.yml"
 #      template:
 #        src: "files/templates/kind_config_amd64.yml"
@@ -63,7 +57,6 @@
 #      tags:
 #        - "molecule_create"
 #        - "operator_e2e"
-#        - "debug_task"
     - name: "Create cluster - Darwin(arm64)"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -78,7 +71,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
   # --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml" \
     - name: "Create cluster - Darwin(amd64)"
       environment:
@@ -94,7 +86,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "kind export kubeconfig to /kind/config - Darwin(amd64)"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -108,7 +99,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "kubectl get pods -A"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -122,7 +112,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Kubernetes Kind Tooling Exception"
       ansible.builtin.debug:
@@ -131,7 +120,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -141,6 +129,4 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
-        -
   ignore_errors: false

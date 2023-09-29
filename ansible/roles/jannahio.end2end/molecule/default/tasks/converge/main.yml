@@ -8,7 +8,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Import converge  docker desktop tasks - Darwin"
       include_tasks: '{{ converge_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -24,7 +23,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Deploy Jannah Tasks Exception"
       ansible.builtin.debug:

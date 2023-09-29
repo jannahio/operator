@@ -9,7 +9,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -17,7 +16,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) kind cluster scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -40,7 +38,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) docker-desktop cluster scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -60,7 +57,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) kind cluster - wait for crd/applications.app.k8s.io"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -83,7 +79,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) docker-desktop cluster - wait for crd/applications.app.k8s.io"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -103,7 +98,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) - kind - dev?ref"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -117,7 +111,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (standalone deployment) - docker-desktop - dev?ref"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -128,7 +121,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (local deployment) - kind - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -142,7 +134,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (local deployment) - docker-desktop - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -155,7 +146,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Create kubeflow download directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/manifests"
@@ -166,7 +156,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task"
     - name: "Read-write git checkout kubeflow/manifests.git"
       ansible.builtin.git:
         repo: "https://github.com/kubeflow/manifests.git"
@@ -176,16 +165,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task"
-#    - name: "Copy Kubeconfig for Kubeflow install (full deployment)"
-#      ansible.builtin.copy:
-#        src: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
-#        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow/config"
-#      when: jannah_stages_bootstrap_deploy_type == "full"
-#      tags:
-#        - "molecule_create"
-#        - "operator_e2e"
-#        - "debug_task"
     - name: "set_fact kubeconfig_path"
       ansible.builtin.set_fact:
         kubeconfig_path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
@@ -193,9 +172,7 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "kind export kubeconfig to /kubeflow/config - Darwin(amd64)"
-      #environment:
       shell: |
         KUBECONFIG=config kind export kubeconfig --name {{ Jannah.stages.bootstrap.deploy.kind.name }}
       when: jannah_stages_bootstrap_deploy_type == "full" and jannah_stages_bootstrap_deploy_destination == "kind"
@@ -206,7 +183,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (full deployment to kind cluster)"
       shell: |
         export KUBECONFIG=../config; 
@@ -218,7 +194,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Kubeflow install (full deployment to docker-desktop)"
       shell: |
         while ! ${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
@@ -229,7 +204,6 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     #    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
     #      shell: |
     #        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
@@ -345,7 +319,6 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "multipass_infra"
         - "molecule_converge"
         - "operator_e2e"
   ignore_errors: false

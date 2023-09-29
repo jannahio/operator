@@ -8,7 +8,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task1"
     - name: "unalias k3ai"
       shell: |
         unalias k3ai;
@@ -17,7 +16,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task1"
   rescue:
     - name: "Kubernetes Kind Tooling Cleanup Exception"
       ansible.builtin.debug:
@@ -26,7 +24,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -36,5 +33,4 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false
