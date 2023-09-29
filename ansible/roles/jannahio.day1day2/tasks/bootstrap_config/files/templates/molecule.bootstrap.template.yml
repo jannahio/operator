@@ -238,8 +238,8 @@ provisioner:
                     dex:
                       config:
               deploy:
-                type: full
-                destination: docker-desktop
+                type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
+                destination: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination }}"
                 docker_desktop:
                   name: docker-desktop
                 k3ai:
