@@ -45,6 +45,7 @@
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "debug_task"
     - name: "Import create tasks (molecule create) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:
@@ -52,7 +53,7 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "debug_task"
+        - "debug_task1"
     - name: "Import prepare tasks (molecule prepare) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:

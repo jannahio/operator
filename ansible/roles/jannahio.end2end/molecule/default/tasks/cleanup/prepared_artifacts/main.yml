@@ -5,6 +5,7 @@
       include_tasks: '{{ cleanup_prepared_macos_docker_desktop_task_items }}'
       with_fileglob:
         - cleanup_macos_docker_desktop.yml
+        - cleanup_storage_to_macos_docker_desktop.yml
       loop_control:
         loop_var: cleanup_prepared_macos_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin"
@@ -12,6 +13,7 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "debug_task"
     - name: "Import cleanup prepared build_base_image tasks - Darwin"
       include_tasks: '{{ cleanup_prepared_build_base_image_task_items }}'
       with_fileglob:

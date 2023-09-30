@@ -233,10 +233,10 @@ provisioner:
                       - name: middlware
                         giturl: https://github.com/jannahio/middleware.git
                         image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
-                dependency:
-                  helm:
-                    dex:
-                      config:
+#                dependency:
+#                  helm:
+#                    dex:
+#                      config:
               deploy:
                 type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
                 destination: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination }}"

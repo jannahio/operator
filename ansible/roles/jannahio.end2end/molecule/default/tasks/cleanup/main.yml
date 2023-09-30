@@ -12,6 +12,7 @@
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "debug_task"
   rescue:
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:

@@ -234,12 +234,12 @@ provisioner:
                       - name: middlware
                         giturl: https://github.com/jannahio/middleware.git
                         image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
-                dependency:
-                  helm:
-                    dex:
-                      config:
+                        #                dependency:
+                        #                  helm:
+                        #                    dex:
+                        #                      config:
               deploy:
-                type: "standalone"
+                type: "local"
                 destination: "docker-desktop"
                 docker_desktop:
                   name: docker-desktop
