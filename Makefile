@@ -178,13 +178,13 @@ docker-desktop-local-mode: jannah-python docker-desktop-set-local-mode jannah-co
 docker-desktop-standalone-mode: jannah-python docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
 
 kind-full-mode: jannah-python kind-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
-kind-docker-desktopKIND-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+kind-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
 kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
 
 docker-desktop-matrix: docker-desktop-full-mode docker-desktop-local-mode docker-desktop-standalone-mode
-kind-matrix: kind-full-mode kind-docker-desktopKIND-local-mode kind-standalone-mode
+kind-matrix: kind-full-mode kind-local-mode kind-standalone-mode
 
-jannah-deployments: docker-desktop-matrix kind-matrix
+jannah-deployments: kind-matrix docker-desktop-matrix
 
 clean: molecule-destroy jannah-python-clean
 

@@ -3,7 +3,6 @@
   block:
     - name: "Delete Percona Distribution for PostgreSQL cluster"
       shell: |
-        sleep 10;
         kubectl delete -f https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/cr.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
         exit 0;
@@ -24,19 +23,25 @@
         - "operator_e2e"
         - "debug_task"
     - name: 'Delete Parcona Postgres Namespace'
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: '{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}'
-            namespace: '{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}'
-        state: absent
+      shell: |
+        kubectl delete all --all -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+        exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_cleanup"
+        - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "Wait for Delete Parcona Postgres Namespace on Docker-Desktop"
+      shell: |
+        sleep {{ Jannah.stages.bootstrap.deploy.wait_time }};
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:

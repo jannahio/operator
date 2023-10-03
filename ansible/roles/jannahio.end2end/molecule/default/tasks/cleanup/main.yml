@@ -5,7 +5,7 @@
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
         - prepared_artifacts/main.yml
-        - cleanup/clusters/kind/main.yml
+        - clusters/kind/main.yml
       loop_control:
         loop_var: cleanup_task_darwin_items
       when: ansible_facts['os_family'] == "Darwin"

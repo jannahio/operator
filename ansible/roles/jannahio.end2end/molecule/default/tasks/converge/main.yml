@@ -13,7 +13,7 @@
       include_tasks: '{{ converge_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:
         - deploy_to_macos_docker_desktop.yml
-        - deploy_storage_to_macos_docker_desktop.yml
+#        - deploy_storage_to_macos_docker_desktop.yml
       loop_control:
         loop_var: converge_deploy_to_macos_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin" and (

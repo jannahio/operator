@@ -239,8 +239,11 @@ provisioner:
                         #                    dex:
                         #                      config:
               deploy:
-                type: "local"
+                type: "full"
                 destination: "docker-desktop"
+                dependencies:
+                  parcona_postgres:
+                    namespace: parcona-operator
                 docker_desktop:
                   name: docker-desktop
                 k3ai:
