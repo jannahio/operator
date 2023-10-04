@@ -240,6 +240,7 @@ provisioner:
               deploy:
                 type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
                 destination: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination }}"
+                wait_time: 120
                 dependencies:
                   parcona_postgres:
                     namespace: parcona-operator
