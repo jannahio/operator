@@ -1,6 +1,3 @@
-Todo:
--Add conditions on wether to start local containers in kind, k3ai for developer mode. 
-
 Jannah.io September 2023
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
