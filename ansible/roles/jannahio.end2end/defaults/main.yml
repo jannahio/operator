@@ -22,7 +22,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/working/debug/operator"
+              working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -356,6 +356,6 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/working/debug/operator/tmp/EPHEMERAL"
+    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/IdeaProjects/debug/operator/tmp/EPHEMERAL"
 verifier:
   name: ansible
