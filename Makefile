@@ -7,6 +7,7 @@ ANSIBLE_VAULT_DEFAULT_PASS_FILE ?= $(JANNAHHOME)/jannah-operator/ansible_default
 JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
 PYTHONPATH ?= $(WORKING_DIR)
 BREAK_PACKAGES ?=
+WAIT_TIME ?= 0
 
 include boot.env.sh
 # encrypts credentials from environment values and store into molecule config file
@@ -97,19 +98,13 @@ jannah-config:
 	   echo "Please provide ANSIBLE_VAULT_DEFAULT_PASS_FILE at: $(ANSIBLE_VAULT_DEFAULT_PASS_FILE)"; \
 	fi
 
-	cp -v $(JANNAHHOME)/jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all
-
+	cp -v $(JANNAHHOME)/jannah-operator/molecule.yml $(WORKING_DIR)/ansible/group_vars/all;
 	. $(JANNAH_PYTHON)/bin/activate;
-	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
-    popd;\
-    echo "WORKING_DIR: $(WORKING_DIR)"
-
+	ansible-playbook -i inventory/ ansible/site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
 
 jannah-day1-day2: jannah-config
 	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;\
-    popd;
+    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;
 
 molecule-clean: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
@@ -174,15 +169,23 @@ kind-set-standalone-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
 
 docker-desktop-full-mode: jannah-python docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 docker-desktop-local-mode: jannah-python docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 docker-desktop-standalone-mode: jannah-python docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 
 kind-full-mode: jannah-python kind-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 kind-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
+	@sleep WAIT_TIME
 
 docker-desktop-matrix: docker-desktop-full-mode docker-desktop-local-mode docker-desktop-standalone-mode
+	@sleep WAIT_TIME
 kind-matrix: kind-full-mode kind-local-mode kind-standalone-mode
+	@sleep WAIT_TIME
 
 jannah-deployments: kind-matrix docker-desktop-matrix
 
