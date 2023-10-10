@@ -77,11 +77,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /admin
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /graphql
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

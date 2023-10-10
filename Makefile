@@ -169,25 +169,24 @@ kind-set-standalone-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
 
 docker-desktop-full-mode: jannah-python docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 docker-desktop-local-mode: jannah-python docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 docker-desktop-standalone-mode: jannah-python docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 
 kind-full-mode: jannah-python kind-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 kind-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 
 docker-desktop-matrix: docker-desktop-full-mode docker-desktop-local-mode docker-desktop-standalone-mode
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 kind-matrix: kind-full-mode kind-local-mode kind-standalone-mode
-	@sleep WAIT_TIME
+	@sleep $(WAIT_TIME)
 
 jannah-deployments: kind-matrix docker-desktop-matrix
 
 clean: molecule-destroy jannah-python-clean
-

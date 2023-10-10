@@ -8,4 +8,4 @@ RUN npm i -D -E vite --legacy-peer-deps
 RUN npm install -g @ionic/cli
 RUN ionic build
 RUN npm install --legacy-peer-deps
-ENTRYPOINT ["ionic","serve"]
+ENTRYPOINT ["ionic","serve", "--external","--no-livereload", "--prod", "--no-open"]

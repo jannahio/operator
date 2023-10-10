@@ -239,7 +239,7 @@ provisioner:
                         #                    dex:
                         #                      config:
               deploy:
-                type: "standalone"
+                type: "full"
                 destination: "docker-desktop"
                 wait_time: 120
                 dependencies:

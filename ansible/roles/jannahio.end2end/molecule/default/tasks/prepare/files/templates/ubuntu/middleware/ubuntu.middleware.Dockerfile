@@ -5,4 +5,4 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 ADD . /jannah_graphql
 WORKDIR /jannah_graphql
 RUN python3 -m pip install --break-system-packages -r requirements.txt
-ENTRYPOINT ["python3","manage.py","runserver"]
+ENTRYPOINT ["python3","manage.py","runserver", "0.0.0.0:8000"]
