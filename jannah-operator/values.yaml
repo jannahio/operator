@@ -10,6 +10,20 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+images:
+  frontend:
+    name:  jannah_frontend
+    repository: jallohmediabuild/jannah-ubuntu-frontend-web-amd64
+    pullPolicy: IfNotPresent
+    tag: "v0.0.1"
+    port: 8080
+  middleware:
+    name:  jannah_middleware
+    repository: jallohmediabuild/jannah-ubuntu-middleware-amd64
+    pullPolicy: IfNotPresent
+    tag: "v0.0.1"
+    port: 8000
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
