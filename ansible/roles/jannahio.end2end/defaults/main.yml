@@ -240,7 +240,7 @@ provisioner:
                         #                      config:
               deploy:
                 type: "standalone"
-                destination: "kind"
+                destination: "docker-desktop"
                 wait_time: 120
                 dependencies:
                   parcona_postgres:
