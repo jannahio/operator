@@ -1,9 +1,6 @@
 ---
 dependency:
   name: galaxy
-#  options:
-#    role-file: ./requirements.yml
-#    requirements-file: ./collections.yml
 driver:
   name: delegated
 platforms:
@@ -35,12 +32,6 @@ provisioner:
           stages:
             day1day2:
               sub_dir:
-              charm:
-                vm:
-                  name: d1d2-charm-operator
-                  cpus: 9
-                  disk: 50G
-                  memory: 20G
             dev:
               active: true
             bootstrap:
@@ -198,31 +189,6 @@ provisioner:
               build:
                 USERNAME: jallohmediabuild
                 VERSION: 0.0.1
-                IMG: docker.io/jallohmediabuild/jannah-operator:v0.0.1
-                BUNDLE_IMG: docker.io/jallohmediabuild/jannah-operator-bundle:v0.0.1
-                CATALOG_IMG: docker.io/jallohmediabuild/jannah-operator-catalog:v0.0.1
-                IMAGE_TAG_BASE: docker.io/jallohmediabuild/jannah-operator
-                juju:
-                  controller:
-                    name: jannah-charm-operator-controller
-                  model:
-                    name: jannah-charm-operator-workflow-model
-                  containers:
-                    base:
-                      name: jannahbase
-                    middleware:
-                      name: jannahmiddleware
-                    frontend:
-                      name: jannahfrontend
-                vm:
-                  name: jannah-charm-operator
-                  cpus: 8
-                  disk: 100G
-                  memory: 18G
-                  #                  <image> can be a partial image hash or
-                  #                  an Ubuntu release version, codename or
-                  #                  alias.
-                #                  image: 22.10
                 builderx:
                   - name: jannah_builder
                     driver: kubernetes
@@ -233,26 +199,28 @@ provisioner:
                       - name: middlware
                         giturl: https://github.com/jannahio/middleware.git
                         image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
-#                dependency:
-#                  helm:
-#                    dex:
-#                      config:
               deploy:
+                #  full|local|standalone
                 type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
+                # docker-desktop|kind
                 destination: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination }}"
-                wait_time: 120
+                # ubuntu|streamos
+                os: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os }}"
+                # dev|test|integration|train|stage|production
+                # if mode is dev, native Jannah services are deployed in local containers 
+                mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode }}"
+                # for multiple/matrix debug purposes, the generic wait time between deployment types
+                wait_time: mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time }}"
                 dependencies:
                   parcona_postgres:
                     namespace: parcona-operator
                 docker_desktop:
                   name: docker-desktop
-                k3ai:
-                  name: jannah-k3ai
                 kind:
                   name: jannah-kind
                   wait: 5m
-                  #                  control_plane:
-                  #                    image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
+                  #control_plane:
+                  #image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
                   nodes:
                     arm64:
                       image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
@@ -260,6 +228,31 @@ provisioner:
                     amd64:
                       image: kindest/node:v1.26.3@sha256:94eb63275ad6305210041cdb5aca87c8562cc50fa152dbec3fef8c58479db4ff
                       arch: amd64
+                helm_values:
+                  common:
+                    name: jannah
+                    namespace: jannah
+                    amd: "amd64"
+                    arm: "arm64"
+                    ubuntu: ubuntu
+                    streamos: streamos
+                    tag: "v0.0.1"
+                  images:
+                    proxy:
+                      repository: nginx
+                      pullPolicy: IfNotPresent
+                      tag: ""
+                      port: 80
+                    frontend:
+                      name:  jannah-web-ui
+                      repository: jallohmediabuild/jannah-ubuntu-frontend-web-ui
+                      pullPolicy: IfNotPresent
+                      port: 8100
+                    middleware:
+                      name:  jannah-middleware
+                      repository: jallohmediabuild/jannah-ubuntu-middleware
+                      pullPolicy: IfNotPresent
+                      port: 8000
               secrets:
                 image_registry:
                   name: myregistrykey
@@ -269,80 +262,12 @@ provisioner:
                   name: dex-certs
                   cert: ssl/tls.crt
                   key: ssl/tls.key
-              #                  namespace: default
-              #              testing:
-              #                melecule:
-              #                  MOLECULE_PROJECT_DIRECTORY:
-              charm:
-                metadata:
-                  name: Jannah
-                  display-name: Jannah
-                  summary: A very short one-line summary of the charm.
-                  description: |
-                    A single sentence that says what the charm is, concisely and memorably.
-
-                    A paragraph of one to three short sentences, that describe what the charm does.
-
-                    A third paragraph that explains what need the charm meets.
-
-                    Finally, a paragraph that describes whom the charm is useful for.
-                  containers:
-                    httpbin:
-                      resource: httpbin-image
-                  resources:
-                    httpbin-image:
-                      type: oci-image
-                      description: OCI image for httpbin
-                      upstream-source: kennethreitz/httpbin
-                charmcraft:
-                  type: charm
-                  bases:
-                    - build-on:
-                        - name: ubuntu
-                          channel: "22.04"
-                      run-on:
-                        - name: ubuntu
-                          channel: "22.04"
                 config:
                   options:
                     log-level:
                       description: "Configures the log level of gunicorn. \n\nAcceptable values are: \"info\", \"debug\", \"warning\", \"error\" and \"critical\"\n"
                       default: "info"
                       type: string
-            network:
-              tasks:
-                - name: Smee, ngrok Instance
-                  description:
-                - name: Wireguard Deployment
-                  description:
-                - name: Juju Interfaces
-                  description:
-            storage:
-              tasks:
-                - name: CSI Infrastructure
-                - name: PersistentVolumes
-                - name: Django ORM
-            compute:
-              tasks:
-                - name: Django App Model
-                - name: Wordpress Integration
-                - name: SwiftUI Integration
-                - name: TaskMeister Integration
-                - name: Facebook/Meta Integration
-                - name: Google Integration
-                - name: Jupyter Lab Cloud
-                - name: TensorFlow Integration
-                  utilities: Apache Airflow
-            ux:
-              tasks:
-                - name: Kotlin Multiplatform Mobile Base
-                - name: Kotlin Multiplatform Mobile IOS
-                - name: Kotlin Multiplatform Mobile Android
-                - name: Jannah Web Application
-                - name: Jannah Website and Blog.
-            feedback:
-              tasks:
-                - name: Build Machine Learning Models of Jannah Services
     host_vars:
       localhost:
         name: osmanj-mac-0

@@ -16,6 +16,20 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_mode"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "Kubeflow install (standalone deployment) kind cluster scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
@@ -203,19 +217,88 @@
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
-        - "operator_e2e"
-    #    - name: "kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80"
-    #      shell: |
-    #        kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80;
-    #      tags:
-    #        - "docker_desktop_infra"
-    #        - "deploy_images"
-    #        - "molecule_converge"
-    #        - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-arm64"
+        - "operator_e2e" 
+    - name: "Generate Helm values file off off the molecule configuration file - amd64/ubuntu"
+      template:
+        src: "files/templates/helm/amd64/ubuntu/values.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/jannah-operator/values.yml"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu" 
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e" 
+    - name: "Generate Helm values file off off the molecule configuration file - amd64/streamos"
+      template:
+        src: "files/templates/helm/amd64/streamos/values.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/jannah-operator/values.yml"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos" 
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"  
+    - name: "Generate Helm values file off off the molecule configuration file - arm64/ubuntu"
+      template:
+        src: "files/templates/helm/arm64/ubuntu/values.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/jannah-operator/values.yml"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu" 
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e" 
+    - name: "Generate Helm values file off off the molecule configuration file - arm64/streamos"
+      template:
+        src: "files/templates/helm/arm64/streamos/values.yml"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/jannah-operator/values.yml"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos" 
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e" 
+    - name: "deploy-to-docker-desktop-full-ubuntu-dev-mode"
       shell: |
-        docker run --name jannah-ubuntu-middleware-arm64 -d jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        helm install \
+        -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
+        --create-namespace  {{ Jannah.stages.bootstrap.deploy.helm_values.common.name }} ./jannah-operator;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "deploy-to-kind-cluster-full-ubuntu-dev-mode"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        helm install \
+        -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
+        --create-namespace  {{ Jannah.stages.bootstrap.deploy.helm_values.common.name }} ./jannah-operator;
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+    # if deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers  
+    - name: "Docker run Jannah middleware arm64/ubuntu image in dev (container) mode"
+      shell: |
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       args:
@@ -224,10 +307,22 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-ubuntu-middleware-amd64"
+    - name: "Docker run Jannah middleware amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name jannah-ubuntu-middleware-amd64 -d jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       args:
@@ -236,10 +331,22 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-streamos-middleware-arm64"
+    - name: "Docker run Jannah middleware arm64/streamos image in dev (container) mode"
       shell: |
-        docker run --name jannah-streamos-middleware-arm64 -d jallohmediabuild/jannah-streamos-middleware-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       args:
@@ -248,10 +355,22 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-streamos-middleware-amd64"
+    - name: "Docker run Jannah middleware amd64/streamos image in dev (container) mode"
       shell: |
-        docker run --name jannah-streamos-middleware-amd64 -d jallohmediabuild/jannah-streamos-middleware-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       args:
@@ -260,10 +379,22 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker Run jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+    - name: "Docker run Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name jannah-ubuntu-frontend-web-arm64 -d jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
@@ -271,10 +402,22 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+    - name: "Docker run Jannah frontend amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name jannah-ubuntu-frontend-web-amd64 -d jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
@@ -282,10 +425,22 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-arm64"
+    - name: "Docker run Jannah frontend amd64/streamos image in dev (container) mode"
       shell: |
-        docker run --name jannah-streamos-frontend-web-arm64 -d jallohmediabuild/jannah-streamos-frontend-web-arm64:v0.0.1;
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tags }}
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       args:
@@ -295,10 +450,22 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Docker run jallohmediabuild/jannah-streamos-frontend-web-amd64"
+    - name: "Docker run Jannah frontend arm64/streamos image in dev (container) mode"
       shell: |
-        docker run --name jannah-streamos-frontend-web-amd64 -d jallohmediabuild/jannah-streamos-frontend-web-amd64:v0.0.1;
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       args:

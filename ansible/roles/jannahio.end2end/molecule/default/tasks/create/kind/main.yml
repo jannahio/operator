@@ -39,15 +39,15 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-#    - name: "Generate kind_config_arm64.yml"
-#      template:
-#        src: "files/templates/kind_config_arm64.yml"
-#        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml"
-#        backup: yes
-#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
-#      tags:
-#        - "molecule_create"
-#        - "operator_e2e"
+    # - name: "Generate kind_config_arm64.yml"
+    #   template:
+    #     src: "files/templates/kind_config_arm64.yml"
+    #     dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml"
+    #     backup: yes
+    #   when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
+    #   tags:
+    #     - "molecule_create"
+    #     - "operator_e2e"
 #    - name: "Generate kind_config_amd64.yml"
 #      template:
 #        src: "files/templates/kind_config_amd64.yml"

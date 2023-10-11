@@ -69,7 +69,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-#         mv kustomize /usr/local/bin/kustomize
     - name: "alias kustomize"
       shell: |
         alias kustomize="${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize";
@@ -79,18 +78,6 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
-#    - name: "arch -arm64 gem install ffi"
-#      shell: |
-#        arch -arm64 gem install ffi;
-#      async: 1200
-#      poll: 5
-#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
-#      args:
-#        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_prepare"
-#        - "operator_e2e"
   rescue:
     - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:

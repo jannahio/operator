@@ -1,6 +1,14 @@
 ---
 - name: "Builds ubuntu frontend docker images for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_prepare"
+        - "operator_e2e"
     - name: "Create /images/ubuntu/frontend directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
@@ -29,7 +37,6 @@
         tar -xvf apollo-ios-cli.tar.gz;
       async: 600
       poll: 5
-      #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/mobile/ios"
       tags:
@@ -55,18 +62,21 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend imag - jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+    - name: "Build Ubuntu frontend image - arm64"
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1 \
+          -t \
+          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
           --platform=linux/arm64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu""
       async: 9800
       poll: 5
-#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
       tags:
@@ -74,15 +84,19 @@
         - "build_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend imag - jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+    - name: "Build Ubuntu frontend image - amd64"
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1 \
+          -t \
+          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
           --platform=linux/amd64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
       async: 9800
       poll: 5
       args:

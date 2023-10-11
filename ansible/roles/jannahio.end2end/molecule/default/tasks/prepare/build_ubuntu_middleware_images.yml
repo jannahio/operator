@@ -1,6 +1,14 @@
 ---
 - name: "Builds ubuntu middleware docker images for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_prepare"
+        - "operator_e2e"
     - name: "Create /images/ubuntu/middleware directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
@@ -37,36 +45,42 @@
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
+    - name: "Build Ubuntu middleware image - arm64"
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1 \
+          -t \
+          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
           --platform=linux/arm64 \
           -f ubuntu.middleware.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu""
       async: 9800
       poll: 5
-#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
+    - name: "Build Ubuntu middleware image - amd64"
       shell: |
         docker buildx build \
           --builder=kube \
-          -t jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1 \
+          -t \
+          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
           --platform=linux/amd64 \
           -f ubuntu.middleware.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os = "ubuntu""
       async: 9800
       poll: 5
-#      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:

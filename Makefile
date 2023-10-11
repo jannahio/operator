@@ -149,44 +149,293 @@ molecule-test: jannah-config
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
-docker-desktop-set-full-mode:
+# TODO: Write a Makefile function for setting vatriables for the deployment matrix. 
+# Or use the config bootstrap ansible role to create various molecule config files for the matrix permutations
+# add .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.architecture
+
+# ---------------------------------- Docker Desktop Kubernete Deployment Matrix Settings----------------------------------------------
+# If deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers. 
+# Local development deployment (full Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-full-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
-docker-desktop-set-local-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (full Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-full-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (full Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-full-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (full Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-full-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (local Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-local-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
-docker-desktop-set-standalone-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (local Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-local-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (local Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOS containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-local-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (local Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOS containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-local-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (standalone Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-standalone-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
-kind-set-full-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (standalone Kubeflow) to K8 cluster on docker-desktop,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-standalone-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (standalone Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOS containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-standalone-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (standalone Kubeflow) to K8 cluster on docker-desktop,
+# using StreamOS containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-docker-desktop-standalone-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "docker-desktop"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+
+
+# ---------------------------------- Kind Cluster Deployment Matrix Settings ----------------------------------------------
+# Local development deployment (full Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-full-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
-kind-set-local-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (full Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-full-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (full Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-full-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (full Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-full-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "full"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (local Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-local-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
-kind-set-standalone-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (local Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-local-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (local Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-local-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (local Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-local-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "local"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (standalone Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-standalone-ubuntu-dev-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (standalone Kubeflow) to created Kind cluster,
+# using Ubuntu containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-standalone-ubuntu-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "ubuntu"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Local development deployment (standalone Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-standalone-streamos-dev-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "dev"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
+# Production deployment (standalone Kubeflow) to created Kind cluster,
+# using StreamOs containers for native Jannah services (jannah-frontend, jannah-middleware).
+set-to-kind-cluster-standalone-streamos-production-mode:
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type  = "standalone"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination  = "kind"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os  = "streamos"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
+	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
 
-docker-desktop-full-mode: jannah-python docker-desktop-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
+# Install Jannah
+install: jannah-config molecule-destroy molecule-reset molecule-converge
+# Test Jannah
+test: jannah-config molecule-destroy molecule-reset molecule-test
+
+
+deploy-to-docker-desktop-full-ubuntu-dev-mode: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
-docker-desktop-local-mode: jannah-python docker-desktop-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
+deploy-to-docker-desktop-full-ubuntu-production-mode: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
-docker-desktop-standalone-mode: jannah-python docker-desktop-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
+deploy-to-docker-desktop-full-streamos-dev-mode: jannah-python  set-to-docker-desktop-full-streamos-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-full-streamos-production-mode: jannah-python set-to-docker-desktop-full-streamos-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-local-ubuntu-dev-mode: jannah-python set-to-docker-desktop-local-ubuntu-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-local-ubuntu-production-mode: jannah-python set-to-docker-desktop-local-ubuntu-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-local-streamos-dev-mode: jannah-python set-to-docker-desktop-local-streamos-dev-mode install 
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-local-streamos-production-mode: jannah-python set-to-docker-desktop-local-streamos-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-standalone-ubuntu-dev-mode: jannah-python set-to-docker-desktop-standalone-ubuntu-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-standalone-ubuntu-production-mode: jannah-python set-to-docker-desktop-standalone-ubuntu-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-standalone-streamos-dev-mode: jannah-python  set-to-docker-desktop-standalone-streamos-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-docker-desktop-standalone-streamos-production-mode: jannah-python set-to-docker-desktop-standalone-streamos-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-full-ubuntu-dev-mode: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-full-ubuntu-production-mode: jannah-python set-to-kind-cluster-full-ubuntu-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-full-streamos-dev-mode: jannah-python set-to-kind-cluster-full-streamos-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-full-streamos-production-mode: jannah-python set-to-kind-cluster-full-streamos-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-local-ubuntu-dev-mode: jannah-python set-to-kind-cluster-local-ubuntu-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-local-ubuntu-production-mode: jannah-python set-to-kind-cluster-local-ubuntu-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-local-streamos-dev-mode: jannah-python set-to-kind-cluster-local-streamos-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-local-streamos-production-mode: jannah-python set-to-kind-cluster-local-streamos-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-standalone-ubuntu-dev-mode: jannah-python set-to-kind-cluster-standalone-ubuntu-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-standalone-ubuntu-production-mode: jannah-python set-to-kind-cluster-standalone-ubuntu-production-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-standalone-streamos-dev-mode: jannah-python set-to-kind-cluster-standalone-streamos-dev-mode install
+	@sleep $(WAIT_TIME)
+deploy-to-kind-cluster-standalone-streamos-production-mode: jannah-python set-to-kind-cluster-standalone-streamos-production-mode install
 	@sleep $(WAIT_TIME)
 
-kind-full-mode: jannah-python kind-set-full-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep $(WAIT_TIME)
-kind-local-mode: jannah-python kind-set-local-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep $(WAIT_TIME)
-kind-standalone-mode: jannah-python kind-set-standalone-mode jannah-config molecule-destroy molecule-reset molecule-converge
-	@sleep $(WAIT_TIME)
 
-docker-desktop-matrix: docker-desktop-full-mode docker-desktop-local-mode docker-desktop-standalone-mode
-	@sleep $(WAIT_TIME)
-kind-matrix: kind-full-mode kind-local-mode kind-standalone-mode
-	@sleep $(WAIT_TIME)
+# Deploy Docker Desktop Matrix
+deploy-docker-desktop-matrix: deploy-to-docker-desktop-full-ubuntu-dev-mode \
+deploy-to-docker-desktop-full-ubuntu-production-mode \
+deploy-to-docker-desktop-full-streamos-dev-mode \
+deploy-to-docker-desktop-full-streamos-production-mode \
+deploy-to-docker-desktop-local-ubuntu-dev-mode \
+deploy-to-docker-desktop-local-ubuntu-production-mode \
+deploy-to-docker-desktop-local-streamos-dev-mode \
+deploy-to-docker-desktop-local-streamos-production-mode \
+deploy-to-docker-desktop-standalone-ubuntu-dev-mode \
+deploy-to-docker-desktop-standalone-ubuntu-production-mode \
+deploy-to-docker-desktop-standalone-streamos-dev-mode \
+deploy-to-docker-desktop-standalone-streamos-production-mode
 
-jannah-deployments: kind-matrix docker-desktop-matrix
+# Deploy Kind Cluster Matrix
+deploy-kind-matrix: deploy-to-kind-cluster-full-ubuntu-dev-mode \
+deploy-to-kind-cluster-full-ubuntu-production-mode \
+deploy-to-kind-cluster-full-streamos-dev-mode \
+deploy-to-kind-cluster-full-streamos-production-mode \
+deploy-to-kind-cluster-local-ubuntu-dev-mode \
+deploy-to-kind-cluster-local-ubuntu-production-mode \
+deploy-to-kind-cluster-local-streamos-dev-mode \
+deploy-to-kind-cluster-local-streamos-production-mode \
+deploy-to-kind-cluster-standalone-ubuntu-dev-mode \
+deploy-to-kind-cluster-standalone-ubuntu-production-mode \
+deploy-to-kind-cluster-standalone-streamos-dev-mode \
+deploy-to-kind-cluster-standalone-streamos-production-mode
 
-clean: molecule-destroy jannah-python-clean
+jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
+
+#Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
+clean: jannah-python jannah-config molecule-destroy jannah-python-clean
