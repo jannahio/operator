@@ -72,7 +72,7 @@
           --platform=linux/amd64 \
           -f ubuntu.middleware.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os = "ubuntu"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
       async: 9800
       poll: 5
       args:
