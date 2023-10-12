@@ -9,6 +9,7 @@ platforms:
       - k8s
 provisioner:
   name: ansible
+  log: True
   lint: |
     set -e
     ansible-lint
