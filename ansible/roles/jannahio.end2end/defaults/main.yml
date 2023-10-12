@@ -212,8 +212,7 @@ provisioner:
                 # if mode is dev, native Jannah services are deployed in local containers 
                 mode: "dev"
                 # for multiple/matrix debug purposes, the generic wait time between deployment types
-                wait_time: 1
-                mode: "0"
+                wait_time: "0"
                 dependencies:
                   parcona_postgres:
                     namespace: parcona-operator
