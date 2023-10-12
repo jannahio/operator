@@ -41,28 +41,6 @@
         - "cleanup_base_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove base image-load - arm64"
-      environment:
-        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
-      shell: |
-        docker image rm -f jallohmediabuild/jannah-base-arm64:v0.0.1
-      async: 600
-      poll: 5
-      tags:
-        - "cleanup_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Build base image-load - amd64"
-      environment:
-        - IMG: "{{ Jannah.stages.bootstrap.build.IMG }}"
-      shell: |
-        docker image rm -f jallohmediabuild/jannah-base-amd64:v0.0.1;
-      async: 600
-      poll: 5
-      tags:
-        - "cleanup_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
     - name: "docker buildx stop"
       shell: |
         docker buildx stop kube;

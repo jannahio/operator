@@ -9,6 +9,7 @@ platforms:
       - k8s
 provisioner:
   name: ansible
+  log: True
   lint: |
     set -e
     ansible-lint
@@ -210,7 +211,8 @@ provisioner:
                 # if mode is dev, native Jannah services are deployed in local containers 
                 mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode }}"
                 # for multiple/matrix debug purposes, the generic wait time between deployment types
-                wait_time: mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time }}"
+                wait_time: 1
+                mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time }}"
                 dependencies:
                   parcona_postgres:
                     namespace: parcona-operator

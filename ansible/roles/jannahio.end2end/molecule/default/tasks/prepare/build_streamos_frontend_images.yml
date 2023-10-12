@@ -66,10 +66,7 @@
         docker buildx build \
           --builder=kube \
           -t \
-          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/arm64 \
           -f streamos.frontend.Dockerfile \
           --load .
@@ -88,10 +85,7 @@
         docker buildx build \
           --builder=kube \
           -t \
-          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos}: \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag}" \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag}} \
           --platform=linux/amd64 \
           -f streamos.frontend.Dockerfile \
           --load .

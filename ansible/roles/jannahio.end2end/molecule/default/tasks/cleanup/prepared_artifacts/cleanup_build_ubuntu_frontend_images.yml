@@ -28,9 +28,10 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Build Ubuntu frontend image - jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+    - name: "Remove Ubuntu frontend image - arm64"
       shell: |
-        docker image rm -f jallohmediabuild/jannah-ubuntu-frontend-web-arm64:v0.0.1;
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
@@ -40,9 +41,10 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Build Ubuntu frontend image - jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+    - name: "Remove Ubuntu frontend image - amd64"
       shell: |
-        docker image rm -f jallohmediabuild/jannah-ubuntu-frontend-web-amd64:v0.0.1;
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600

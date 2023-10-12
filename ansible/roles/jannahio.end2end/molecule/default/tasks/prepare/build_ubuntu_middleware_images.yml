@@ -50,10 +50,7 @@
         docker buildx build \
           --builder=kube \
           -t \
-          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/arm64 \
           -f ubuntu.middleware.Dockerfile \
           --load .
@@ -71,10 +68,7 @@
         docker buildx build \
           --builder=kube \
           -t \
-          "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}: \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}" \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/amd64 \
           -f ubuntu.middleware.Dockerfile \
           --load .

@@ -26,9 +26,10 @@
         - "build_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Build for Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-arm64"
+    - name: "Remove Ubuntu middleware image - arm64"
       shell: |
-        docker image rm -f jallohmediabuild/jannah-ubuntu-middleware-arm64:v0.0.1;
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
@@ -37,9 +38,10 @@
         - "build_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Build Ubuntu middleware image - jallohmediabuild/jannah-ubuntu-middleware-amd64"
+    - name: "Remove Ubuntu middleware image - amd64"
       shell: |
-        docker image rm -f jallohmediabuild/jannah-ubuntu-middleware-amd64:v0.0.1;
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600

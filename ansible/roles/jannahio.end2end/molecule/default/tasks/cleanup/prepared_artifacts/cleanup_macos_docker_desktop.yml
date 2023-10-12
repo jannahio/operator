@@ -1,9 +1,11 @@
+
 ---
 - name: "Cleanup artifacts from MacOs Docker Desktop"
   block:
-    - name: "Docker stop jallohmediabuild/jannah-ubuntu-middleware-arm64"
+    - name: "Docker stop Jannah middleware arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker container stop jannah-ubuntu-middleware-arm64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
@@ -12,9 +14,10 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-ubuntu-middleware-amd64"
+    - name: "Docker stop Jannah middleware amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker container stop jannah-ubuntu-middleware-amd64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
@@ -23,9 +26,10 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-streamos-middleware-arm64"
+    - name: "Docker stop run Jannah middleware arm64/streamos image in dev (container) mode"
       shell: |
-        docker container stop jannah-streamos-middleware-arm64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
@@ -34,9 +38,10 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-streamos-middleware-amd64"
+    - name: "Docker stop Jannah middleware amd64/streamos image in dev (container) mode"
       shell: |
-        docker container stop jannah-streamos-middleware-amd64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
@@ -45,33 +50,10 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+    - name: "Docker stop Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker container stop jannah-ubuntu-frontend-web-arm64;
-        exit 0;
-      when: ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
-      shell: |
-        docker container stop jannah-ubuntu-frontend-web-amd64;
-        exit 0;
-      when: ansible_facts['architecture'] == "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-streamos-frontend-web-arm64"
-      shell: |
-        docker container stop jannah-streamos-frontend-web-arm64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
@@ -81,28 +63,45 @@
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Docker stop jallohmediabuild/jannah-streamos-frontend-web-amd64"
+    - name: "Docker stop Jannah frontend amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker container stop jannah-streamos-frontend-web-amd64;
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
-#      args:
-#        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "deploy_images"
         - "build_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-#    - name: "kubeflow-user-example-com uninstall"
-#      shell: |
-#        kubectl delete all --all -n kubeflow-user-example-com;
-#        exit 0;
-#      tags:
-#        - "docker_desktop_infra"
-#        - "molecule_cleanup"
-#        - "operator_e2e"
+    - name: "Docker stop Jannah frontend amd64/streamos image in dev (container) mode"
+      shell: |
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker stop Jannah frontend arm64/streamos image in dev (container) mode"
+      shell: |
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: "Kubeflow uninstall"
       shell: |
         kubectl delete all --all -n kubeflow;

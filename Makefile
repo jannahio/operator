@@ -102,9 +102,9 @@ jannah-config:
 	. $(JANNAH_PYTHON)/bin/activate;
 	ansible-playbook -i inventory/ ansible/site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags d1d2-generate-molecule-configurations;\
 
-jannah-day1-day2: jannah-config
-	pushd ansible && \
-    $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;
+# jannah-day1-day2: jannah-config
+# 	pushd ansible && \
+#     $(JANNAH_PYTHON)/bin/ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) --tags blog-service-install;
 
 molecule-clean: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
