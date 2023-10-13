@@ -146,7 +146,7 @@ molecule-verify: jannah-config
 molecule-test: jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;\
 	pushd ansible/roles/jannahio.end2end && \
-	molecule $(ANSIBLE_VERBOSE_LEVEL) test --destroy=never;\
+	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
 # TODO: Write a Makefile function for setting vatriables for the deployment matrix. 
