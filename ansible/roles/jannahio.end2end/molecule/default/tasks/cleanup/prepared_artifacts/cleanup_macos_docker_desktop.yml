@@ -2,6 +2,13 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "Jannab un-install"
       shell: |
         kubectl delete all --all -n \
