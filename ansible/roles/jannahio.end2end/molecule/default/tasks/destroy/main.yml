@@ -1,6 +1,18 @@
 ---
 - name: "Destroy Jannah Environment Tasks"
   block:
+    - name: "Import cleanup tasks - Darwin"
+      include_tasks: '{{ cleanup_task_darwin_items }}'
+      with_fileglob:
+        - prepared_artifacts/main.yml
+        - clusters/kind/main.yml
+      loop_control:
+        loop_var: cleanup_task_darwin_items
+      when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "debug_task"
     - name: "docker container prune -f -a"
       shell: |
         docker container prune -f
@@ -10,26 +22,26 @@
         chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
-    # - name: "docker image prune -f -a"
-    #   shell: |
-    #     docker image prune -f -a
-    #   async: 600
-    #   poll: 5
-    #   args:
-    #     chdir: "{{ Jannah.global.ansible.working_dir }}"
-    #   tags:
-    #     - "cleanup_base_images"
-    #     - "molecule_cleanup"
-    #     - "operator_e2e"
+    - name: "docker image prune -f -a"
+      shell: |
+        docker image prune -f -a
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "cleanup_base_images"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}"
         state: absent
       tags:
         - "cleanup_ephemeral_directory"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove {{ Jannah.global.ansible.working_dir }}/tmp"
       file:
@@ -38,7 +50,7 @@
       no_log: false
       tags:
         - "cleanup_tmp_directory"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
   rescue:
     - name: "Destroy Jannah Environment Exception"

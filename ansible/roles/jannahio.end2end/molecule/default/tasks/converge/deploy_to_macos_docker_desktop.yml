@@ -479,6 +479,10 @@
     - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
         msg: 'Inline Prepare Operator MacOs Docker Desktop Exception'
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -486,6 +490,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
+        - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
   ignore_errors: false

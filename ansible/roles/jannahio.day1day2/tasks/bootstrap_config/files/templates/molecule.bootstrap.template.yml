@@ -215,6 +215,8 @@ provisioner:
                 dependencies:
                   parcona_postgres:
                     namespace: parcona-operator
+                  kubeflow:
+                    namespace: kubeflow
                 docker_desktop:
                   name: docker-desktop
                 kind:
@@ -244,16 +246,21 @@ provisioner:
                       pullPolicy: IfNotPresent
                       tag: ""
                       port: 80
+                    boot:
+                      name:  jannah-boot
+                      repository: jallohmediabuild/jannah-boot
+                      pullPolicy: IfNotPresent
+                      port: 8000
                     frontend:
-                      name:  jannah-web-ui
-                      repository: jallohmediabuild/jannah-ubuntu-frontend-web-ui
+                      name:  jannah-web
+                      repository: jallohmediabuild/jannah-web
                       pullPolicy: IfNotPresent
                       port: 8100
                     middleware:
-                      name:  jannah-middleware
-                      repository: jallohmediabuild/jannah-ubuntu-middleware
+                      name:  jannah-compute
+                      repository: jallohmediabuild/jannah-compute
                       pullPolicy: IfNotPresent
-                      port: 8000
+                      port: 8200
               secrets:
                 image_registry:
                   name: myregistrykey

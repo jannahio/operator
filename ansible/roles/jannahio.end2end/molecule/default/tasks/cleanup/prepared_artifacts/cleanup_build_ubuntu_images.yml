@@ -1,47 +1,14 @@
 ---
-- name: "Remove Builds for ubuntu docker images"
+- name: "Stops containers from ubuntu docker images"
   block:
-    - name: "Remove images/ubuntu directory"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
-        state: absent
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "remove_ubuntu_base_images"
-        - "molecule_cleanup"
+        - "deploy_images"
+        - "molecule_converge"
         - "operator_e2e"
-    - name: "Remove images/ubuntu/ubuntu.Dockerfile"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile"
-        state: absent
-      tags:
-        - "remove_ubuntu_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove project/ubuntu.Dockerfile"
-      file:
-        path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile"
-        state: absent
-      tags:
-        - "remove_ubuntu_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove ubuntu/ubuntu.Dockerfile.dockerignore"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile.dockerignore"
-        state: absent
-      tags:
-        - "remove_ubuntu_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove project/ubuntu.Dockerfile.dockerignore"
-      file:
-        path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile.dockerignore"
-        state: absent
-      tags:
-        - "remove_ubuntu_base_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Import prepare build image tasks - ubuntu middleware and frontend"
+    - name: "Import stop build image container tasks - ubuntu middleware and frontend"
       include_tasks: '{{ cleanup_prepared_ubuntu_middleware_and_frontend_task_items }}'
       with_fileglob:
         - cleanup_build_ubuntu_middleware_images.yml
@@ -50,6 +17,56 @@
         loop_var: cleanup_prepared_ubuntu_middleware_and_frontend_task_items
       tags:
         - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Stop Ubuntu boot container - arm64"
+      shell: |
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+      tags:
+        - "build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove Ubuntu boot container - arm64"
+      shell: |
+        docker container rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      async: 9800
+      poll: 5
+      tags:
+        - "build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Stop Ubuntu boot container - amd64"
+      shell: |
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      async: 9800
+      poll: 5
+      tags:
+        - "build_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Remove Ubuntu boot container - amd64"
+      shell: |
+        docker container rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      async: 9800
+      poll: 5
+      tags:
+        - "build_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:

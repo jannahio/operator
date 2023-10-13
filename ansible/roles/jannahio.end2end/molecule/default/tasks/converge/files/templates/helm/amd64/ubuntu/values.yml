@@ -10,17 +10,23 @@ images:
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.pullPolicy }}
     # Overrides the image tag whose default is the chart appVersion.
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.tag }}
+  boot:
+    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.repository }}
+    pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.pullPolicy }}
+    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+    port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.port }}
   frontend:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}"
+    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
     repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.repository }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.pullPolicy }}
-    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.tag }}
+    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.port }}
   middleware:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}"
+    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
     repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.repository }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.pullPolicy }}
-    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.tag }}
+    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.port }}
 
 imagePullSecrets: []

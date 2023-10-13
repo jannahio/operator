@@ -1,63 +1,62 @@
 ---
-- name: "Remove Builds from Ubuntu frontend docker images"
+- name: "Stop containers from Ubuntu frontend docker images"
   block:
-    - name: "Remove /images/ubuntu/frontend directory"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
-        state: absent
-      tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove frontend/ubuntu.frontend.Dockerfile"
-      file:
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
-        state: absent
-      tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove ubuntu/ubuntu.frontend.Dockerfile.dockerignore"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
-        state: absent
-      tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove Ubuntu frontend image - arm64"
+    - name: "Docker stop Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker image rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] != "x86_64"
       async: 600
       poll: 5
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "deploy_images"
+        - "stop_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Remove Ubuntu frontend image - amd64"
+    - name: "Docker rm Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker image rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker container rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "stop_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker stop Jannah frontend amd64/ubuntu image in dev (container) mode"
+      shell: |
+        docker container stop \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600
       poll: 5
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "deploy_images"
+        - "stop_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "Docker rm Jannah frontend amd64/ubuntu image in dev (container) mode"
+      shell: |
+        docker container rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "stop_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
-    - name: "Builds Ubuntu Frontend Docker Images Exception"
+    - name: "Stop Ubuntu Frontend Exception"
       ansible.builtin.debug:
-        msg: 'Builds Ubuntu Frontend Docker Images Exception'
+        msg: 'Stop Ubuntu Frontend Exception'
     - name: Re-emit failure
       vars:
         failed_task:
@@ -66,7 +65,7 @@
         msg: '{{ failed_task }}'
       tags:
         - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "stop_frontend_images"
         - "build_ubuntu_images"
         - "molecule_cleanup"
         - "operator_e2e"

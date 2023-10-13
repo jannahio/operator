@@ -31,11 +31,30 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.images.proxy.repository }}:{{ .Values.images.proxy.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.proxy.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Values.images.boot.name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.images.boot.repository }}:{{ .Values.images.boot.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.boot.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.images.boot.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -70,7 +89,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.images.middleware.repository }}:{{ .Values.images.middleware.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.images.middleware.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.images.middleware.port }}

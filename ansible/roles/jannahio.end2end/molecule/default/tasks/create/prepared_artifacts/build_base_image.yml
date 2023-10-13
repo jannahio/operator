@@ -1,0 +1,136 @@
+---
+# Implements:
+# https://docs.docker.com/build/architecture/
+# https://docs.docker.com/build/drivers/kubernetes/#example-creating-a-buildx-builder-in-kubernetes
+# https://docs.docker.com/build/building/multi-platform/
+- name: "Builds and push docker images to registry for use in Helm Chart"
+  block:
+    - name: "Create install_kustomize download directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Generate base.Dockerfile"
+      template:
+        src: "files/templates/base.Dockerfile"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Generate project/base.Dockerfile"
+      template:
+        src: "files/templates/base.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Generate base.Dockerfile.dockerignore"
+      template:
+        src: "files/templates/base.Dockerfile.dockerignore"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile.dockerignore"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Generate project/base.Dockerfile.dockerignore"
+      template:
+        src: "files/templates/base.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile.dockerignore"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "kubectl create namespace buildkit"
+      shell: |
+        kubectl create namespace buildkit;
+        exit 0;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "docker buildx create--platform=linux/amd64"
+      shell: |
+        docker buildx create \
+        --bootstrap \
+        --name=kube \
+        --driver=kubernetes \
+        --platform=linux/amd64 \
+        --node=builder-amd64 \
+        --driver-opt=namespace=buildkit,qemu.install=true,nodeselector="kubernetes.io/arch=amd64";
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "docker buildx create append --platform=linux/arm64 append"
+      shell: |
+        sleep 120;
+        docker buildx create \
+        --append \
+        --bootstrap \
+        --name=kube \
+        --driver=kubernetes \
+        --platform=linux/arm64 \
+        --node=builder-arm64 \
+        --driver-opt=namespace=buildkit,qemu.install=true,nodeselector="kubernetes.io/arch=arm64"; 
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "docker buildx ls"
+      shell: |
+        docker buildx ls;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "kubectl -n buildkit get deployments"
+      shell: |
+        kubectl -n buildkit get deployments;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "kubectl -n buildkit get pods"
+      shell: |
+        kubectl -n buildkit get pods;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Builds and Push Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Builds and Push Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "molecule_create"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

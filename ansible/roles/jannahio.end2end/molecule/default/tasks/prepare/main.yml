@@ -8,14 +8,14 @@
         jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_prepare"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_prepare"
         - "operator_e2e"
     - name: "Import prepare  docker desktop tasks - Darwin"
       include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'

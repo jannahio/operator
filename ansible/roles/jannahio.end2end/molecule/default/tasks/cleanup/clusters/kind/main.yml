@@ -13,31 +13,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-    - name: "unalias k3ai"
-      shell: |
-        unalias k3ai;
-        exit 0;
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_prepare"
-        - "operator_e2e"
-    - name: "Install kind 0.18.0 - Darwin(arm64)"
-      shell: |
-        brew uninstall kind;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
-    - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
-      file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
-        state: absent
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
   rescue:
     - name: "Kubernetes Kind Tooling Cleanup Exception"
       ansible.builtin.debug:

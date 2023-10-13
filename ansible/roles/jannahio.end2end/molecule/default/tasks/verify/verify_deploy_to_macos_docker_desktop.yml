@@ -1,108 +1,236 @@
 ---
-- name: "Verify Operator Deployment to MacOs Docker Desktop"
+- name: "Verify Deploy Operator to MacOs Docker Desktop"
   block:
-    - name: "kubectl get pods -n kubeflow"
+    - name: "set_fact jannah_stages_bootstrap_deploy_type"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
+      tags:
+        - "deploy_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "deploy_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_mode"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
+      tags:
+        - "deploy_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "Verify kubeflow - docker-desktop"
       shell: |
-        kubectl get pods -n kubeflow
+        kubectl get pods \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      register: kubeflow_pods_result
       tags:
         - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "kubectl get deployment -n kubeflow"
+    - name: "Verify kubeflow - kind-cluster"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        kubectl get deployment -n kubeflow
+        kubectl get pods \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      register: kubeflow_pods_result
       tags:
         - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-ubuntu-middleware-arm64"
+    - name: "Verify Deployed Jannah Operator - docker-desktop"
       shell: |
-        docker logs jannah-ubuntu-middleware-arm64;
-      when: ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
+        kubectl get pods \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      register: jannah_pods_result
       tags:
-        - "verify_images"
+        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-ubuntu-middleware-amd64"
+        - "debug_task"
+    - name: "Verify Deployed Jannah Operator - kind-cluster"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        docker logs jannah-ubuntu-middleware-amd64;
-      when: ansible_facts['architecture'] == "x86_64"
-      async: 600
-      poll: 5
+        kubectl get pods \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      register: jannah_pods_result
       tags:
-        - "verify_images"
+        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-streamos-middleware-arm64"
+        - "debug_task"
+   
+    # if deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers  
+    - name: "Docker logs Jannah middleware arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker logs jannah-streamos-middleware-arm64;
-      when: ansible_facts['architecture'] != "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
+        - "deploy_images"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-streamos-middleware-amd64"
+    - name: "Docker logs Jannah middleware amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker logs jannah-streamos-middleware-amd64;
-      when: ansible_facts['architecture'] == "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
+        - "deploy_images"
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-ubuntu-frontend-web-arm64"
+    - name: "Docker logs Jannah middleware arm64/streamos image in dev (container) mode"
       shell: |
-        docker logs jannah-ubuntu-frontend-web-arm64;
-      when: ansible_facts['architecture'] != "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
+        - "deploy_images"
+        - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-ubuntu-frontend-web-amd64"
+    - name: "Docker logs Jannah middleware amd64/streamos image in dev (container) mode"
       shell: |
-        docker logs jannah-ubuntu-frontend-web-amd64;
-      when: ansible_facts['architecture'] == "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
-        - "build_frontend_images"
-        - "molecule_cleanup"
+        - "deploy_images"
+        - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-streamos-frontend-web-arm64"
+    - name: "Docker logs Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker logs jannah-streamos-frontend-web-arm64;
-      when: ansible_facts['architecture'] != "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
+        - "deploy_images"
         - "build_frontend_images"
-        - "molecule_cleanup"
+        - "molecule_verify"
         - "operator_e2e"
-    - name: "Docker logs jallohmediabuild/jannah-streamos-frontend-web-amd64"
+    - name: "Docker logs Jannah frontend amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker logs jannah-streamos-frontend-web-amd64;
-      when: ansible_facts['architecture'] == "x86_64"
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
       async: 600
       poll: 5
       tags:
-        - "verify_images"
+        - "deploy_images"
         - "build_frontend_images"
-        - "molecule_cleanup"
+        - "molecule_verify"
         - "operator_e2e"
+    - name: "Docker run Jannah frontend amd64/streamos image in dev (container) mode"
+      shell: |
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+      when: (
+            ansible_facts['architecture'] == "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "Docker logs Jannah frontend arm64/streamos image in dev (container) mode"
+      shell: |
+        docker logs \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
+      when: (
+            ansible_facts['architecture'] != "x86_64" 
+            and 
+            jannah_stages_bootstrap_deploy_mode == "dev"
+            and
+            ajannah_stages_bootstrap_deploy_os == "streamos"
+            )
+      async: 600
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
+      tags:
+        - "deploy_images"
+        - "build_frontend_images"
+        - "molecule_verify"
+        - "operator_e2e"
+    - debug: var=kubeflow_pods_result
+    - assert:
+        that:
+          - kubeflow_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}")
+    - debug: var=jannah_pods_result
+    - assert:
+        that:
+          - jannah_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}")
   rescue:
-    - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
+    - name: "Verify  Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
-        msg: 'Inline Prepare Operator MacOs Docker Desktop Exception'
+        msg: 'Verify Operator MacOs Docker Desktop Exception'
     - name: Re-emit failure
       vars:
         failed_task:
@@ -110,7 +238,6 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "multipass_infra"
         - "molecule_verify"
         - "operator_e2e"
   ignore_errors: false

@@ -3,14 +3,6 @@
 # https://docs.percona.com/percona-operator-for-postgresql/2.0/kubectl.html#procedure
 - name: "Deploy Operators Storage to MacOs Docker Desktop"
   block:
-    - name: "set_fact jannah_stages_bootstrap_deploy_type"
-      ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
-      tags:
-        - "deploy_storage"
-        - "molecule_converge"
-        - "operator_e2e"
-        - "debug_task"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -31,30 +23,55 @@
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Deploy Percona Postgresql Operator"
+    - name: "Deploy Percona Postgresql Operator - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
         https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/bundle.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Deploy Percona Distribution for PostgreSQL cluster"
+    - name: "Deploy Percona Postgresql Operator - kind-cluster"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        sleep 10;
+        kubectl apply --server-side -f \
+        https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/bundle.yaml \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "debug_task"
+    # - name: "Wait for Parcona Postgres Namespace on Docker-Desktop"
+    #   shell: |
+    #     sleep {{ Jannah.stages.bootstrap.deploy.wait_time }};
+    #   when: (
+    #           jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+    #           and 
+    #           jannah_stages_bootstrap_deploy_wait_time > 0
+    #         )
+    - name: "Deploy Percona Distribution for PostgreSQL cluster - docker-desktop"
+      shell: |
         kubectl apply -f https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/cr.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
         - "debug_task"
-    - name: "Check the Operator and replica set Pods status"
+    - name: "Deploy Percona Distribution for PostgreSQL cluster -kind"
+      environment:
+        - KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        sleep 10;
-        kubectl get pg -n postgres-operator;
+        kubectl apply -f https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/cr.yaml \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"

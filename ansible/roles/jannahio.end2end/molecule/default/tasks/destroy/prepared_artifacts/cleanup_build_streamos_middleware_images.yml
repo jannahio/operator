@@ -1,0 +1,68 @@
+---
+- name: "Clean Builds from streamos middleware docker images"
+  block:
+    - name: "Remove /images/streamos/middleware directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_middleware_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove middleware/streamos.middleware.Dockerfile"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove streamos/streamos.middleware.Dockerfile.dockerignore"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile.dockerignore"
+        state: absent
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove middleware image arm64/streamos"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove middleware image amd64/streamos"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 1200
+      poll: 5
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+  rescue:
+    - name: "Remove Builds for StreamOs Middleware Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Remove Builds for StreamOs Middleware Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "build_ubuntu_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+  ignore_errors: false
