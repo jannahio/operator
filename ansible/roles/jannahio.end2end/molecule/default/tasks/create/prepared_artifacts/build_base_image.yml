@@ -5,6 +5,13 @@
 # https://docs.docker.com/build/building/multi-platform/
 - name: "Builds and push docker images to registry for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "Create install_kustomize download directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base"
@@ -50,6 +57,7 @@
       shell: |
         kubectl create namespace buildkit;
         exit 0;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:
@@ -66,7 +74,7 @@
         --node=builder-amd64 \
         --driver-opt=namespace=buildkit,qemu.install=true,nodeselector="kubernetes.io/arch=amd64";
         exit 0;
-      when: ansible_facts['architecture'] == "x86_64"
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:
@@ -85,7 +93,7 @@
         --node=builder-arm64 \
         --driver-opt=namespace=buildkit,qemu.install=true,nodeselector="kubernetes.io/arch=arm64"; 
         exit 0;
-      when: ansible_facts['architecture'] != "x86_64"
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:

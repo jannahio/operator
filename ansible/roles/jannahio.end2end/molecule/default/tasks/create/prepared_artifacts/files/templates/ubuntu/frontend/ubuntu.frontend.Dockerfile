@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:23.04
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.dockerfiles.ubuntu.from }}
 RUN apt-get update && apt-get install -y nodejs npm git
 ADD . /JannahIonic
 WORKDIR /JannahIonic

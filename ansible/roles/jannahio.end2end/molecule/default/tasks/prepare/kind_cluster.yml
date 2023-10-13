@@ -1,0 +1,125 @@
+---
+# Implements
+# https://github.com/quay/quay-operator#step-by-step
+- name: "Prepare kind cluster"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: 'Create Jannah namespace if not already existing'
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Create quay-operator download directory"
+      file:
+        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        state: directory
+        mode: 0755
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Read-write git checkout kubeflow/manifests.git"
+      ansible.builtin.git:
+        repo: "https://github.com/quay/quay-operator.git"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Deploy Quay Operator - Create the CatalogSource"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.catalogsource.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Wait for Deploy Quay Operator - Create the CatalogSource"
+      shell: |
+        sleep {{ Jannah.stages.bootstrap.deploy.wait_time }};
+      when: jannah_stages_bootstrap_deploy_wait_time > 0
+    - name: "Deploy Quay Operator - kubectl get packagemanifest grep qrep"
+      shell: |
+        kubectl get packagemanifest --all-namespaces | grep quay;
+      register: kubectl_get_packagemanifest_results
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - debug: var=kubectl_get_packagemanifest_results
+    - assert:
+        that:
+          - kubectl_get_packagemanifest_results.contains("quay")
+    - name: "Deploy Quay Operator - Create the OperatorGroup"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.operatorgroup.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Deploy Quay Operator - Create the OperatorGroup"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
+        -f ./bundle/quay-operator.subscription.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+  rescue:
+    - name: "Deploy Operators Storage to MacOs Docker Desktop Exception"
+      ansible.builtin.debug:
+        msg: 'Deploy Operators Storage to MacOs Docker Desktop Exception'
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+  ignore_errors: false

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM quay.io/centos/centos:stream9
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.dockerfiles.streamos.from }}
 RUN dnf module install -y nodejs:18/common
 RUN dnf install -y git
 ADD . /JannahIonic

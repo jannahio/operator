@@ -1,1 +1,86 @@
 ---
+- name: "Tag and Push ubuntu frontend docker images for use in Helm Chart"
+  block:
+    - name: "Tag Ubuntu frontend image - arm64"
+      shell: |
+        docker tag \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] != "x86_64"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Push Ubuntu frontend image - arm64"
+      shell: |
+        docker push \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] != "x86_64"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Tag Ubuntu frontend image - amd64"
+      shell: |
+        docker tag \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Push Ubuntu frontend image - amd64"
+      shell: |
+        docker push \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+  rescue:
+    - name: "Builds Ubuntu Frontend Docker Images Exception"
+      ansible.builtin.debug:
+        msg: 'Builds Ubuntu Frontend Docker Images Exception'
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "build_ubuntu_images"
+        - "molecule_create"
+        - "operator_e2e"
+  ignore_errors: false

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM quay.io/centos/centos:stream9
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.dockerfiles.streamos.from }}
 RUN dnf install -y gcc python3-pip python3
 ADD . /jannah_graphql
 WORKDIR /jannah_graphql

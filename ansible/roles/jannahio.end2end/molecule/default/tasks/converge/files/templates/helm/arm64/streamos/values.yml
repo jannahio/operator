@@ -28,6 +28,12 @@ images:
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.port }}
+  registry:
+    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.repository }}
+    pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.pullPolicy }}
+    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+    port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}
 
 imagePullSecrets: []
 nameOverride: ""

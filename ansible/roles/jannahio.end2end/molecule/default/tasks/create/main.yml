@@ -30,6 +30,7 @@
         - "multipass_infra"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Import create tasks - Darwin"
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:

@@ -1,6 +1,13 @@
 ---
 - name: "Builds streamos middleware docker images for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
@@ -44,7 +51,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs middleware image - arm64"
+    - name: "Build StreamOs middleware image - arm64  docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -53,7 +60,13 @@
           --platform=linux/arm64 \
           -f streamos.middleware.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "streamos"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       async: 9800
       poll: 5
       args:
@@ -62,7 +75,28 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs middleware image - amd64"
+    - name: "Build StreamOs middleware image - arm64  kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f streamos.middleware.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "streamos"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build StreamOs middleware image - amd64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -71,7 +105,34 @@
           --platform=linux/amd64 \
           -f streamos.middleware.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and
+              jannah_stages_bootstrap_deploy_os == "streamos"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build StreamOs middleware image - amd64 kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f streamos.middleware.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and
+              jannah_stages_bootstrap_deploy_os == "streamos"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
       async: 9800
       poll: 5
       args:

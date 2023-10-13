@@ -54,6 +54,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "debug_task1"
+        - "molecule_create_debug"
     - name: "Import prepare tasks (molecule prepare) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:

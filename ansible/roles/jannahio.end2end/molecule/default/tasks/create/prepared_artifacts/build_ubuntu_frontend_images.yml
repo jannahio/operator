@@ -1,6 +1,14 @@
 ---
 - name: "Builds ubuntu frontend docker images for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
@@ -62,7 +70,7 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend image - arm64"
+    - name: "Build Ubuntu frontend image - arm64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -71,7 +79,13 @@
           --platform=linux/arm64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu""
+      when: (
+              ansible_facts['architecture'] != "x86_64"
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       async: 9800
       poll: 5
       args:
@@ -81,7 +95,29 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend image - amd64"
+    - name: "Build Ubuntu frontend image - arm64 kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f ubuntu.frontend.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] != "x86_64"
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build Ubuntu frontend image - amd64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -90,7 +126,35 @@
           --platform=linux/amd64 \
           -f ubuntu.frontend.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build Ubuntu frontend image - amd64 kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f ubuntu.frontend.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
       async: 9800
       poll: 5
       args:

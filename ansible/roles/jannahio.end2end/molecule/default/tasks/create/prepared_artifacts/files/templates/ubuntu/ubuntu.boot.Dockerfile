@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:23.04
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.dockerfiles.ubuntu.from }}
 RUN apt-get update && apt-get install -y python3 python3-pip libssl-dev wget \
     virtualenv git
 ADD . /jannah-operator

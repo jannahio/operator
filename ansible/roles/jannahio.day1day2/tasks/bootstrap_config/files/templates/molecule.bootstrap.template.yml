@@ -240,6 +240,7 @@ provisioner:
                     ubuntu: ubuntu
                     streamos: streamos
                     tag: "v0.0.1"
+                    repository: localhost:5001
                   images:
                     proxy:
                       repository: nginx
@@ -251,16 +252,43 @@ provisioner:
                       repository: jallohmediabuild/jannah-boot
                       pullPolicy: IfNotPresent
                       port: 8000
+                      dockerfiles:
+                        streamos:
+                          from: quay.io/centos/centos:stream9
+                        ubuntu:
+                          from: ubuntu:23.04
                     frontend:
                       name:  jannah-web
                       repository: jallohmediabuild/jannah-web
                       pullPolicy: IfNotPresent
                       port: 8100
+                      dockerfiles:
+                        streamos:
+                          from: quay.io/centos/centos:stream9
+                        ubuntu:
+                          from: ubuntu:23.04
                     middleware:
                       name:  jannah-compute
                       repository: jallohmediabuild/jannah-compute
                       pullPolicy: IfNotPresent
                       port: 8200
+                      dockerfiles:
+                        streamos:
+                          from: quay.io/centos/centos:stream9
+                        ubuntu:
+                          from: ubuntu:23.04
+                    registry:
+                      name:  jannah-registry
+                      repository: jallohmediabuild/jannah-registry
+                      pullPolicy: IfNotPresent
+                      port: 5001
+                      dockerfiles:
+                        # For streamos use quay registry operator
+                        # https://github.com/quay/quay-operator
+                        # streamos:
+                        #   from: quay.io/centos/centos:stream9
+                        ubuntu:
+                          from: registry:2
               secrets:
                 image_registry:
                   name: myregistrykey

@@ -1,6 +1,13 @@
 ---
 - name: "Builds ubuntu docker images for use in Helm Chart"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "Create images/ubuntu directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
@@ -26,7 +33,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu boot image - arm64"
+    - name: "Build Ubuntu boot image - arm64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -35,7 +42,13 @@
           --platform=linux/arm64 \
           -f ubuntu.boot.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       async: 9800
       poll: 5
       args:
@@ -44,7 +57,28 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu boot image - amd64"
+    - name: "Build Ubuntu boot image - arm64 kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f ubuntu.boot.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build Ubuntu boot image - amd64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
@@ -53,7 +87,34 @@
           --platform=linux/amd64 \
           -f ubuntu.boot.Dockerfile \
           --load .
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu"
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Build Ubuntu boot image - amd64 kind"
+      shell: |
+        docker build \
+          -t \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f ubuntu.boot.Dockerfile .;
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
       async: 9800
       poll: 5
       args:

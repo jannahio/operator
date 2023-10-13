@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM quay.io/centos/centos:stream9
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.dockerfiles.streamos.from }}
 RUN dnf install -y gcc python3-pip python3 python3-devel openssl-devel python3-libselinux wget git
 ADD . /jannah-operator
 WORKDIR /jannah-operator

@@ -3,6 +3,13 @@
 # ('os_family' not in ansible_facts) or  (ansible_facts['os_family'] == "Darwin")
 - name: "Prepare Jannah Tasks"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_type"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
@@ -23,7 +30,28 @@
         - macos_docker_desktop.yml
       loop_control:
         loop_var: prepare_macos_docker_desktop_task_items
-      when: ansible_facts['os_family'] == "Darwin"
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Import prepare  kind cluster tasks - Darwin"
+      include_tasks: '{{ prepare_kind_cluster_task_items }}'
+      with_fileglob:
+        - kind_cluster.yml
+      loop_control:
+        loop_var: prepare_kind_cluster_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+              and
+              jannah_stages_bootstrap_deploy_os == "streamos"
+            )
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
@@ -45,7 +73,15 @@
         - build_streamos_images.yml
       loop_control:
         loop_var: prepare_build_streamos_images_task_items
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      when: (
+            ansible_facts['os_family'] == "Darwin" 
+            and 
+              (
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "kind"
+              )
+            )
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
