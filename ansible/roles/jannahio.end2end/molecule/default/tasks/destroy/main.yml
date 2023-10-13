@@ -24,17 +24,17 @@
         - "cleanup_base_images"
         - "molecule_destroy"
         - "operator_e2e"
-    - name: "docker image prune -f -a"
-      shell: |
-        docker image prune -f -a
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}"
-      tags:
-        - "cleanup_base_images"
-        - "molecule_destroy"
-        - "operator_e2e"
+    # - name: "docker image prune -f -a"
+    #   shell: |
+    #     docker image prune -f -a
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}"
+    #   tags:
+    #     - "cleanup_base_images"
+    #     - "molecule_destroy"
+    #     - "operator_e2e"
     - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}"

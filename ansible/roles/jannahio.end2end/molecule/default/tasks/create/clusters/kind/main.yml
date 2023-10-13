@@ -160,7 +160,7 @@
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
       shell: |
-        if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' "${reg_name}")" = 'null' ]; then
+        if [ "$(docker inspect -f='{{ .NetworkSettings.Networks.kind }}' "${reg_name}")" = 'null' ]; then
           docker network connect "kind" "${reg_name}"
         fi
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
