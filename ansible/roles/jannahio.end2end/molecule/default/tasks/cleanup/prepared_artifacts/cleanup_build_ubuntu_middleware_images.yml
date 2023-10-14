@@ -53,6 +53,10 @@
     - name: "Stop Middleware Container Exception"
       ansible.builtin.debug:
         msg: "Stop Middleware Container Exception"
+      tags:
+        - "deploy_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -60,7 +64,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "build_images"
+        - "deploy_images"
         - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false

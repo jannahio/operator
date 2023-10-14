@@ -6,22 +6,23 @@
         kind_cluster_directory: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
     - name: "set_fact kind_cluster_kubeconfig"
       ansible.builtin.set_fact:
         kind_cluster_kubeconfig: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
@@ -85,8 +86,8 @@
             registry:2
         fi
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      # args:
+      #   chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       async: 1200
       poll: 15
       tags:
@@ -110,6 +111,7 @@
         cat <<EOF | kind create cluster --config=-
         kind: Cluster
         apiVersion: kind.x-k8s.io/v1alpha4
+        name: "{{ Jannah.stages.bootstrap.deploy.kind.name }}"
         containerdConfigPatches:
         - |-
           [plugins."io.containerd.grpc.v1.cri".registry]
@@ -137,7 +139,7 @@
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
       shell: |
-        for node in $(kind get nodes); do
+        for node in $(kind get nodes --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}"); do
           docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
           cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
         [host."http://${reg_name}:5000"]
@@ -160,7 +162,7 @@
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
       shell: |
-        if [ "$(docker inspect -f='{{ .NetworkSettings.Networks.kind }}' "${reg_name}")" = 'null' ]; then
+        if [ "$(docker inspect -f='\{\{json .NetworkSettings.Networks.kind \}\}' "${reg_name}")" = 'null' ]; then
           docker network connect "kind" "${reg_name}"
         fi
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
@@ -173,7 +175,22 @@
         - "operator_e2e"
         - "molecule_create_debug"
     # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-    - name: "Create kind cluster - with registry - 5. Document the local registry"
+    - name: "Create kind cluster - with registry - 5 A. Create Namespace"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |   
+        kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
+        exit 0;
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+      async: 1200
+      poll: 15
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Create kind cluster - with registry - 5 B. Document the local registry"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
@@ -236,6 +253,7 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_debug"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -245,4 +263,5 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_debug"
   ignore_errors: false

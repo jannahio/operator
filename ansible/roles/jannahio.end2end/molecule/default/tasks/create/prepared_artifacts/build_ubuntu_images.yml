@@ -27,10 +27,21 @@
         - "operator_e2e"
     - name: "Generate ubuntu/ubuntu.boot.Dockerfile.dockerignore"
       template:
-        src: "files/templates/ubuntu/ubuntu.boot..Dockerfile.dockerignore"
+        src: "files/templates/ubuntu/ubuntu.boot.Dockerfile.dockerignore"
         dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.boot.Dockerfile.dockerignore"
       tags:
         - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Import prepare build image tasks - ubuntu middleware and frontend"
+      include_tasks: '{{ prepare_ubuntu_middleware_and_frontend_task_items }}'
+      with_fileglob:
+        - build_ubuntu_middleware_images.yml
+        - build_ubuntu_frontend_images.yml
+      loop_control:
+        loop_var: prepare_ubuntu_middleware_and_frontend_task_items
+      tags:
+        - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
     - name: "Build Ubuntu boot image - arm64 docker-desktop"
@@ -121,17 +132,6 @@
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
-        - "molecule_create"
-        - "operator_e2e"
-    - name: "Import prepare build image tasks - ubuntu middleware and frontend"
-      include_tasks: '{{ prepare_ubuntu_middleware_and_frontend_task_items }}'
-      with_fileglob:
-        - build_ubuntu_middleware_images.yml
-        - build_ubuntu_frontend_images.yml
-      loop_control:
-        loop_var: prepare_ubuntu_middleware_and_frontend_task_items
-      tags:
-        - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
   rescue:

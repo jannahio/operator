@@ -6,8 +6,9 @@
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Import Kubernetes cluster create tasks"
       include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:
@@ -22,7 +23,7 @@
     - name: "Import kind cluster creation tasks"
       include_tasks: '{{ create_kind_cluster_task_items }}'
       with_fileglob:
-        - tasks/create/clusters/kind/main.yml
+        - clusters/kind/main.yml
       loop_control:
         loop_var: create_kind_cluster_task_items
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"

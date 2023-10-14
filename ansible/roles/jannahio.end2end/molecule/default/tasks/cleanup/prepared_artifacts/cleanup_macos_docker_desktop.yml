@@ -7,7 +7,7 @@
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: "Jannab un-install"
       shell: |
@@ -26,14 +26,12 @@
         docker container stop ${reg_name};
         exit 0; 
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       async: 1200
       poll: 15
       tags:
-        - "molecule_create"
+        - "molecule_cleanup"
         - "operator_e2e"
-        - "molecule_create_debug"
+        - "molecule_cleanup_debug"
     - name: "Remvove created registry container if it already exists and running"
       environment:
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
@@ -41,16 +39,12 @@
         docker container rm ${reg_name};
         exit 0; 
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       async: 1200
       poll: 15
       tags:
-        - "molecule_create"
+        - "molecule_cleanup"
         - "operator_e2e"
-        - "molecule_create_debug"
-
-
+        - "molecule_cleanup_debug"
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:

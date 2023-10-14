@@ -11,7 +11,7 @@
       async: 600
       poll: 5
       tags:
-        - "molecule_create"
+        - "molecule_cleanup"
         - "operator_e2e"
   rescue:
     - name: "Kubernetes Kind Tooling Cleanup Exception"
@@ -19,7 +19,7 @@
         msg: 'Kubernetes Kind Tooling Cleanup Exception'
       register: molecule_cleanup_inline_debug_resources
       tags:
-        - "molecule_create"
+        - "molecule_cleanup"
         - "operator_e2e"
     - name: Re-emit failure
       vars:
@@ -28,7 +28,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "molecule_create"
+        - "molecule_cleanup"
         - "operator_e2e"
         - "debug_task"
   ignore_errors: false
