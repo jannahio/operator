@@ -37,6 +37,7 @@
                 jannah_stages_bootstrap_deploy_destination == "docker-desktop"
                 or
                 jannah_stages_bootstrap_deploy_destination == "kind"
+              )
             )
       tags:
         - "docker_desktop_infra"
