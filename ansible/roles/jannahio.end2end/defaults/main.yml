@@ -637,7 +637,7 @@ Jannah:
                   from: ubuntu:23.04
               github:
                 repo: "https://github.com/jannahio/frontend.git"
-                version: "main"
+                branch: "main"
             middleware:
               name: jannah-compute
               repository: jallohmediabuild/jannah-compute
