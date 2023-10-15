@@ -1,20 +1,6 @@
 ---
 - name: "Cleanup Jannah Environment Tasks"
   block:
-    - name: "set_fact jannah_stages_bootstrap_deploy_os"
-      ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-        - "cleanup_images"
-    - name: "set_fact jannah_stages_bootstrap_deploy_type"
-      ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-        - "cleanup_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -47,8 +33,8 @@
     - name: "Import cleanup registry,secrets tasks - Darwin"
       include_tasks: '{{ prepare_registry_secrete_task_items }}'
       with_fileglob:
-        - secrets/main.yl
-        - registry/main.yml
+        - clusters/secrets/main.yl
+        - clusters/registry/main.yml
       loop_control:
         loop_var: prepare_registry_secrete_task_items
       when: (
