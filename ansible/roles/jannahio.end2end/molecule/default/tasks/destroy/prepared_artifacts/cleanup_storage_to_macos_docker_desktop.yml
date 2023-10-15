@@ -7,7 +7,7 @@
         exit 0;
       tags:
         - "docker_desktop_infra"
-        - "molecule_converge"
+        - "molecule_destroy"
         - "operator_e2e"
         - "debug_task"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
@@ -15,14 +15,14 @@
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Wait for Delete Parcona Postgres Namespace on Docker-Desktop"
       shell: |
@@ -40,7 +40,6 @@
         - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -51,5 +50,4 @@
         - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

@@ -47,5 +47,4 @@
       tags:
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

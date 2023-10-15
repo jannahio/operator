@@ -1,0 +1,113 @@
+---
+# Implements
+# https://github.com/quay/quay-operator#step-by-step
+- name: "Remove Quay Registry"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "set_fact jannah_kubeconfig  kind cluster"
+      ansible.builtin.set_fact:
+        jannah_kubeconfig: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "set_fact jannah_kubeconfig docker-desktop"
+      ansible.builtin.set_fact:
+        jannah_kubeconfig: "${K8S_AUTH_KUBECONFIG}"
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "debug_task"
+    - name: "Deploy Quay Operator - Create the CatalogSource"
+      enviroment:
+        KUBECONFIG: jannah_kubeconfig
+      shell: |
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.catalogsource.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: "Wait for Deploy Quay Operator - Delete  the CatalogSource"
+      shell: |
+        sleep {{ Jannah.stages.bootstrap.deploy.wait_time }};
+      when: jannah_stages_bootstrap_deploy_wait_time > 0
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Create the OperatorGroup"
+      enviroment:
+        KUBECONFIG: jannah_kubeconfig
+      shell: |
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.operatorgroup.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Create the OperatorGroup"
+      enviroment:
+        KUBECONFIG: jannah_kubeconfig
+      shell: |
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
+        -f ./bundle/quay-operator.subscription.yaml;
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+  rescue:
+    - name: "Deploy Operators Storage to MacOs Docker Desktop Exception"
+      ansible.builtin.debug:
+        msg: 'Deploy Operators Storage to MacOs Docker Desktop Exception'
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+  ignore_errors: false

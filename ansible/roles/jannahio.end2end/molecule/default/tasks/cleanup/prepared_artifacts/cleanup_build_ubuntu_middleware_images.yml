@@ -10,19 +10,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah middleware arm64/ubuntu image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
-        exit 0;
-      when: ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: "Docker stop Jannah middleware amd64/ubuntu image in dev (container) mode"
@@ -34,19 +22,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah middleware amd64/ubuntu image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }};
-        exit 0;
-      when: ansible_facts['architecture'] == "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
@@ -54,7 +30,7 @@
       ansible.builtin.debug:
         msg: "Stop Middleware Container Exception"
       tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: Re-emit failure
@@ -64,7 +40,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false

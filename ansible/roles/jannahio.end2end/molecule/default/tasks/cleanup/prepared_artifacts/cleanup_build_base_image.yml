@@ -13,6 +13,10 @@
     - name: "Cleanup Base_Images Exception"
       ansible.builtin.debug:
         msg: "Cleanup Base_Images Exception"
+      tags:
+        - "cleanup_base_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:

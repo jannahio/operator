@@ -5,28 +5,28 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_mode"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Verify kubeflow - docker-desktop"
@@ -91,7 +91,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Docker logs Jannah middleware amd64/ubuntu image in dev (container) mode"
@@ -108,7 +108,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Docker logs Jannah middleware arm64/streamos image in dev (container) mode"
@@ -125,7 +125,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Docker logs Jannah middleware amd64/streamos image in dev (container) mode"
@@ -142,7 +142,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Docker logs Jannah frontend arm64/ubuntu image in dev (container) mode"
@@ -159,7 +159,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "build_frontend_images"
         - "molecule_verify"
         - "operator_e2e"
@@ -177,7 +177,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "build_frontend_images"
         - "molecule_verify"
         - "operator_e2e"
@@ -195,7 +195,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "build_frontend_images"
         - "molecule_verify"
         - "operator_e2e"
@@ -215,7 +215,7 @@
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/"
       tags:
-        - "deploy_images"
+        - "verify_images"
         - "build_frontend_images"
         - "molecule_verify"
         - "operator_e2e"
@@ -228,16 +228,18 @@
         that:
           - jannah_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}")
   rescue:
-    - name: "Verify  Operator MacOs Docker Desktop Exception"
+    - name: "Verify  Operator MacOs Docker Desktop, Kind Cluster Exception"
       ansible.builtin.debug:
-        msg: 'Verify Operator MacOs Docker Desktop Exception'
-    - name: Re-emit failure
+        msg: 'Verify Operator MacOs Docker Desktop, Kind Cluster Exception'
+    - name: "Re-emit failure"
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
       tags:
+        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
+        - "build_frontend_images"
   ignore_errors: false

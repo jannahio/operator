@@ -1,6 +1,38 @@
 ---
 - name: "Destroy Jannah Environment Tasks"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_mode"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Import cleanup registry,secrets tasks - Darwin"
+      include_tasks: '{{ remove_registry_secrete_task_items }}'
+      with_fileglob:
+        - clusters/secrets/main.yl
+        - clusters/registry/main.yml
+      loop_control:
+        loop_var: remove_registry_secrete_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin" and 
+              (
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "kind"
+              )
+              and 
+              jannah_stages_bootstrap_deploy_mode == "dev"
+            )
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: "Import cleanup tasks - Darwin"
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
@@ -12,7 +44,6 @@
       tags:
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
     - name: "docker container prune -f -a"
       shell: |
         docker container prune -f
@@ -56,14 +87,32 @@
     - name: "Destroy Jannah Environment Exception"
       ansible.builtin.debug:
         msg: 'Destroy Jannah Environment Exception'
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "cleanup_tmp_directory"
+        - "cleanup_ephemeral_directory"
+        - "cleanup_base_images"
     - name: "Print return information from the previous task"
       ansible.builtin.debug:
         var: ansible_facts['architecture']
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "cleanup_tmp_directory"
+        - "cleanup_ephemeral_directory"
+        - "cleanup_base_images"
     - name: Re-emit failure
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "cleanup_tmp_directory"
+        - "cleanup_ephemeral_directory"
+        - "cleanup_base_images"
   ignore_errors: false
   no_log: false

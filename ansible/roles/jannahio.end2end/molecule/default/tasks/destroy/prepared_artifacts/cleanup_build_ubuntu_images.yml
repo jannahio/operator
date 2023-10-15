@@ -6,7 +6,7 @@
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove images/ubuntu directory"
       file:
@@ -91,6 +91,11 @@
     - name: "Builds Ubuntu Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Docker Images Exception'
+      tags:
+        - "remove_ubuntu_base_images"
+        - "build_ubuntu_images"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:

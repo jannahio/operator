@@ -3,7 +3,7 @@
 # https://docs.docker.com/build/architecture/
 # https://docs.docker.com/build/drivers/kubernetes/#example-creating-a-buildx-builder-in-kubernetes
 # https://docs.docker.com/build/building/multi-platform/
-- name: "Builds and push docker images to registry for use in Helm Chart"
+- name: "Foundation infra for building docker images with docker-desktop/kubernetes for use in Helm Chart"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
@@ -12,7 +12,7 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Create install_kustomize download directory"
+    - name: "Create base directory for image building"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base"
         state: directory
@@ -21,6 +21,7 @@
         - "molecule_create"
         - "molecule_prepare"
         - "operator_e2e"
+    # Root image in the Jannah infra
     - name: "Generate base.Dockerfile"
       template:
         src: "files/templates/base.Dockerfile"
@@ -103,6 +104,7 @@
     - name: "docker buildx ls"
       shell: |
         docker buildx ls;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:
@@ -112,6 +114,7 @@
     - name: "kubectl -n buildkit get deployments"
       shell: |
         kubectl -n buildkit get deployments;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:
@@ -121,6 +124,7 @@
     - name: "kubectl -n buildkit get pods"
       shell: |
         kubectl -n buildkit get pods;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/"
       tags:
@@ -128,10 +132,14 @@
         - "molecule_prepare"
         - "operator_e2e"
   rescue:
-    - name: "Builds and Push Docker Images Exception"
+    - name: "Foundation Infra Docker Images Exception"
       ansible.builtin.debug:
-        msg: 'Builds and Push Docker Images Exception'
-    - name: Re-emit failure
+        msg: "Foundation Infra Docker Images Exception"
+      tags:
+          - "molecule_create"
+          - "molecule_prepare"
+          - "operator_e2e"
+    - name: "Re-emit failure"
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'

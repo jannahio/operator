@@ -6,8 +6,8 @@
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
         state: absent
       tags:
-        - "build_images"
-        - "build_middleware_images"
+        - "remove_images"
+        - "remove_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove middleware/ubuntu.middleware.Dockerfile"
@@ -15,7 +15,7 @@
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile"
         state: absent
       tags:
-        - "build_images"
+        - "remove_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.middleware.Dockerfile.dockerignore"
@@ -23,7 +23,7 @@
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "build_images"
+        - "remove_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove Ubuntu middleware image - arm64"
@@ -35,7 +35,7 @@
       async: 600
       poll: 5
       tags:
-        - "build_images"
+        - "remove_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove Ubuntu middleware image - amd64"
@@ -47,13 +47,18 @@
       async: 600
       poll: 5
       tags:
-        - "build_images"
+        - "remove_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
     - name: "Remove Builds Ubuntu Middleware Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Remove Builds Ubuntu Middleware Docker Images Exception'
+      tags:
+        - "remove_images"
+        - "build_ubuntu_images"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -61,7 +66,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "build_images"
+        - "remove_images"
         - "build_ubuntu_images"
         - "molecule_destroy"
         - "operator_e2e"

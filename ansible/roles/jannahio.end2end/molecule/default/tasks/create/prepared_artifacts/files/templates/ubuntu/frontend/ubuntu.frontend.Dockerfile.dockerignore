@@ -4,3 +4,6 @@ jannah-python
 node_modules
 ios
 android
+boot.env.sh
+*.env
+*.env.sh

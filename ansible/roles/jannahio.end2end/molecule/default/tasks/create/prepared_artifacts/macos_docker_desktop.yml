@@ -1,6 +1,6 @@
 ---
 # Implements https://github.com/kubeflow/manifests#installation
-- name: "Prepare operator - MacOs Docker Desktop"
+- name: "Create MacOs Docker Desktop Infra"
   block:
     - name: "Create install_kustomize download directory"
       file:
@@ -14,15 +14,6 @@
     # 08/22/2022 - Osmanj - The latest version of Kustomize is buggy?
     # It does not recognize the --load_restrictor='LoadRestrictionsNone' flog
     # Current workaround is to install v3.8.7
-    - name: "echo ansible_facts['architecture']"
-      shell: |
-        echo "{{ ansible_facts['architecture'] }}";
-      args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_create"
-        - "operator_e2e"
     - name: "wget kustomize_v5.0.3_darwin_amd64.tar.gz Darwin/amd64"
       shell: |
         wget  \
@@ -79,10 +70,14 @@
         - "molecule_create"
         - "operator_e2e"
   rescue:
-    - name: "Prepare Operator MacOs Docker Desktop Exception"
+    - name: "Create MacOs Docker Desktop Infra Exception"
       ansible.builtin.debug:
-        msg: 'Prepare Operator MacOs Docker Desktop Exception'
-    - name: Re-emit failure
+        msg: 'Create MacOs Docker Desktop Infra Exception'
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "Re-emit failure"
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'

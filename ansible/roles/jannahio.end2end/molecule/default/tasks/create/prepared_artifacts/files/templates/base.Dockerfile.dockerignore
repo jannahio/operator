@@ -1,3 +1,6 @@
 tmp
 aux
+boot.env.sh
+*.env
+*.env.sh
 jannah-python

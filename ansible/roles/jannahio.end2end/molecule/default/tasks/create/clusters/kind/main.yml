@@ -8,13 +8,6 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "set_fact kind_cluster_kubeconfig"
-      ansible.builtin.set_fact:
-        kind_cluster_kubeconfig: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config
-      tags:
-        - "deploy_images"
-        - "molecule_create"
-        - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -22,7 +15,6 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
@@ -30,6 +22,7 @@
       async: 600
       poll: 5
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
@@ -38,6 +31,7 @@
         state: directory
         mode: 0755
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
     # - name: "Generate kind_config_arm64.yml"
@@ -74,39 +68,29 @@
     #     - "operator_e2e"
   # --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml" \
 # Implements https://kind.sigs.k8s.io/docs/user/local-registry/
-    - name: "Create kind cluster - with registry - 1. Create registry container unless it already exists"
+    - name: "Create kind cluster - with registry - Part 1. Create registry container unless it already exists"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
         if [ "$(docker inspect -f '\{\{.State.Running\}\}' "${reg_name}" 2>/dev/null || true)" != 'true' ]; then
           docker run \
-            -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
+            -d --restart=always -p "127.0.0.1:${reg_port}:${reg_port}" --name "${reg_name}" \
             registry:2
         fi
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      # args:
-      #   chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
-# 
-# TODO: kind will eventually enable this by default and this patch will      
-# be unnecessary.
-#
-# See:
-# https://github.com/kubernetes-sigs/kind/issues/2875
-# https://github.com/containerd/containerd/blob/main/docs/cri/config.md#registry-configuration
-# See: https://github.com/containerd/containerd/blob/main/docs/hosts.md
-    - name: "Create kind cluster - with registry - 2. Create kind cluster with containerd registry config dir enabled"
+    - name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
         cat <<EOF | kind create cluster --config=-
         kind: Cluster
@@ -123,21 +107,21 @@
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     # This is necessary because localhost resolves to loopback addresses that are
     # network-namespace local.
     # In other words: localhost in the container is not localhost on the host.
     #
     # We want a consistent name that works from both ends, so we tell containerd to
     # alias localhost:${reg_port} to the registry container when pulling images    
-    - name: "Create kind cluster - with registry - 3. Add the registry config to the nodes"
+    - name: "Create kind cluster - with registry - Part 3. Add the registry config to the nodes"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
         for node in $(kind get nodes --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}"); do
           docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
@@ -151,16 +135,16 @@
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
-        - "molecule_create_debug"
         - "operator_e2e"
     # This allows kind to bootstrap the network but ensures they're on the same network
-    - name: "Create kind cluster - with registry - 4. Connect the registry to the cluster network if not already connected"
+    - name: "Create kind cluster - with registry - Part 4. Connect the registry to the cluster network if not already connected"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
         if [ "$(docker inspect -f='\{\{json .NetworkSettings.Networks.kind \}\}' "${reg_name}")" = 'null' ]; then
           docker network connect "kind" "${reg_name}"
@@ -171,11 +155,11 @@
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-    - name: "Create kind cluster - with registry - 5 A. Create Namespace"
+    - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |   
@@ -187,16 +171,16 @@
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
-    - name: "Create kind cluster - with registry - 5 B. Document the local registry"
+    - name: "Create kind cluster - with registry - Part 5 B. Document the local registry"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
-        reg_namespace: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} "
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
+        reg_namespace: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
       shell: |   
         cat <<EOF | kubectl apply -f -
         apiVersion: v1
@@ -215,10 +199,10 @@
       async: 1200
       poll: 15
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
-    - name: "kind export kubeconfig to /kind/config - Darwin(amd64)"
+    - name: "kind export kubeconfig to kind/config"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
@@ -229,9 +213,10 @@
       async: 600
       poll: 5
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "kubectl get pods -A"
+    - name: "kubectl get pods -A kind cluster"
       environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
@@ -242,18 +227,18 @@
       async: 600
       poll: 5
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
   rescue:
     - name: "Kubernetes Kind Tooling Exception"
       ansible.builtin.debug:
         msg: 'Kubernetes Kind Tooling Exception'
       register: molecule_create_inline_debug_resources
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -261,7 +246,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
+        - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
   ignore_errors: false

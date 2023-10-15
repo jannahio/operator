@@ -1,14 +1,13 @@
 ---
-- name: "Deploy Jannah"
+- name: "Create clusters to Deploy Jannah"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "deploy_images"
+        - "create_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     - name: "Import Kubernetes cluster create tasks"
       include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:
@@ -17,7 +16,7 @@
         loop_var: create_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
-        - "multipass_infra"
+        - "create_images"
         - "molecule_create"
         - "operator_e2e"
     - name: "Import kind cluster creation tasks"
@@ -28,28 +27,36 @@
         loop_var: create_kind_cluster_task_items
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
-        - "multipass_infra"
+        - "create_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug"
     - name: "Import create tasks - Darwin"
-      include_tasks: '{{ cleanup_task_darwin_items }}'
+      include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
         - prepared_artifacts/main.yml
       loop_control:
-        loop_var: cleanup_task_darwin_items
+        loop_var: prepare_build_artifact_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
+        - "create_images"
         - "molecule_create"
         - "operator_e2e"
   rescue:
     - name: "Deploy Jannah Exception"
       ansible.builtin.debug:
         msg: 'Deploy Jannah Exception'
+      tags:
+        - "create_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
+      tags:
+        - "create_images"
+        - "molecule_create"
+        - "operator_e2e"
   ignore_errors: false

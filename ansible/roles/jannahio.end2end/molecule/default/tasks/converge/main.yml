@@ -8,7 +8,6 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: "Import converge  docker desktop tasks - Darwin"
       include_tasks: '{{ converge_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -22,20 +21,23 @@
                                                         jannah_stages_bootstrap_deploy_destination == "kind"
                                                         )
       tags:
-        - "docker_desktop_infra"
+        - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Deploy Jannah Tasks Exception"
       ansible.builtin.debug:
         msg: 'Deploy Jannah Tasks Exception'
       register: deploy_jannah_tasks_debug_resources
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
     - debug: var=deploy_jannah_tasks_debug_resources
       tags:
-        - "deploy_jannah"
+        - "deploy_images"
+        - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -43,7 +45,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "deploy_jannah"
+        - "deploy_images"
+        - "molecule_converge"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

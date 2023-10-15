@@ -5,7 +5,7 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: "Import cleanup prepared build image tasks - streamos middleware and frontend"
@@ -28,19 +28,7 @@
       async: 9800
       poll: 5
       tags:
-        - "build_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove StreamOs boot container - arm64"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
-      async: 9800
-      poll: 5
-      tags:
-        - "build_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: "Stop StreamOs boot image - amd64"
@@ -52,25 +40,18 @@
       async: 9800
       poll: 5
       tags:
-        - "build_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Remove StreamOs boot image - amd64"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
-      async: 9800
-      poll: 5
-      tags:
-        - "build_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
     - name: "Cleanup Builds for StreamOs Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Cleanup Builds for StreamOs Docker Images Exception'
+      tags:
+        - "cleanup_streamos_cleanup_images"
+        - "cleanup_streamos_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -78,8 +59,8 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_streamos_build_images"
-        - "build_streamos_images"
+        - "cleanup_streamos_cleanup_images"
+        - "cleanup_streamos_images"
         - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false

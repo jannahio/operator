@@ -6,7 +6,7 @@
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
     - name: "Create images/ubuntu directory"
       file:
@@ -20,7 +20,7 @@
     - name: "Generate images/ubuntu/ubuntu.boot.Dockerfile"
       template:
         src: "files/templates/ubuntu/ubuntu.boot.Dockerfile"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu..boot.Dockerfile"
+        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.boot.Dockerfile"
       tags:
         - "build_images"
         - "molecule_create"
@@ -49,10 +49,10 @@
         docker buildx build \
           --builder=kube \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/arm64 \
           -f ubuntu.boot.Dockerfile \
-          --load .
+          --load "{{ Jannah.global.ansible.working_dir }}"
       when: (
               ansible_facts['architecture'] != "x86_64" 
               and 
@@ -68,12 +68,12 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu boot image - arm64 kind"
+    - name: "Build Ubuntu boot image - arm64 kind cluster"
       shell: |
         docker build \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f ubuntu.boot.Dockerfile .;
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f ubuntu.boot.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
       when: (
               ansible_facts['architecture'] != "x86_64" 
               and 
@@ -97,7 +97,7 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/amd64 \
           -f ubuntu.boot.Dockerfile \
-          --load .
+          --load "{{ Jannah.global.ansible.working_dir }}"
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 
@@ -108,7 +108,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
       tags:
         - "build_images"
         - "molecule_create"
@@ -118,7 +118,7 @@
         docker build \
           -t \
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f ubuntu.boot.Dockerfile .;
+          -f ubuntu.boot.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 
@@ -129,7 +129,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/"
       tags:
         - "build_images"
         - "molecule_create"

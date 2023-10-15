@@ -20,7 +20,7 @@ provisioner:
           global:
             namespace: jannah-operator-system
             ansible:
-              working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
+              working_dir: "/Users/osmanjalloh/working/debug/operator"
           credentials:
             github:
               GITHUB_USERNAME: ""
@@ -209,7 +209,7 @@ provisioner:
                 # ubuntu|streamos
                 os: "ubuntu"
                 # dev|test|integration|train|stage|production
-                # if mode is dev, native Jannah services are deployed in local containers
+                # if mode is dev, native Jannah services are deployed in local containers 
                 mode: "dev"
                 # for multiple/matrix debug purposes, the generic wait time between deployment types
                 wait_time: "0"
@@ -317,15 +317,14 @@ provisioner:
   env:
     K8S_AUTH_KUBECONFIG: ${KUBECONFIG:-"~/.kube/config"}
     KUSTOMIZE_PATH: "/usr/local/bin/kustomize"
-    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/IdeaProjects/debug/operator/tmp/EPHEMERAL"
+    MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/working/debug/operator/tmp/EPHEMERAL"
 verifier:
   name: ansible
-
 Jannah:
   global:
     namespace: jannah-operator-system
     ansible:
-      working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
+      working_dir: "/Users/osmanjalloh/working/debug/operator"
   credentials:
     github:
       GITHUB_USERNAME: ""
@@ -610,3 +609,4 @@ Jannah:
               description: "Configures the log level of gunicorn. \n\nAcceptable values are: \"info\", \"debug\", \"warning\", \"error\" and \"critical\"\n"
               default: "info"
               type: string
+

@@ -1,0 +1,107 @@
+---
+- name: "Prepare Cluster for Jannah Deployment"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_type"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_mode"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Import prepare  docker desktop tasks - Darwin"
+      include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
+      with_fileglob:
+        - docker_desktop/main.yml
+      loop_control:
+        loop_var: prepare_macos_docker_desktop_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Import prepare  kind cluster tasks - Darwin"
+      include_tasks: '{{ prepare_kind_cluster_task_items }}'
+      with_fileglob:
+        - kind/main.yml
+      loop_control:
+        loop_var: prepare_kind_cluster_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Import prepare registry tasks - Darwin"
+      include_tasks: '{{ prepare_registry_task_items }}'
+      with_fileglob:
+        - secrets/main.yl
+        - registry/main.yml
+      loop_control:
+        loop_var: prepare_registry_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin" and 
+              (
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "kind"
+              )
+              and 
+              jannah_stages_bootstrap_deploy_mode == "dev"
+            )
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Prepare Jannah Tasks Exception"
+      ansible.builtin.debug:
+        msg: 'Prepare Jannah Tasks Exception'
+      register: prepare_jannah_tasks_debug_resources
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - debug: var=prepare_jannah_tasks_debug_resources
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "prepare_clusters"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

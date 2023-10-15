@@ -10,19 +10,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah middleware arm64/streamos image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: "Docker stop Jannah middleware amd64/streamos image in dev (container) mode"
@@ -34,25 +22,18 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah middleware amd64/streamos image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] == "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
     - name: "Stop StreamOs Middleware Docker Images Exception"
       ansible.builtin.debug:
         msg: "Stop StreamOs Middleware Docker Images Exception"
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "stop_frontend_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:

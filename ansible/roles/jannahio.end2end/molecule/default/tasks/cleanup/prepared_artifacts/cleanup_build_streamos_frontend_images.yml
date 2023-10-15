@@ -10,20 +10,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "stop_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah frontend amd64/streamos image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] == "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "stop_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
@@ -36,20 +23,7 @@
       async: 600
       poll: 5
       tags:
-        - "deploy_images"
-        - "stop_frontend_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Docker rm Jannah frontend arm64/streamos image in dev (container) mode"
-      shell: |
-        docker container rm -f \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }};
-        exit 0;
-      when: ansible_facts['architecture'] != "x86_64"
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
+        - "cleanup_images"
         - "stop_frontend_images"
         - "molecule_cleanup"
         - "operator_e2e"
@@ -57,6 +31,12 @@
     - name: "Remove Builds for StreamOs Frontend Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Remove Builds for StreamOs Frontend Docker Images Exception'
+      tags:
+        - "cleanup_streamos_middleware_images"
+        - "stop_frontend_images"
+        - "build_streamos_images"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:

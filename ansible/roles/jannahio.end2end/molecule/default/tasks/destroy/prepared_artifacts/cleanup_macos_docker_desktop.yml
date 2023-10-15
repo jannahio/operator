@@ -86,6 +86,10 @@
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
         msg: 'Clean Prepared Operator MacOs Docker Desktop Exception'
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -93,7 +97,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "multipass_infra"
+        - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

@@ -437,5 +437,19 @@ deploy-to-kind-cluster-standalone-streamos-production-mode
 
 jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
 
+jannah-deployment-with-ansible: jannah-config jannah-python set-to-kind-cluster-full-ubuntu-dev-mode
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i inventory/ ansible/site.yml -vvvv \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_cleanup,\
+	molecule_destroy,\
+	molecule_create,\
+	molecule_prepare,\
+	molecule_converge,\
+	molecule_verify;\
+
+
 #Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
 clean: jannah-python jannah-config molecule-destroy jannah-python-clean

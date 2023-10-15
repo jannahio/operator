@@ -5,10 +5,9 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "deploy_images"
-        - "molecule_converge"
+        - "verify_images"
+        - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
     - name: "Import verify  docker desktop tasks - Darwin"
       include_tasks: '{{ verify_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -22,10 +21,9 @@
                                                         jannah_stages_bootstrap_deploy_destination == "kind"
                                                         )
       tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
+        - "verify_images"
+        - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
   rescue:
     - name: "Verify Deploy Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -33,19 +31,17 @@
       register: verify_deploy_jannah_tasks_debug_resources
     - debug: var=verify_deploy_jannah_tasks_debug_resources
       tags:
-        - "deploy_jannah"
+        - "verify_images"
+        - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
-        - "molecule_converge"
-    - name: Re-emit failure
+    - name: "Re-emit failure"
       vars:
         failed_task:
           result: '{{ ansible_failed_result }}'
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "deploy_jannah"
+        - "verify_images"
+        - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
-        - "molecule_converge"
   ignore_errors: false

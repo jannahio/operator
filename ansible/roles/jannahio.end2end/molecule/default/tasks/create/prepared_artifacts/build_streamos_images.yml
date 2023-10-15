@@ -48,7 +48,7 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/arm64 \
           -f streamos.boot.Dockerfile \
-          --load .
+          --load "{{ Jannah.global.ansible.working_dir }}"
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -64,12 +64,12 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs boot image - arm64 - kind"
+    - name: "Build StreamOs boot image - arm64 - kind cluster"
       shell: |
         docker build \
           -t \
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f streamos.boot.Dockerfile .;
+          -f streamos.boot.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -93,7 +93,7 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/amd64 \
           -f streamos.boot.Dockerfile \
-          --load .
+          --load "{{ Jannah.global.ansible.working_dir }}"
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 
@@ -109,12 +109,12 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs boot image - amd64 kind"
+    - name: "Build StreamOs boot image - amd64 kind cluster"
       shell: |
         docker build \
           -t \
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f streamos.boot.Dockerfile .;
+          -f streamos.boot.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 

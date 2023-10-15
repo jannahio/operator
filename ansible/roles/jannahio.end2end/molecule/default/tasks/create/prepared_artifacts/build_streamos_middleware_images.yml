@@ -6,7 +6,7 @@
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_create"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
@@ -25,11 +25,11 @@
         - "build_middleware_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Git checkout https://github.com/jannahio/middleware.git for streamos build"
+    - name: "Git checkout repository for streamos build"
       ansible.builtin.git:
-        repo: "https://github.com/jannahio/middleware.git"
+        repo: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.repo }}" 
         dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware"
-        version: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
+        version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.branch }}" 
       tags:
         - "build_images"
         - "build_middleware_images"
@@ -75,7 +75,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs middleware image - arm64  kind"
+    - name: "Build StreamOs middleware image - arm64  kind cluster"
       shell: |
         docker build \
           -t \
@@ -120,7 +120,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build StreamOs middleware image - amd64 kind"
+    - name: "Build StreamOs middleware image - amd64 kind cluster"
       shell: |
         docker build \
           -t \

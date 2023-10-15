@@ -1,17 +1,70 @@
 ---
 - name: "Cleanup Jannah Environment Tasks"
   block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
+    - name: "set_fact jannah_stages_bootstrap_deploy_type"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
+    - name: "set_fact jannah_stages_bootstrap_deploy_mode"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
     - name: "Import cleanup tasks - Darwin"
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
         - prepared_artifacts/main.yml
         - clusters/kind/main.yml
+        - clusters/docker_desktop/main.yml
       loop_control:
         loop_var: cleanup_task_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "cleanup_images"
+        - "stop_frontend_images"
+        - "docker_desktop_infra"
+    - name: "Import cleanup registry,secrets tasks - Darwin"
+      include_tasks: '{{ prepare_registry_secrete_task_items }}'
+      with_fileglob:
+        - secrets/main.yl
+        - registry/main.yml
+      loop_control:
+        loop_var: prepare_registry_secrete_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin" and 
+              (
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "kind"
+              )
+              and 
+              jannah_stages_bootstrap_deploy_mode == "dev"
+            )
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
   rescue:
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -19,12 +72,16 @@
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "cleanup_images"
+        - "stop_frontend_images"
     - name: "Print return information from the previous task"
       ansible.builtin.debug:
         var: ansible_facts['architecture']
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "cleanup_images"
+        - "stop_frontend_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -34,4 +91,6 @@
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
+        - "cleanup_images"
+        - "stop_frontend_images"
   ignore_errors: false

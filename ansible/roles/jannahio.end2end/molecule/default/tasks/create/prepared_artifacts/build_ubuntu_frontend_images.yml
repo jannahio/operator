@@ -28,9 +28,9 @@
         - "operator_e2e"
     - name: "Git checkout https://github.com/jannahio/frontend.git"
       ansible.builtin.git:
-        repo: "https://github.com/jannahio/frontend.git"
+        repo: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.github.repo }}" 
         dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
-        version: "main"
+        version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.github.branch }}" 
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -94,7 +94,7 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend image - arm64 kind"
+    - name: "Build Ubuntu frontend image - arm64 kind clulster"
       shell: |
         docker build \
           -t \
@@ -141,7 +141,7 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend image - amd64 kind"
+    - name: "Build Ubuntu frontend image - amd64 kin cluster"
       shell: |
         docker build \
           -t \
@@ -167,6 +167,11 @@
     - name: "Builds Ubuntu Frontend Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Frontend Docker Images Exception'
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:

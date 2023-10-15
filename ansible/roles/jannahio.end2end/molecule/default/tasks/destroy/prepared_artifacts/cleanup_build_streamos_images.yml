@@ -6,7 +6,7 @@
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
         - "deploy_images"
-        - "molecule_converge"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove images/streamos directory"
       file:
@@ -91,6 +91,10 @@
     - name: "Cleanup Builds for StreamOs Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Cleanup Builds for StreamOs Docker Images Exception'
+      tags:
+        - "cleanup_streamos_build_images"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -99,7 +103,6 @@
         msg: '{{ failed_task }}'
       tags:
         - "cleanup_streamos_build_images"
-        - "build_streamos_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

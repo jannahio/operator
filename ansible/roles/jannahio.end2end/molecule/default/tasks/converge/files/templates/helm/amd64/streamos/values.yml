@@ -35,7 +35,9 @@ images:
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: {{ Jannah.stages.bootstrap.secrets.registry_cred.name }}
+# nameOverride: "{ "apiVersion": "v1", "spec": { "imagePullSecrets": [{"name": "reg-cred-secret"}] } }"
 nameOverride: ""
 fullnameOverride: ""
 
