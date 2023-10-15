@@ -27,7 +27,7 @@ provisioner:
               GITHUB_TOKEN: ""
               GITHUB_EMAIL: ""
             dockerhub:
-              url: https://index.docker.io/v1/
+              url: "jannah-registry:5000"
               USERNAME: ""
               PASSWORD: ""
               EMAIL: ""
@@ -218,6 +218,11 @@ provisioner:
                     namespace: parcona-operator
                   kubeflow:
                     namespace: kubeflow
+                  quay:
+                    namespace: quay
+                    github:
+                      repo: https://github.com/quay/quay-operator.git
+                      branch: main
                 docker_desktop:
                   name: docker-desktop
                 kind:
@@ -241,7 +246,7 @@ provisioner:
                     ubuntu: ubuntu
                     streamos: streamos
                     tag: "v0.0.1"
-                    repository: localhost:5001
+                    repository: jannah-registry:5000
                   images:
                     proxy:
                       repository: nginx
@@ -254,6 +259,8 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8000
                       dockerfiles:
+                        # push to registry
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -264,41 +271,88 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
                           from: ubuntu:23.04
+                      github:
+                        repo: "https://github.com/jannahio/frontend.git"
+                        version: "main"
                     middleware:
                       name: jannah-compute
                       repository: jallohmediabuild/jannah-compute
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
                           from: ubuntu:23.04
+                      github:
+                        repo: "https://github.com/jannahio/middleware.git"
+                        branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
                     registry:
                       name: jannah-registry
                       repository: jallohmediabuild/jannah-registry
                       pullPolicy: IfNotPresent
-                      port: 5001
+                      port: 5000
+                      aux_port: 5001
                       dockerfiles:
+                        push: True
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:
                         #   from: quay.io/centos/centos:stream9
                         ubuntu:
                           from: registry:2
+                  persistent_volumes:
+                    docker_registry:
+                      apiVersion: v1
+                      kind: PersistentVolume
+                      metadata:
+                        name: jannah-docker-repo-pv
+                      spec:
+                        capacity:
+                          storage: 20Gi
+                        accessModes:
+                          - ReadWriteOnce
+                        hostPath:
+                          path: repository
+                  persistent_volume_claims:
+                    docker_registry:
+                      apiVersion: v1
+                      kind: PersistentVolumeClaim
+                      metadata:
+                      name: jannah-docker-repo-pvc
+                      spec:
+                        accessModes:
+                          - ReadWriteOnce
+                        resources:
+                          requests:
+                            storage: 18Gi
+                  pods:
+                    registry:
+                      name: registry_pod
               secrets:
+                # image registry ssl key
                 image_registry:
-                  name: myregistrykey
+                  name: jannah-registry-key
                   namespace: default
                   apiVersion: v1
+                # image registry ssl cert
                 root_cert:
-                  name: dex-certs
-                  cert: ssl/tls.crt
-                  key: ssl/tls.key
+                  name: jannah-cert
+                  cert: tls.crt
+                  key: tls.key
+                # For image registry automated image pull cred
+                registry_cred:
+                  name: jannah-registry-cred
+                # For image registry auth configurations, 
+                # and docker CLI access
+                auth:
+                  name: jannah-auth
                 config:
                   options:
                     log-level:
@@ -320,6 +374,7 @@ provisioner:
     MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/working/debug/operator/tmp/EPHEMERAL"
 verifier:
   name: ansible
+    
 Jannah:
   global:
     namespace: jannah-operator-system
@@ -331,7 +386,7 @@ Jannah:
       GITHUB_TOKEN: ""
       GITHUB_EMAIL: ""
     dockerhub:
-      url: https://index.docker.io/v1/
+      url: "jannah-registry:5000"
       USERNAME: ""
       PASSWORD: ""
       EMAIL: ""
@@ -513,7 +568,7 @@ Jannah:
         # ubuntu|streamos
         os: "ubuntu"
         # dev|test|integration|train|stage|production
-        # if mode is dev, native Jannah services are deployed in local containers
+        # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
         wait_time: "0"
@@ -522,6 +577,11 @@ Jannah:
             namespace: parcona-operator
           kubeflow:
             namespace: kubeflow
+          quay:
+            namespace: quay
+            github:
+              repo: https://github.com/quay/quay-operator.git
+              branch: main
         docker_desktop:
           name: docker-desktop
         kind:
@@ -545,7 +605,7 @@ Jannah:
             ubuntu: ubuntu
             streamos: streamos
             tag: "v0.0.1"
-            repository: localhost:5001
+            repository: jannah-registry:5000
           images:
             proxy:
               repository: nginx
@@ -558,6 +618,8 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8000
               dockerfiles:
+                # push to registry
+                push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -568,45 +630,91 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8100
               dockerfiles:
+                push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
                   from: ubuntu:23.04
+              github:
+                repo: "https://github.com/jannahio/frontend.git"
+                version: "main"
             middleware:
               name: jannah-compute
               repository: jallohmediabuild/jannah-compute
               pullPolicy: IfNotPresent
               port: 8200
               dockerfiles:
+                push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
                   from: ubuntu:23.04
+              github:
+                repo: "https://github.com/jannahio/middleware.git"
+                branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
             registry:
               name: jannah-registry
               repository: jallohmediabuild/jannah-registry
               pullPolicy: IfNotPresent
-              port: 5001
+              port: 5000
+              aux_port: 5001
               dockerfiles:
+                push: True
                 # For streamos use quay registry operator
                 # https://github.com/quay/quay-operator
                 # streamos:
                 #   from: quay.io/centos/centos:stream9
                 ubuntu:
                   from: registry:2
+          persistent_volumes:
+            docker_registry:
+              apiVersion: v1
+              kind: PersistentVolume
+              metadata:
+                name: jannah-docker-repo-pv
+              spec:
+                capacity:
+                  storage: 20Gi
+                accessModes:
+                  - ReadWriteOnce
+                hostPath:
+                  path: repository
+          persistent_volume_claims:
+            docker_registry:
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+              name: jannah-docker-repo-pvc
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 18Gi
+          pods:
+            registry:
+              name: registry_pod
       secrets:
+        # image registry ssl key
         image_registry:
-          name: myregistrykey
+          name: jannah-registry-key
           namespace: default
           apiVersion: v1
+        # image registry ssl cert
         root_cert:
-          name: dex-certs
-          cert: ssl/tls.crt
-          key: ssl/tls.key
+          name: jannah-cert
+          cert: tls.crt
+          key: tls.key
+        # For image registry automated image pull cred
+        registry_cred:
+          name: jannah-registry-cred
+        # For image registry auth configurations, 
+        # and docker CLI access
+        auth:
+          name: jannah-auth
         config:
           options:
             log-level:
               description: "Configures the log level of gunicorn. \n\nAcceptable values are: \"info\", \"debug\", \"warning\", \"error\" and \"critical\"\n"
               default: "info"
               type: string
-
