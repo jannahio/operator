@@ -60,12 +60,12 @@
         - "molecule_prepare"
         - "operator_e2e"
     - name: "Import prepare registry tasks - Darwin"
-      include_tasks: '{{ prepare_registry_task_items }}'
+      include_tasks: '{{ prepare_cluster_registry_task_items }}'
       with_fileglob:
         - secrets/main.yl
         - registry/main.yml
       loop_control:
-        loop_var: prepare_registry_task_items
+        loop_var: prepare_cluster_registry_task_items
       when: (
               ansible_facts['os_family'] == "Darwin" and 
               (

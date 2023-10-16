@@ -1,7 +1,5 @@
 ---
-# Implements
-# https://github.com/quay/quay-operator#step-by-step
-- name: "Remove Quay Registry"
+- name: "Remove Docker Registry"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
@@ -18,74 +16,78 @@
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
-    - name: "set_fact jannah_kubeconfig  kind cluster"
-      ansible.builtin.set_fact:
-        jannah_kubeconfig: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
-      when: (
-              ansible_facts['os_family'] == "Darwin"
-              and
-              jannah_stages_bootstrap_deploy_destination == "kind"
-            )
-      tags:
-        - "remove_registry"
-        - "molecule_destroy"
-        - "operator_e2e"
-        - "debug_task"
-    - name: "set_fact jannah_kubeconfig docker-desktop"
-      ansible.builtin.set_fact:
-        jannah_kubeconfig: "${K8S_AUTH_KUBECONFIG}"
-      when: (
-              ansible_facts['os_family'] == "Darwin"
-              and
-              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-            )
-      tags:
-        - "remove_registry"
-        - "molecule_destroy"
-        - "operator_e2e"
-        - "debug_task"
-    - name: "Deploy Quay Operator - Create the CatalogSource"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - Remove the CatalogSource - docker-desktop"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.catalogsource.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
-    - name: "Wait for Deploy Quay Operator - Delete  the CatalogSource"
+    - name: "Deploy Quay Operator - Remove the CatalogSource - kind"
+      enviroment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
-        sleep {{ Jannah.stages.bootstrap.deploy.wait_time }};
-      when: jannah_stages_bootstrap_deploy_wait_time > 0
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.catalogsource.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
-    - name: "Deploy Quay Operator - Create the OperatorGroup"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - Delete the OperatorGroup - docker-desktop"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.operatorgroup.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
-    - name: "Deploy Quay Operator - Create the OperatorGroup"
+    - name: "Deploy Quay Operator - Delete the OperatorGroup - kind"
       enviroment:
-        KUBECONFIG: jannah_kubeconfig
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.operatorgroup.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Delete the OperatorGroup - docker-desktop"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
         -f ./bundle/quay-operator.subscription.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "remove_registry"
+        - "molecule_destroy"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Delete the OperatorGroup - kind cluster"
+      enviroment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kubectl delete \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
+        -f ./bundle/quay-operator.subscription.yaml;
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
       tags:

@@ -1,13 +1,36 @@
 ---
 - name: "Prepare kind cluster"
   block:
-    - name: 'Create Jannah namespace if not already existing'
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "debug_task"
+    - name: 'Create Jannah namespace if not already existing -- docker-desktop'
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
           kind: Namespace
           metadata:
             name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+      tags:
+        - "deploy_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: 'Create Jannah namespace if not already existing -- kind'
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "deploy_images"
         - "molecule_prepare"

@@ -24,12 +24,12 @@
         - "operator_e2e"
     # Using both docker and quay registries for now (10/14/2023)
     - name: "Import prepare  registry tasks - Darwin"
-      include_tasks: '{{ prepare_registry_task_items }}'
+      include_tasks: '{{ remove_registry_task_items }}'
       with_fileglob:
         - docker_registry.yml
         - quay_registry.yml
       loop_control:
-        loop_var: prepare_registry_task_items
+        loop_var: remove_registry_task_items
       when: (
               ansible_facts['os_family'] == "Darwin"
               and

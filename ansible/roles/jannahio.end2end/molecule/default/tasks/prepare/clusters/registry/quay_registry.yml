@@ -18,30 +18,6 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "set_fact jannah_kubeconfig  kind cluster"
-      ansible.builtin.set_fact:
-        jannah_kubeconfig: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
-      when: (
-              ansible_facts['os_family'] == "Darwin"
-              and
-              jannah_stages_bootstrap_deploy_destination == "kind"
-            )
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e" 
-    - name: "set_fact jannah_kubeconfig docker-desktop"
-      ansible.builtin.set_fact:
-        jannah_kubeconfig: "${K8S_AUTH_KUBECONFIG}"
-      when: (
-              ansible_facts['os_family'] == "Darwin"
-              and
-              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-            )
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e" 
     - name: "Create quay-operator download directory"
       file:
         path: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
@@ -55,18 +31,38 @@
       ansible.builtin.git:
         repo:  "{{ Jannah.stages.bootstrap.deploy.dependencies.quay.github.repo }}"
         dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
-        version:  "{{  Jannah.stages.bootstrap.deploy.dependencies.quay.github.branch }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
-    - name: "Deploy Quay Operator - Create the CatalogSource"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - Create the CatalogSource - kind cluster"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.catalogsource.yaml;
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+      tags:
+        - "deploy_images"
+        - "molecule_prepare"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Create the CatalogSource - docker-desktop cluster"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.catalogsource.yaml;
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
@@ -81,42 +77,104 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
-    - name: "Deploy Quay Operator - kubectl get packagemanifest grep qrep"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - kubectl get packagemanifest grep qrep - docker-desktop"
       shell: |
         kubectl get packagemanifest --all-namespaces | grep quay;
       register: kubectl_get_packagemanifest_results
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
+    - name: "Deploy Quay Operator - kubectl get packagemanifest grep qrep - kind cluster"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kubectl get packagemanifest --all-namespaces | grep quay;
+      register: kubectl_get_packagemanifest_results
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+      tags:
+        - "deploy_images"
+        - "molecule_prepare"
+        - "operator_e2e"
     - debug: var=kubectl_get_packagemanifest_results
     - assert:
         that:
           - kubectl_get_packagemanifest_results.contains("quay")
-    - name: "Deploy Quay Operator - Create the OperatorGroup"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - Create the OperatorGroup - docker-desktop"
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.operatorgroup.yaml;
+      when: (
+        ansible_facts['os_family'] == "Darwin"
+        and
+        jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+       )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
-    - name: "Deploy Quay Operator - Create the OperatorGroup"
-      enviroment:
-        KUBECONFIG: jannah_kubeconfig
+    - name: "Deploy Quay Operator - Create the OperatorGroup - kind cluster"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        -f ./bundle/quay-operator.operatorgroup.yaml;
+      when: (
+        ansible_facts['os_family'] == "Darwin"
+        and
+        jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+       )
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "deploy_images"
+        - "molecule_prepare"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Create the OperatorGroup Subscription - kind cluster"
+      environment:
+        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
         -f ./bundle/quay-operator.subscription.yaml;
+      when: (
+        ansible_facts['os_family'] == "Darwin"
+        and
+        jannah_stages_bootstrap_deploy_destination == "kind"
+       )
+      args:
+        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+      tags:
+        - "deploy_images"
+        - "molecule_prepare"
+        - "operator_e2e" 
+    - name: "Deploy Quay Operator - Create the OperatorGroup Subscription - docker-desktop"
+      shell: |
+        kubectl create \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
+        -f ./bundle/quay-operator.subscription.yaml;
+      when: (
+              ansible_facts['os_family'] == "Darwin"
+              and
+              jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       args:
         chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
       tags:
