@@ -37,7 +37,7 @@
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Create the CatalogSource - kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \

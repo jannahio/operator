@@ -29,7 +29,7 @@
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Remove the CatalogSource - kind"
-      enviroment:
+      environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl delete \
@@ -55,7 +55,7 @@
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Delete the OperatorGroup - kind"
-      enviroment:
+      environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl delete \
@@ -81,7 +81,7 @@
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Delete the OperatorGroup - kind cluster"
-      enviroment:
+      environment:
         KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
       shell: |
         kubectl delete \

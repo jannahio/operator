@@ -1,18 +1,6 @@
 ---
 - name: "Kubernetes Kind cluster tooling cleanup"
   block:
-    - name: "Delete cluster"
-      environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
-      shell: |
-        kind delete clusters "{{ Jannah.stages.bootstrap.deploy.kind.name }}";
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "molecule_destroy"
-        - "operator_e2e"
     - name: "Un-install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew uninstall kind;

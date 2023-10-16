@@ -23,7 +23,7 @@
         - "molecule_destroy"
         - "operator_e2e"
     # Using both docker and quay registries for now (10/14/2023)
-    - name: "Import prepare  registry tasks - Darwin"
+    - name: "Import remove  registry tasks - Darwin"
       include_tasks: '{{ remove_registry_task_items }}'
       with_fileglob:
         - docker_registry.yml
@@ -37,6 +37,7 @@
                 jannah_stages_bootstrap_deploy_destination == "docker-desktop"
                 or
                 jannah_stages_bootstrap_deploy_destination == "kind"
+              )
             )
       tags:
         - "docker_desktop_infra"
