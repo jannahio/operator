@@ -10,7 +10,7 @@
         - "operator_e2e"
     - name: "Remove images/ubuntu directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
         state: absent
       tags:
         - "remove_ubuntu_base_images"
@@ -18,7 +18,7 @@
         - "operator_e2e"
     - name: "Remove images/ubuntu/ubuntu.Dockerfile"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.Dockerfile"
         state: absent
       tags:
         - "remove_ubuntu_base_images"
@@ -34,7 +34,7 @@
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.Dockerfile.dockerignore"
         state: absent
       tags:
         - "remove_ubuntu_base_images"
@@ -68,7 +68,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "build_images"
         - "molecule_destroy"
@@ -82,7 +82,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_destroy"

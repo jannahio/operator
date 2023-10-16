@@ -13,7 +13,7 @@
         - "operator_e2e"
     - name: "Remove MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
         state: absent
       tags:
         - "molecule_destroy"

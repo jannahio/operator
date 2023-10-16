@@ -19,7 +19,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "prepare_images"
         - "molecule_prepare"
@@ -36,7 +36,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "prepare_images"
         - "molecule_prepare"
@@ -52,7 +52,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "prepare_images"
         - "molecule_prepare"
@@ -69,7 +69,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "prepare_images"
         - "molecule_prepare"

@@ -3,7 +3,7 @@
   block:
     - name: "Remove /images/ubuntu/frontend directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend"
         state: absent
       tags:
         - "cleanup_ubuntu_frontend_images"
@@ -12,7 +12,7 @@
         - "operator_e2e"
     - name: "Remove frontend/ubuntu.frontend.Dockerfile"
       file:
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
         state: absent
       tags:
         - "cleanup_ubuntu_frontend_images"
@@ -21,7 +21,7 @@
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.frontend.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_ubuntu_frontend_images"

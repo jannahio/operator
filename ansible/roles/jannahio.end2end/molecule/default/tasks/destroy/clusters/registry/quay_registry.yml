@@ -23,21 +23,21 @@
         -f ./bundle/quay-operator.catalogsource.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Remove the CatalogSource - kind"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.catalogsource.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "remove_registry"
         - "molecule_destroy"
@@ -49,21 +49,21 @@
         -f ./bundle/quay-operator.operatorgroup.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Delete the OperatorGroup - kind"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         -f ./bundle/quay-operator.operatorgroup.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "remove_registry"
         - "molecule_destroy"
@@ -75,21 +75,21 @@
         -f ./bundle/quay-operator.subscription.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "remove_registry"
         - "molecule_destroy"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Delete the OperatorGroup - kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl delete \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
         -f ./bundle/quay-operator.subscription.yaml;
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "remove_registry"
         - "molecule_destroy"

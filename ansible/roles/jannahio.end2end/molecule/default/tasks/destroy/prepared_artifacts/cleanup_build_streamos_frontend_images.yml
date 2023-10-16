@@ -3,7 +3,7 @@
   block:
     - name: "Remove /images/streamos/frontend directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"
@@ -12,7 +12,7 @@
         - "operator_e2e"
     - name: "Remove frontend/streamos.frontend.Dockerfile"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"
@@ -21,7 +21,7 @@
         - "operator_e2e"
     - name: "Remove streamos/streamos.frontend.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"

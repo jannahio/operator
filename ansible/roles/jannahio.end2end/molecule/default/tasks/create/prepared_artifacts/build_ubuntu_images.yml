@@ -10,7 +10,7 @@
         - "operator_e2e"
     - name: "Create images/ubuntu directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
         state: directory
         mode: 0755
       tags:
@@ -20,7 +20,7 @@
     - name: "Generate images/ubuntu/ubuntu.boot.Dockerfile"
       template:
         src: "files/templates/ubuntu/ubuntu.boot.Dockerfile"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.boot.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.boot.Dockerfile"
       tags:
         - "build_images"
         - "molecule_create"
@@ -28,7 +28,7 @@
     - name: "Generate ubuntu/ubuntu.boot.Dockerfile.dockerignore"
       template:
         src: "files/templates/ubuntu/ubuntu.boot.Dockerfile.dockerignore"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/ubuntu.boot.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.boot.Dockerfile.dockerignore"
       tags:
         - "build_images"
         - "molecule_create"
@@ -63,7 +63,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "build_images"
         - "molecule_create"
@@ -84,7 +84,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "build_images"
         - "molecule_create"
@@ -108,7 +108,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
       tags:
         - "build_images"
         - "molecule_create"
@@ -129,7 +129,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/"
       tags:
         - "build_images"
         - "molecule_create"

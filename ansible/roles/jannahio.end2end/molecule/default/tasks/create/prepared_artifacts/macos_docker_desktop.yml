@@ -4,7 +4,7 @@
   block:
     - name: "Create install_kustomize download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
         state: directory
         mode: 0755
       tags:
@@ -22,7 +22,7 @@
       poll: 5
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
       tags:
         - "docker_desktop_infra"
         - "molecule_create"
@@ -35,7 +35,7 @@
       poll: 5
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
       tags:
         - "docker_desktop_infra"
         - "molecule_create"
@@ -45,7 +45,7 @@
         tar xvf kustomize_v5.0.3_darwin_amd64.tar.gz
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "x86_64"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
       tags:
         - "docker_desktop_infra"
         - "molecule_create"
@@ -55,16 +55,16 @@
         tar xvf kustomize_v5.0.3_darwin_arm64.tar.gz
       when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "x86_64"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
       tags:
         - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
     - name: "alias kustomize"
       shell: |
-        alias kustomize="${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize/kustomize";
+        alias kustomize="{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize/kustomize";
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
       tags:
         - "docker_desktop_infra"
         - "molecule_create"

@@ -3,7 +3,7 @@
   block:
     - name: "Remove /images/streamos/middleware directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"
@@ -12,7 +12,7 @@
         - "operator_e2e"
     - name: "Remove middleware/streamos.middleware.Dockerfile"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"
@@ -20,7 +20,7 @@
         - "operator_e2e"
     - name: "Remove streamos/streamos.middleware.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_streamos_middleware_images"

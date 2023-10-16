@@ -20,7 +20,7 @@
         - "operator_e2e"
     - name: "Create quay-operator download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
         state: directory
         mode: 0755
       tags:
@@ -30,14 +30,14 @@
     - name: "Read-write git checkout Quay repository"
       ansible.builtin.git:
         repo:  "{{ Jannah.stages.bootstrap.deploy.dependencies.quay.github.repo }}"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Create the CatalogSource - kind cluster"
       environment:
-        KUBECONFIG: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config
+        KUBECONFIG: {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
@@ -48,7 +48,7 @@
               jannah_stages_bootstrap_deploy_destination == "kind"
             )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
@@ -64,7 +64,7 @@
               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
             )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
@@ -87,14 +87,14 @@
               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
             )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - kubectl get packagemanifest grep qrep - kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl get packagemanifest --all-namespaces | grep quay;
       register: kubectl_get_packagemanifest_results
@@ -104,7 +104,7 @@
               jannah_stages_bootstrap_deploy_destination == "kind"
             )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/{{ Jannah.stages.bootstrap.deploy.dependencies.quay.namespace }}"
       tags:
         - "deploy_images"
         - "molecule_prepare"
@@ -124,14 +124,14 @@
         jannah_stages_bootstrap_deploy_destination == "docker-desktop"
        )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Create the OperatorGroup - kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
@@ -142,14 +142,14 @@
         jannah_stages_bootstrap_deploy_destination == "docker-desktop"
        )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e" 
     - name: "Deploy Quay Operator - Create the OperatorGroup Subscription - kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl create \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \ 
@@ -160,7 +160,7 @@
         jannah_stages_bootstrap_deploy_destination == "kind"
        )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "deploy_images"
         - "molecule_prepare"
@@ -176,7 +176,7 @@
               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
             )
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/quay_operator"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/quay_operator"
       tags:
         - "deploy_images"
         - "molecule_prepare"

@@ -23,7 +23,7 @@
         - "operator_e2e"
     - name: 'Create Jannah namespace if not already existing -- kind'
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       kubernetes.core.k8s:
         definition:
           apiVersion: v1

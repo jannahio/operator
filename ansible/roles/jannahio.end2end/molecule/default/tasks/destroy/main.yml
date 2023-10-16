@@ -68,7 +68,7 @@
     #     - "operator_e2e"
     - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
         state: absent
       tags:
         - "cleanup_ephemeral_directory"

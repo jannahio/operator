@@ -3,19 +3,19 @@
   block:
     - name: "Remove install_kustomize download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base"
         state: absent
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove base.Dockerfile"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base/base.Dockerfile"
         state: absent
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/base.Dockerfile"
       file:
@@ -23,15 +23,15 @@
         state: absent
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove base.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/base/base.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base/base.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/base.Dockerfile.dockerignore"
       file:
@@ -39,7 +39,7 @@
         state: absent
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "docker buildx stop/create"
       shell: |
@@ -47,7 +47,7 @@
         exit 0;
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
     - name: "kubectl delete namespace buildkit"
       shell: |
@@ -55,7 +55,7 @@
         exit 0;
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
   rescue:
     - name: "Remove Builds/Push Docker Images Exception"
@@ -69,6 +69,6 @@
         msg: '{{ failed_task }}'
       tags:
         - "cleanup_base_images"
-        - "molecule_cleanup"
+        - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

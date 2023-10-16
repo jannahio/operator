@@ -60,7 +60,7 @@
         - "operator_e2e"
     - name: "Remove install_kustomize download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/install_kustomize"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize"
         state: absent
       tags:
         - "docker_desktop_infra"
@@ -76,7 +76,7 @@
         - "operator_e2e"
     - name: "Remove kubeflow download directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/kubeflow"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kubeflow"
         state: absent
       tags:
         - "docker_desktop_infra"

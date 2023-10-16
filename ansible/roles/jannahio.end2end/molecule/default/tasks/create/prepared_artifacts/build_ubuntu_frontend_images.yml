@@ -18,7 +18,7 @@
         - "operator_e2e"
     - name: "Create /images/ubuntu/frontend directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend"
         state: directory
         mode: 0755
       tags:
@@ -29,7 +29,7 @@
     - name: "Git checkout https://github.com/jannahio/frontend.git"
       ansible.builtin.git:
         repo: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.github.repo }}" 
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend"
         version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.github.branch }}" 
       tags:
         - "build_images"
@@ -45,7 +45,7 @@
       async: 600
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/frontend/mobile/ios"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/mobile/ios"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -54,7 +54,7 @@
     - name: "Generate frontend/ubuntu.frontend.Dockerfile"
       template:
         src: "files/templates/ubuntu/frontend/ubuntu.frontend.Dockerfile"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -63,7 +63,7 @@
     - name: "Generate ubuntu/ubuntu.frontend.Dockerfile.dockerignore"
       template:
         src: "files/templates/ubuntu/frontend/ubuntu.frontend.Dockerfile.dockerignore"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -88,7 +88,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -110,7 +110,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -135,7 +135,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
       tags:
         - "build_images"
         - "build_frontend_images"
@@ -157,7 +157,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/frontend/web/JannahIonic/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
       tags:
         - "build_images"
         - "build_frontend_images"

@@ -3,7 +3,7 @@
   block:
     - name: "set_fact kind_cluster_directory"
       ansible.builtin.set_fact:
-        kind_cluster_directory: ${MOLECULE_EPHEMERAL_DIRECTORY}/kind/
+        kind_cluster_directory: {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/
       tags:
         - "deploy_images"
         - "molecule_create"
@@ -37,7 +37,7 @@
     # - name: "Generate kind_config_arm64.yml"
     #   template:
     #     src: "files/templates/kind_config_arm64.yml"
-    #     dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_arm64.yml"
+    #     dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/kind_config_arm64.yml"
     #     backup: yes
     #   when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
     #   tags:
@@ -46,7 +46,7 @@
 #    - name: "Generate kind_config_amd64.yml"
 #      template:
 #        src: "files/templates/kind_config_amd64.yml"
-#        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml"
+#        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/kind_config_amd64.yml"
 #        backup: yes
 #      when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] != "arm64"
 #      tags:
@@ -54,24 +54,24 @@
 #        - "operator_e2e"
     # - name: "Create cluster - Darwin(arm64)"
     #   environment:
-    #     KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+    #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
     #   shell: |
     #     kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
     #     -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
     #   when: ansible_facts['os_family'] == "Darwin" and ansible_facts['architecture'] == "arm64"
     #   args:
-    #     chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
     #   async: 1200
     #   poll: 15
     #   tags:
     #     - "molecule_create"
     #     - "operator_e2e"
-  # --config "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/kind_config_amd64.yml" \
+  # --config "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/kind_config_amd64.yml" \
 # Implements https://kind.sigs.k8s.io/docs/user/local-registry/
 # --restart=always 
     - name: "Create kind cluster - with registry - Part 1. Create registry container unless it already exists"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
@@ -90,7 +90,7 @@
         - "operator_e2e"
     - name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
@@ -105,7 +105,7 @@
         EOF
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200
       poll: 15
       tags:
@@ -120,7 +120,7 @@
     # alias localhost:${reg_port} to the registry container when pulling images    
     - name: "Create kind cluster - with registry - Part 3. Add the registry config to the nodes"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
@@ -133,7 +133,7 @@
         done
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200
       poll: 15
       tags:
@@ -143,7 +143,7 @@
     # This allows kind to bootstrap the network but ensures they're on the same network
     - name: "Create kind cluster - with registry - Part 4. Connect the registry to the cluster network if not already connected"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
@@ -153,7 +153,7 @@
         fi
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200
       poll: 15
       tags:
@@ -163,13 +163,13 @@
     # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
     - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |   
         kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
         exit 0;
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200
       poll: 15
       tags:
@@ -178,7 +178,7 @@
         - "operator_e2e"
     - name: "Create kind cluster - with registry - Part 5 B. Document the local registry"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
         REGISTRY_DIR: "/etc/containerd/certs.d/localhost:{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}"
         reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
         reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
@@ -197,7 +197,7 @@
         EOF
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200
       poll: 15
       tags:
@@ -206,12 +206,12 @@
         - "operator_e2e"
     - name: "kind export kubeconfig to kind/config"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kind export kubeconfig --name {{ Jannah.stages.bootstrap.deploy.kind.name }}
       when: ansible_facts['os_family'] == "Darwin"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 600
       poll: 5
       tags:
@@ -220,12 +220,12 @@
         - "operator_e2e"
     - name: "kubectl get pods -A kind cluster"
       environment:
-        KUBECONFIG: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/config"
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl get pods -A
       when: ansible_facts['os_family'] == "Darwin"
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 600
       poll: 5
       tags:

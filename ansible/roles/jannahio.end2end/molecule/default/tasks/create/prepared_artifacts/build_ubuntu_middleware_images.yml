@@ -18,7 +18,7 @@
         - "operator_e2e"
     - name: "Create /images/ubuntu/middleware directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware"
         state: directory
         mode: 0755
       tags:
@@ -29,7 +29,7 @@
     - name: "Git checkout repository"
       ansible.builtin.git:
         repo: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.repo }}" 
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware"
         version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.branch }}" 
       tags:
         - "build_images"
@@ -39,7 +39,7 @@
     - name: "Generate middleware/ubuntu.middleware.Dockerfile"
       template:
         src: "files/templates/ubuntu/middleware/ubuntu.middleware.Dockerfile"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile"
       tags:
         - "build_images"
         - "molecule_create"
@@ -47,7 +47,7 @@
     - name: "Generate ubuntu/ubuntu.middleware.Dockerfile.dockerignore"
       template:
         src: "files/templates/ubuntu/middleware/ubuntu.middleware.Dockerfile.dockerignore"
-        dest: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/ubuntu.middleware.Dockerfile.dockerignore"
       tags:
         - "build_images"
         - "molecule_create"
@@ -71,7 +71,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_create"
@@ -92,7 +92,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_create"
@@ -116,7 +116,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_create"
@@ -137,7 +137,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/ubuntu/middleware/jannah_graphql"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
       tags:
         - "build_images"
         - "molecule_create"

@@ -10,7 +10,7 @@
         - "operator_e2e"
     - name: "Remove images/streamos directory"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
         state: absent
       tags:
         - "cleanup_streamos_build_images"
@@ -18,7 +18,7 @@
         - "operator_e2e"
     - name: "Remove images/streamos/streamos.Dockerfile"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/streamos.Dockerfile"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/streamos.Dockerfile"
         state: absent
       tags:
         - "cleanup_streamos_build_images"
@@ -34,7 +34,7 @@
         - "operator_e2e"
     - name: "Remove streamos/streamos.Dockerfile.dockerignore"
       file:
-        path: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos/streamos.Dockerfile.dockerignore"
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/streamos.Dockerfile.dockerignore"
         state: absent
       tags:
         - "cleanup_streamos_build_images"
@@ -68,7 +68,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
       tags:
         - "build_images"
         - "molecule_destroy"
@@ -82,7 +82,7 @@
       async: 9800
       poll: 5
       args:
-        chdir: "${MOLECULE_EPHEMERAL_DIRECTORY}/images/streamos"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
       tags:
         - "build_images"
         - "molecule_destroy"
@@ -91,10 +91,6 @@
     - name: "Cleanup Builds for StreamOs Docker Images Exception"
       ansible.builtin.debug:
         msg: 'Cleanup Builds for StreamOs Docker Images Exception'
-      tags:
-        - "cleanup_streamos_build_images"
-        - "molecule_destroy"
-        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
