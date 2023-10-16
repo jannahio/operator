@@ -18,8 +18,6 @@
             )
       async: 9800
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "prepare_image"
         - "prepare_frontend_images"
@@ -36,8 +34,6 @@
             )
       async: 9800
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "prepare_image"
         - "prepare_frontend_images"
@@ -53,8 +49,6 @@
             )
       async: 9800
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "prepare_image"
         - "prepare_frontend_images"
@@ -66,13 +60,9 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] == "x86_64" 
-            and
-            jannah_stages_bootstrap_deploy_push_frontend_streamos_image == True
             )
       async: 9800
       poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
       tags:
         - "prepare_image"
         - "prepare_frontend_images"

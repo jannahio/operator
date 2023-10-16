@@ -8,25 +8,32 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Import prepare build_base_image tasks - Darwin"
-      include_tasks: '{{ prepare_build_base_image_task_items }}'
-      with_fileglob:
-        - build_base_image.yml
-      loop_control:
-        loop_var: prepare_build_base_image_task_items
-      when: (
-              ansible_facts['os_family'] == "Darwin" 
-              and 
-              (
-                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-                or 
-                jannah_stages_bootstrap_deploy_destination == "kind"
-              ) 
-            )
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "docker_desktop_infra"
+        - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
+    # - name: "Import prepare build_base_image tasks - Darwin"
+    #   include_tasks: '{{ prepare_build_base_image_task_items }}'
+    #   with_fileglob:
+    #     - build_base_image.yml
+    #   loop_control:
+    #     loop_var: prepare_build_base_image_task_items
+    #   when: (
+    #           ansible_facts['os_family'] == "Darwin" 
+    #           and 
+    #           (
+    #             jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+    #             or 
+    #             jannah_stages_bootstrap_deploy_destination == "kind"
+    #           ) 
+    #         )
+    #   tags:
+    #     - "docker_desktop_infra"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
     - name: "Import prepare build streamos images tasks - StreamOS"
       include_tasks: '{{ prepare_build_streamos_images_task_items }}'
       with_fileglob:
@@ -41,6 +48,8 @@
                 or 
                 jannah_stages_bootstrap_deploy_destination == "kind"
               )
+            and 
+            jannah_stages_bootstrap_deploy_os == "streamos"
             )
       tags:
         - "docker_desktop_infra"
@@ -53,13 +62,15 @@
       loop_control:
         loop_var: prepare_build_ubuntu_images_task_items
       when: (
-            ansible_facts['os_family'] == "Darwin" 
-            and 
-              (
-                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-                or 
-                jannah_stages_bootstrap_deploy_destination == "kind"
-              )
+              ansible_facts['os_family'] == "Darwin" 
+              and 
+                (
+                  jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                  or 
+                  jannah_stages_bootstrap_deploy_destination == "kind"
+                )
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu" 
             )
       tags:
         - "docker_desktop_infra"

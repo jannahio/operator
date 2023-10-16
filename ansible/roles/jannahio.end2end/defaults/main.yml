@@ -260,7 +260,7 @@ provisioner:
                       port: 8000
                       dockerfiles:
                         # push to registry
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -271,7 +271,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -285,7 +285,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -300,7 +300,7 @@ provisioner:
                       port: 5000
                       aux_port: 5001
                       dockerfiles:
-                        push: True
+                        push: False
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:
@@ -619,7 +619,7 @@ Jannah:
               port: 8000
               dockerfiles:
                 # push to registry
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -630,7 +630,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8100
               dockerfiles:
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -644,7 +644,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8200
               dockerfiles:
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -659,7 +659,7 @@ Jannah:
               port: 5000
               aux_port: 5001
               dockerfiles:
-                push: True
+                push: False
                 # For streamos use quay registry operator
                 # https://github.com/quay/quay-operator
                 # streamos:

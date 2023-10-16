@@ -3,7 +3,7 @@
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image"
       ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.dockerfiles.push }}"
+        jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.dockerfiles.push }}"
       tags:
         - "prepare_images"
         - "molecule_prepare"
