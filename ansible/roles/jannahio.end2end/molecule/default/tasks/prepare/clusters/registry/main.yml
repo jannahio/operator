@@ -27,7 +27,7 @@
       include_tasks: '{{ prepare_registry_task_items }}'
       with_fileglob:
         - docker_registry.yml
-        - quay_registry.yml
+        # - quay_registry.yml
       loop_control:
         loop_var: prepare_registry_task_items
       when: (

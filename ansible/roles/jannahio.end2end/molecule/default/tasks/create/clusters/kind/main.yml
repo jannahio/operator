@@ -1,13 +1,6 @@
 ---
 - name: "Kubernetes Kind cluster tooling"
   block:
-    - name: "set_fact kind_cluster_directory"
-      ansible.builtin.set_fact:
-        kind_cluster_directory: {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/
-      tags:
-        - "deploy_images"
-        - "molecule_create"
-        - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
