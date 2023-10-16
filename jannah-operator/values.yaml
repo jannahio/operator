@@ -4,25 +4,36 @@
 
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
 images:
-  frontend:
-    name:  jannah-frontend
-    repository: jallohmediabuild/jannah-ubuntu-frontend-web-amd64
+  proxy:
+    repository: nginx
     pullPolicy: IfNotPresent
-    tag: "v0.0.1"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: 
+  boot:
+    name:  "jannah-boot-amd64-ubuntu:v0.0.1"
+    repository: jannah-registry:5000/jannah-boot
+    pullPolicy: IfNotPresent
+    tag: v0.0.1
+    port: 8000
+  frontend:
+    name:  "jannah-web-amd64-ubuntu:v0.0.1"
+    repository: jannah-registry:5000/jannah-web
+    pullPolicy: IfNotPresent
+    tag: v0.0.1
     port: 8100
   middleware:
-    name:  jannah-middleware
-    repository: jallohmediabuild/jannah-ubuntu-middleware-amd64
+    name:  "jannah-compute-amd64-ubuntu:v0.0.1"
+    repository: jannah-registry:5000/jannah-compute
     pullPolicy: IfNotPresent
-    tag: "v0.0.1"
-    port: 8000
+    tag: v0.0.1
+    port: 8200
+  registry:
+    name:  "jannah-registry-amd64-ubuntu:v0.0.1"
+    repository: jannah-registry:5000/jannah-registry
+    pullPolicy: IfNotPresent
+    tag: v0.0.1
+    port: 5000
 
 imagePullSecrets: []
 nameOverride: ""

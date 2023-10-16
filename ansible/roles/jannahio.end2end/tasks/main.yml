@@ -73,7 +73,7 @@
         - "deploy_jannah"
         - "operator_e2e"
         - "standalone_implementation"
-        - "debug_task"
+        - "molecule_converge"
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

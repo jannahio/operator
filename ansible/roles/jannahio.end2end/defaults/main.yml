@@ -614,7 +614,7 @@ Jannah:
               port: 80
             boot:
               name: jannah-boot
-              repository: jallohmediabuild/jannah-boot
+              repository: jannah-registry:5000/jannah-boot
               pullPolicy: IfNotPresent
               port: 8000
               dockerfiles:
@@ -626,7 +626,7 @@ Jannah:
                   from: ubuntu:23.04
             frontend:
               name: jannah-web
-              repository: jallohmediabuild/jannah-web
+              repository: jannah-registry:5000/jannah-web
               pullPolicy: IfNotPresent
               port: 8100
               dockerfiles:
@@ -640,7 +640,7 @@ Jannah:
                 branch: "main"
             middleware:
               name: jannah-compute
-              repository: jallohmediabuild/jannah-compute
+              repository: jannah-registry:5000/jannah-compute
               pullPolicy: IfNotPresent
               port: 8200
               dockerfiles:
@@ -654,7 +654,7 @@ Jannah:
                 branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
             registry:
               name: jannah-registry
-              repository: jallohmediabuild/jannah-registry
+              repository: jannah-registry:5000/jannah-registry
               pullPolicy: IfNotPresent
               port: 5000
               aux_port: 5001

@@ -5,37 +5,39 @@
 replicaCount: 1
 
 images:
-  proxy:
+  proxy: 
+    name: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}
     repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.repository }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.pullPolicy }}
     # Overrides the image tag whose default is the chart appVersion.
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.tag }}
   boot:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
-    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.repository }}
+    name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.port }}
   frontend:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
-    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.repository }}
+    name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.port }}
   middleware:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
-    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.repository }}
+    name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.port }}
   registry:
-    name:  "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd}}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}"
-    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.repository }}
+    name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}
+    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: {{ Jannah.stages.bootstrap.secrets.registry_cred.name }}
 nameOverride: ""
 fullnameOverride: ""
 

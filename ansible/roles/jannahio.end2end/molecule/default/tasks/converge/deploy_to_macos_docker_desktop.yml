@@ -221,7 +221,7 @@
     - name: "Generate Helm values file off off the molecule configuration file - amd64/ubuntu"
       template:
         src: "files/templates/helm/amd64/ubuntu/values.yml"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/jannah-operator/values.yml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/jannah-operator/values.yaml"
       when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu" 
       tags:
         - "docker_desktop_infra"
@@ -230,7 +230,7 @@
     - name: "Generate Helm values file off off the molecule configuration file - amd64/streamos"
       template:
         src: "files/templates/helm/amd64/streamos/values.yml"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/jannah-operator/values.yml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/jannah-operator/values.yaml"
       when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos" 
       tags:
         - "docker_desktop_infra"
@@ -239,7 +239,7 @@
     - name: "Generate Helm values file off off the molecule configuration file - arm64/ubuntu"
       template:
         src: "files/templates/helm/arm64/ubuntu/values.yml"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/jannah-operator/values.yml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/jannah-operator/values.yaml"
       when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "ubuntu" 
       tags:
         - "docker_desktop_infra"
@@ -248,7 +248,7 @@
     - name: "Generate Helm values file off off the molecule configuration file - arm64/streamos"
       template:
         src: "files/templates/helm/arm64/streamos/values.yml"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/jannah-operator/values.yml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/jannah-operator/values.yaml"
       when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos" 
       tags:
         - "docker_desktop_infra"
@@ -277,7 +277,7 @@
         --create-namespace  {{ Jannah.stages.bootstrap.deploy.helm_values.common.name }} ./jannah-operator;
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
