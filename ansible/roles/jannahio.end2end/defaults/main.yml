@@ -205,7 +205,7 @@ provisioner:
                 #  full|local|standalone
                 type: "full"
                 # docker-desktop|kind
-                destination: "kind"
+                destination: "docker-desktop"
                 # ubuntu|streamos
                 os: "ubuntu"
                 # dev|test|integration|train|stage|production
@@ -260,7 +260,7 @@ provisioner:
                       port: 8000
                       dockerfiles:
                         # push to registry
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -271,7 +271,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -285,7 +285,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -300,7 +300,7 @@ provisioner:
                       port: 5000
                       aux_port: 5001
                       dockerfiles:
-                        push: False
+                        push: True
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:
@@ -374,348 +374,3 @@ provisioner:
     MOLECULE_EPHEMERAL_DIRECTORY: "/Users/osmanjalloh/IdeaProjects/debug/operator/tmp/EPHEMERAL"
 verifier:
   name: ansible
-
-Jannah:
-  global:
-    namespace: jannah-operator-system
-    ansible:
-      working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
-  credentials:
-    github:
-      GITHUB_USERNAME: ""
-      GITHUB_TOKEN: ""
-      GITHUB_EMAIL: ""
-    dockerhub:
-      url: "jannah-registry:5000"
-      USERNAME: ""
-      PASSWORD: ""
-      EMAIL: ""
-  stages:
-    day1day2:
-      sub_dir:
-    dev:
-      active: true
-    bootstrap:
-      laptop:
-        provision_scripts:
-          - name: 1_Apple_Developer_Tools
-            description: |
-              xcode-select --install;
-              python3 --version;
-              git --version
-            comments: |
-              Install Apple Developer tools. i.e xcode, git, python3 etc.
-          - name: 2_Homebrew_Cask_Github_Client
-            description: |
-              curl https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh;
-              ./install.sh;
-              /opt/homebrew/bin/brew shellenv >> ~/.zprofile;
-              /opt/homebrew/bin/brew shellenv
-            comments: |
-              Install Homebrew, Cask, and Github.com client.
-          - name: 3_Input_Directory_Github_Token
-            description: |
-              mkdir -vp ~/.jannah-operator;
-              echo "ghp_Your_Github_Token" > ~/.jannah-operator/git_token.txt;
-              source ~/.zprofile;
-              gh auth login --with-token < ~/.jannah-operator/git_token.txt
-            comments: |
-              <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" title="Generate a Github token">
-              Generate a Github.com token</a> and login to Github.
-          - name: 4_Clone_Jannah_Code
-            description: |
-              mkdir -vp ~/working/jannahio;
-              source ~/.zprofile;
-              cd ~/working/jannahio;
-              gh repo clone jannahio/operator
-            comments: |
-              Create a 'working' directory, and clone the Jannah repository.
-          - name: 5_Install_IntelliJ_IDE
-            description: |
-              hdiutil mount ~/Downloads/ideaIC-2022.3.2-aarch64.dmg;
-              cp -R '/Volumes/IntelliJ IDEA CE/IntelliJ IDEA CE.app' /Applications;
-              hdiutil unmount "/Volumes/IntelliJ IDEA CE/IntelliJ IDEA CE.app";
-              rm ~/Downloads/ideaIC-2022.3.2-aarch64.dmg;
-            comments: |
-              Download, mount, and copy IntelliJ IDE
-              to your MacOS Applications folder.
-          - name: 6_Install_VS_Code_IDE
-            description: |
-              cd $HOME/Downloads
-              curl -v -o VSCode-darwin-universal.zip [VS Code IDE]
-              unzip VSCode-darwin-universal.zip;
-              cp -R "$HOME/Downloads/Visual Studio Code.app" /Applications/;
-              cd $HOME/Downloads;
-              rm -rf "$HOME/Downloads/Visual Studio Code.app";
-              rm "VSCode-darwin-universal.zip"
-            comments: |
-              Download [VS Code IDE], unzip, and copy
-              to your MacOS Applications folder.
-          - name: 7_Install_Docker_Desktop
-            description: |
-              cd $HOME/Downloads;
-              curl -v -o Docker.dmg [Docker Desktop];
-              hdiutil mount ~/Downloads/Docker.dmg;
-              cp -R "/Volumes/Docker/Docker.app" /Applications/;
-              rm ~/Downloads/Docker.dmg
-            comments: |
-              Download, mount, and copy Docker Desktop
-              to your MacOS Applications folder.
-          - name: 8_Install_Google_Chrome
-            description: |
-              cd $HOME/Downloads;
-              curl -v -o Docker.dmg [Google Chrome];
-              hdiutil mount ~/Downloads/googlechrome.dmg;
-              cp -R "/Volumes/Google Chrome/Google Chrome.app" /Applications/;
-              hdiutil unmount "/Volumes/Google Chrome/Google Chrome.app";
-              rm ~/Downloads/googlechrome.dmg
-            comments: |
-              Download, mount, and copy Chrome
-              to your MacOS Applications folder.
-          - name: 9_Install_Yaml_yq
-            description: |
-              source ~/.zprofile;
-              brew install yq
-            comments: |
-              Install yq for yaml command line editing.
-          - name: 10_Install_Ansible
-            description: |
-              source ~/.zprofile;
-              brew install ansible
-              brew install virtualenv
-              brew install wget
-              brew install operator-sdk
-            comments: |
-              Installs Ansible and related tooling for automation tasks.
-        make_commands:
-          - name: make jannah-boot-credentials;
-            description: |
-              Confirms that ~/.jannah-operator/ exists;
-              Copies molecule.bootstrap.template.yml to ~/.jannah-operator/;
-              Encrypts GITHUB_USERNAME as an Ansible vault variable;
-              Encrypts GITHUB_TOKEN as an Ansible vault variable;
-              Encrypts DOCKERHUB_USERNAME as an Ansible vault variable;
-              Encrypts DOCKERHUB_TOKEN as an Ansible vault variable;
-              Encrypts DOCKERHUB_EMAIL as an Ansible vault variable;
-          - name: make jannah-python-backup;
-            description: |
-              make jannah-boot-credentials;
-              Backup any previous jannah-python virtual environment.
-              Backup any previous molecule file.
-          - name: make jannah-python-clean;
-            description: |
-              jannah-python-backup;
-              Backup and remove the dev python virtual environment
-          - name: make jannah-python;
-            description: |
-              make jannah-boot-credentials;
-              Creates a python virtual environment for working with Jannah.
-              Installs required Python modules for bootstrapping.
-          - name: make jannah-config;
-            description: "Generates molecule configuration files for all down stream Ansible Playbook roles.\nThe same molecule yaml file is used to hydrate the configuration of the Python Charm.\nThis keeps one source of configuration for all down stream components. \n- roles/jannahio.bootstrap/molecule/default/molecule.yml.\n- operators/ansible_based/jannah-operator/molecule/default/molecule.yml.\n- roles/jannahio.bootstrap/molecule/default/.env.\n- operators/ansible_based/jannah-operator/molecule/default/.env.\n- operators/ansible_based/jannah-operator/roles/install/defaults/exec.yml.\n- operators/ansible_based/jannah-operator/roles/requirements/defaults/exec.yml.\n\nAnsible role tags: \n- d1d2-generate-molecule-configurations\n"
-          - name: make jannah-day1-day2;
-            description: |
-              brew upgrade;
-              brew install --cask multipass;
-              brew install kdoctor  cocoapods;
-      url_artifacts:
-        - name: "[Docker Desktop]"
-          url: "https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module"
-        - name: "[jannah-operator]"
-          url: "https://github.com/jannahio/operator"
-        - name: "[jannah-organization]"
-          url: "https://github.com/jannahio"
-        - name: "[laptop-provisioning]"
-          url: "https://github.com/jannahio/operator/ansible/roles/jannahio.day1day2/tasks/laptop_provisioning/"
-        - name: "[IntelliJ IDE]"
-          url: "https://download.jetbrains.com/idea/ideaIC-2022.3.2-aarch64.dmg?_gl=1*1m2uf1n*_ga*MTU0NTQ0NDIwMS4xNjc1NDQ4MDAy*_ga_9J976DJZ68*MTY3NTQ0ODAwMS4xLjEuMTY3NTQ0ODEyOS4wLjAuMA..&_ga=2.260209485.1373883433.1675448002-1545444201.1675448002"
-        - name: "[VS Code IDE]"
-          url: "https://az764295.vo.msecnd.net/stable/e2816fe719a4026ffa1ee0189dc89bdfdbafb164/VSCode-darwin-universal.zip"
-        - name: "[Google Chrome]"
-          url: "https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-        - name: "[Docker Desktop]"
-          url: "https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module"
-        - name: "[Molecule Configuration]"
-          url: "https://molecule.readthedocs.io/en/latest/configuration.html"
-        - name: "[Jannah Get Start]"
-          url: "/boot/"
-      conig_map:
-        name: bootstrap-config
-        apiVersion: v1
-        data:
-          phase: bootstrap
-      downloads:
-        opm: opm
-        base_dir: downloads
-      build:
-        USERNAME: jallohmediabuild
-        VERSION: 0.0.1
-        builderx:
-          - name: jannah_builder
-            driver: kubernetes
-            services:
-              - name: frontend
-                giturl: https://github.com/jannahio/frontend.git
-                image: docker.io/jallohmediabuild/jannah-frontend:v0.0.1
-              - name: middlware
-                giturl: https://github.com/jannahio/middleware.git
-                image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
-      deploy:
-        #  full|local|standalone
-        type: "full"
-        # docker-desktop|kind
-        destination: "kind"
-        # ubuntu|streamos
-        os: "ubuntu"
-        # dev|test|integration|train|stage|production
-        # if mode is dev, native Jannah services are deployed in local containers 
-        mode: "dev"
-        # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "0"
-        dependencies:
-          parcona_postgres:
-            namespace: parcona-operator
-          kubeflow:
-            namespace: kubeflow
-          quay:
-            namespace: quay
-            github:
-              repo: https://github.com/quay/quay-operator.git
-              branch: main
-        docker_desktop:
-          name: docker-desktop
-        kind:
-          name: jannah-kind
-          wait: 5m
-          #control_plane:
-          #image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
-          nodes:
-            arm64:
-              image: kindest/node:v1.26.3@sha256:3dc28d458c92e3252c78752ade134d7231ce8e3565f2de4e437a77b171d046ea
-              arch: arm64
-            amd64:
-              image: kindest/node:v1.26.3@sha256:94eb63275ad6305210041cdb5aca87c8562cc50fa152dbec3fef8c58479db4ff
-              arch: amd64
-        helm_values:
-          common:
-            name: jannah
-            namespace: jannah
-            amd: "amd64"
-            arm: "arm64"
-            ubuntu: ubuntu
-            streamos: streamos
-            tag: "v0.0.1"
-            repository: localhost:5000
-          images:
-            proxy:
-              name: nginx
-              repository: nginx
-              pullPolicy: IfNotPresent
-              tag: ""
-              port: 80
-            boot:
-              name: jannah-boot
-              repository: jannah-registry:5000/jannah-boot
-              pullPolicy: IfNotPresent
-              port: 8000
-              dockerfiles:
-                # push to registry
-                push: False
-                streamos:
-                  from: quay.io/centos/centos:stream9
-                ubuntu:
-                  from: ubuntu:23.04
-            frontend:
-              name: jannah-web
-              repository: jannah-registry:5000/jannah-web
-              pullPolicy: IfNotPresent
-              port: 8100
-              dockerfiles:
-                push: False
-                streamos:
-                  from: quay.io/centos/centos:stream9
-                ubuntu:
-                  from: ubuntu:23.04
-              github:
-                repo: "https://github.com/jannahio/frontend.git"
-                branch: "main"
-            middleware:
-              name: jannah-compute
-              repository: jannah-registry:5000/jannah-compute
-              pullPolicy: IfNotPresent
-              port: 8200
-              dockerfiles:
-                push: False
-                streamos:
-                  from: quay.io/centos/centos:stream9
-                ubuntu:
-                  from: ubuntu:23.04
-              github:
-                repo: "https://github.com/jannahio/middleware.git"
-                branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
-            registry:
-              name: jannah-registry
-              repository: jannah-registry:5000/jannah-registry
-              pullPolicy: IfNotPresent
-              port: 5000
-              aux_port: 5001
-              dockerfiles:
-                push: False
-                # For streamos use quay registry operator
-                # https://github.com/quay/quay-operator
-                # streamos:
-                #   from: quay.io/centos/centos:stream9
-                ubuntu:
-                  from: registry:2
-          persistent_volumes:
-            docker_registry:
-              apiVersion: v1
-              kind: PersistentVolume
-              metadata:
-                name: jannah-docker-repo-pv
-              spec:
-                capacity:
-                  storage: 20Gi
-                accessModes:
-                  - ReadWriteOnce
-                hostPath:
-                  path: repository
-          persistent_volume_claims:
-            docker_registry:
-              apiVersion: v1
-              kind: PersistentVolumeClaim
-              metadata:
-              name: jannah-docker-repo-pvc
-              spec:
-                accessModes:
-                  - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 18Gi
-          pods:
-            registry:
-              name: registry_pod
-      secrets:
-        # image registry ssl key
-        image_registry:
-          name: jannah-registry-key
-          namespace: default
-          apiVersion: v1
-        # image registry ssl cert
-        root_cert:
-          name: jannah-cert
-          cert: tls.crt
-          key: tls.key
-        # For image registry automated image pull cred
-        registry_cred:
-          name: jannah-registry-cred
-        # For image registry auth configurations, 
-        # and docker CLI access
-        auth:
-          name: jannah-auth
-        config:
-          options:
-            log-level:
-              description: "Configures the log level of gunicorn. \n\nAcceptable values are: \"info\", \"debug\", \"warning\", \"error\" and \"critical\"\n"
-              default: "info"
-              type: string

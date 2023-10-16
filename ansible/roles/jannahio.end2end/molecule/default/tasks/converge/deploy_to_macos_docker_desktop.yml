@@ -285,13 +285,11 @@
     # if deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers  
     - name: "Docker run Jannah middleware arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}- \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker run \
+        --name \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -309,13 +307,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah middleware amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker run \
+        --name \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] == "x86_64" 
             and 
@@ -333,13 +329,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah middleware arm64/streamos image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker \
+        run --name \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -357,13 +351,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah middleware amd64/streamos image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker \
+        run \
+        --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] == "x86_64" 
             and 
@@ -381,13 +373,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah frontend arm64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+        docker run \
+        --name \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -404,13 +394,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah frontend amd64/ubuntu image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        docker \
+        run \
+        --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
@@ -427,13 +415,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah frontend amd64/streamos image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tags }};
+        docker run \
+        --name \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{ Jannah.stages.bootstrap.deploy.helm_values.common.tags }};
       when: (
             ansible_facts['architecture'] == "x86_64" 
             and 
@@ -452,13 +438,11 @@
         - "operator_e2e"
     - name: "Docker run Jannah frontend arm64/streamos image in dev (container) mode"
       shell: |
-        docker run --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
-        -d {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:\
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+        docker \
+        run --name\
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
+        -d \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
       when: (
             ansible_facts['architecture'] != "x86_64" 
             and 
