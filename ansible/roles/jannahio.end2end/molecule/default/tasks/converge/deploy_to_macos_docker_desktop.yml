@@ -321,7 +321,7 @@
             and 
             jannah_stages_bootstrap_deploy_mode == "dev"
             and
-            ajannah_stages_bootstrap_deploy_os == "ubuntu"
+            jannah_stages_bootstrap_deploy_os == "ubuntu"
             )
       async: 600
       poll: 5

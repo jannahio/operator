@@ -608,6 +608,7 @@ Jannah:
             repository: jannah-registry:5000
           images:
             proxy:
+              name: nginx
               repository: nginx
               pullPolicy: IfNotPresent
               tag: ""
