@@ -251,15 +251,15 @@ provisioner:
                       name: jannah-nginx
                       repository: jallohmediabuild/jannah-nginx
                       pullPolicy: IfNotPresent
-                      tag: ""
+                      tag: "1.16.0"
                       port: 80
                       dockerfiles:
                         # push to registry
                         push: True
                         streamos:
-                          from: nginx
+                          from: "nginx:1.16.0"
                         ubuntu:
-                          from: nginx
+                          from: "nginx:1.16.0"
                     boot:
                       name:  jannah-boot
                       repository: jallohmediabuild/jannah-boot

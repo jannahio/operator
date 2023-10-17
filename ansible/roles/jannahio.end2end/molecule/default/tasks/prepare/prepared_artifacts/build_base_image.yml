@@ -10,7 +10,7 @@
         - "operator_e2e"
     - name: "Tag nginx image "
       shell: |
-        docker tag nginx:1.16.0  \
+        docker tag {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.ubuntu.from }} \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: jannah_stages_bootstrap_deploy_push_proxy_image == True
       async: 9800

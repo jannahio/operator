@@ -252,7 +252,7 @@ provisioner:
                       name: jannah-nginx
                       repository: jallohmediabuild/jannah-nginx
                       pullPolicy: IfNotPresent
-                      tag: ""
+                      tag: "1.16.0"
                       port: 80
                       dockerfiles:
                         # push to registry
