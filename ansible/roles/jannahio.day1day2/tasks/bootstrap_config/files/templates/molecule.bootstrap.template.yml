@@ -248,11 +248,18 @@ provisioner:
                     repository: localhost:5001
                   images:
                     proxy:
-                      name: nginx
-                      repository: nginx
+                      name: jannah-nginx
+                      repository: jallohmediabuild/jannah-nginx
                       pullPolicy: IfNotPresent
                       tag: ""
                       port: 80
+                      dockerfiles:
+                        # push to registry
+                        push: True
+                        streamos:
+                          from: nginx
+                        ubuntu:
+                          from: nginx
                     boot:
                       name:  jannah-boot
                       repository: jallohmediabuild/jannah-boot

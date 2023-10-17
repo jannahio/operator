@@ -7,7 +7,7 @@ replicaCount: 1
 images:
   proxy: 
     name: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}
-    repository: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.repository }}
+    repository: localhost:5001/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.pullPolicy }}
     # Overrides the image tag whose default is the chart appVersion.
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.tag }}
