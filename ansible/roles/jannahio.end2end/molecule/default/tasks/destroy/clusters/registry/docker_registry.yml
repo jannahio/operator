@@ -1,3 +1,23 @@
 ---
-# Remove Docker Registry is done as part of the cluster delete. 
-
+- name: "Docker stop registry container"
+  shell: |
+    docker container stop \
+    {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }};
+    exit 0;
+  async: 600
+  poll: 5
+  tags:
+    - "cleanup_images"
+    - "molecule_destroy"
+    - "operator_e2e"
+- name: "Docker remove registry container"
+  shell: |
+    docker container rm \
+    {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }};
+    exit 0;
+  async: 600
+  poll: 5
+  tags:
+    - "cleanup_images"
+    - "molecule_destroy"
+    - "operator_e2e"

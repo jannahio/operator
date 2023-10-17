@@ -1,22 +1,25 @@
 ---
-- name: "Clean up base images"
+- name: "Stop nginx docker containers"
   block:
-    - name: "docker buildx stop"
+    - name: "Stop nginx container "
       shell: |
-        docker buildx stop kube;
+        docker container stop \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }};
         exit 0;
+      async: 9800
+      poll: 5
       tags:
-        - "cleanup_base_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
-    - name: "Cleanup Base_Images Exception"
+    - name: "Tag and Push Ubuntu Docker Images Exception"
       ansible.builtin.debug:
-        msg: "Cleanup Base_Images Exception"
+        msg: "Tag and Push Ubuntu Docker Images Exception"
       tags:
-        - "cleanup_base_images"
+        - "cleanup_images"
         - "molecule_cleanup"
-        - "operator_e2e"
+        - "operator_e2e" 
     - name: Re-emit failure
       vars:
         failed_task:
@@ -24,7 +27,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_base_images"
+        - "cleanup_images"
         - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false

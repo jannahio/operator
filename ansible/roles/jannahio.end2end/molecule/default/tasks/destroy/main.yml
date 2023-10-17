@@ -66,7 +66,7 @@
     #     - "cleanup_base_images"
     #     - "molecule_destroy"
     #     - "operator_e2e"
-    - name: "Remove $MOLECULE_EPHEMERAL_DIRECTORY"
+    - name: "Remove {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
       file:
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
         state: absent

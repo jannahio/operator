@@ -2,14 +2,7 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
-    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
-      ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
-      tags:
-        - "deploy_images"
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Jannab un-install"
+    - name: "Jannah un-install"
       shell: |
         kubectl delete all --all -n \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
@@ -18,33 +11,6 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-
-    - name: "Stop created registry container if it already exists and running"
-      environment:
-        reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-      shell: |
-        docker container stop ${reg_name};
-        exit 0; 
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      async: 1200
-      poll: 15
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-        - "molecule_cleanup_debug"
-    - name: "Remvove created registry container if it already exists and running"
-      environment:
-        reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-      shell: |
-        docker container rm ${reg_name};
-        exit 0; 
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      async: 1200
-      poll: 15
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-        - "molecule_cleanup_debug"
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:

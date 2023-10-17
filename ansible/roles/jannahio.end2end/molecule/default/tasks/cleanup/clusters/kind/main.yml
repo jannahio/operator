@@ -1,36 +1,21 @@
 ---
-- name: "Kubernetes Kind cluster tooling cleanup"
+- name: "Uninstall Jannah specific services"
   block:
-    - name: "Stop cluster"
+    - name: "Jannah un-install"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
-        kind stop clusters "{{ Jannah.stages.bootstrap.deploy.kind.name }}";
+        kubectl delete all --all -n \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
         exit 0;
-      async: 600
-      poll: 5
       tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-    - name: "Delete cluster"
-      environment:
-        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |
-        kind delete clusters "{{ Jannah.stages.bootstrap.deploy.kind.name }}";
-        exit 0;
-      async: 600
-      poll: 5
-      tags:
+        - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
-    - name: "Kubernetes Kind Tooling Cleanup Exception"
+    - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
-        msg: 'Kubernetes Kind Tooling Cleanup Exception'
-      register: molecule_cleanup_inline_debug_resources
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
+        msg: 'Clean Prepared Operator MacOs Docker Desktop Exception'
     - name: Re-emit failure
       vars:
         failed_task:
@@ -38,7 +23,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
+        - "multipass_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

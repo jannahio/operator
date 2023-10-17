@@ -22,7 +22,7 @@
         - "operator_e2e"
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY/kind directory"
       file:
-        path: $MOLECULE_EPHEMERAL_DIRECTORY/kind/
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
         state: directory
         mode: 0755
       tags:
@@ -63,7 +63,6 @@
     #     - "operator_e2e"
   # --config "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/kind_config_amd64.yml" \
 # Implements https://kind.sigs.k8s.io/docs/user/local-registry/
-# --restart=always 
     - name: "Create kind cluster - with registry - Part 1. Create registry container"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -73,10 +72,10 @@
       shell: |
         if [ "$(docker inspect -f '\{\{.State.Running\}\}' "${reg_name}" 2>/dev/null || true)" != 'true' ]; then
           docker run \
-            --rm \
-            -d -p "127.0.0.1:${reg_port}:${map_port}" --name "${reg_name}" \
+            -d --restart=always -p "127.0.0.1:${reg_port}:${map_port}" --name "${reg_name}" \
             registry:2
-        fi
+        fi;
+        exit 0;
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       async: 1200
       poll: 15
