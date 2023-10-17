@@ -6,11 +6,11 @@ replicaCount: 1
 
 images:
   proxy: 
-    name: nginx
-    repository: nginx
+    name: jannah-nginx
+    repository: localhost:5001/jannah-nginx
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 
+    tag: v0.0.1
   boot:
     name:  jannah-boot
     repository: localhost:5001/jannah-boot-amd64-ubuntu

@@ -10,7 +10,7 @@ images:
     repository: localhost:5001/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.pullPolicy }}
     # Overrides the image tag whose default is the chart appVersion.
-    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.tag }}
+    tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
   boot:
     name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}
     repository: localhost:5001/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}
