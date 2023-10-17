@@ -10,17 +10,17 @@
         - "deploy_storage"
         - "molecule_converge"
         - "operator_e2e"
-    - name: 'Create Storage (Parcona Postgres) Namespace'
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}"
-      tags:
-        - "deploy_storage"
-        - "molecule_converge"
-        - "operator_e2e"
+    # - name: 'Create Storage (Parcona Postgres) Namespace'
+    #   kubernetes.core.k8s:
+    #     definition:
+    #       apiVersion: v1
+    #       kind: Namespace
+    #       metadata:
+    #         name: "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}"
+    #   tags:
+    #     - "deploy_storage"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
     - name: "Deploy Percona Postgresql Operator - docker-desktop"
       shell: |
         kubectl apply --server-side -f \

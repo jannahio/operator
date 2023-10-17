@@ -214,7 +214,7 @@ provisioner:
                 wait_time: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time }}"
                 dependencies:
                   parcona_postgres:
-                    namespace: parcona-operator
+                    namespace: jannah
                   kubeflow:
                     namespace: kubeflow
                   quay:
@@ -245,9 +245,10 @@ provisioner:
                     ubuntu: ubuntu
                     streamos: streamos
                     tag: "v0.0.1"
-                    repository: jannah-registry:5000
+                    repository: localhost:5001
                   images:
                     proxy:
+                      name: nginx
                       repository: nginx
                       pullPolicy: IfNotPresent
                       tag: ""

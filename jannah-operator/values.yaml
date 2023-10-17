@@ -13,31 +13,32 @@ images:
     tag: 
   boot:
     name:  jannah-boot
-    repository: localhost:5000/jannah-boot-amd64-ubuntu
+    repository: localhost:5001/jannah-boot-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8000
   frontend:
     name:  jannah-web
-    repository: localhost:5000/jannah-web-amd64-ubuntu
+    repository: localhost:5001/jannah-web-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8100
   middleware:
     name:  jannah-compute
-    repository: localhost:5000/jannah-compute-amd64-ubuntu
+    repository: localhost:5001/jannah-compute-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8200
   registry:
     name:  jannah-registry
-    repository: localhost:5000/jannah-registry-amd64-ubuntu
+    repository: localhost:5001/jannah-registry-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
-    port: 5000
+    port: 5001
 
-imagePullSecrets:
-  - name: jannah-registry-cred
+# imagePullSecrets:
+#   - name: jannah-registry-cred
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -83,7 +84,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

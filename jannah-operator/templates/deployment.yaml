@@ -45,8 +45,6 @@ spec:
             httpGet:
               path: /
               port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
         - name: {{ .Values.images.boot.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -64,8 +62,6 @@ spec:
             httpGet:
               path: /
               port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
         - name: {{ .Values.images.frontend.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -83,8 +79,6 @@ spec:
             httpGet:
               path: /
               port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
         - name: {{ .Values.images.middleware.name  }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -102,27 +96,6 @@ spec:
             httpGet:
               path: /graphql
               port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-        - name: {{ .Values.images.registry.name  }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.images.registry.repository }}:{{ .Values.images.registry.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.images.registry.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.images.registry.port }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /admin
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /graphql
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

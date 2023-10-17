@@ -26,8 +26,9 @@
     - name: "Import prepare  registry tasks - Darwin"
       include_tasks: '{{ prepare_registry_task_items }}'
       with_fileglob:
+        # 10/16/2023 - Lets debug with the default registry created with the cluster creattion for now
         - docker_registry.yml
-        # - quay_registry.yml
+        - quay_registry.yml
       loop_control:
         loop_var: prepare_registry_task_items
       when: (

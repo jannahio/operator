@@ -47,7 +47,7 @@
       shell: |
         docker tag \
           {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
               ansible_facts['architecture'] == "x86_64" 
             )
