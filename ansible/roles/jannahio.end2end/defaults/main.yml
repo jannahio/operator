@@ -344,7 +344,7 @@ provisioner:
                             storage: 18Gi
                   pods:
                     registry:
-                      name: registry-pod
+                      name: jannah-registry-pod
               secrets:
                 # image registry ssl key
                 image_registry:
@@ -393,7 +393,7 @@ Jannah:
   credentials:
     github:
       GITHUB_USERNAME: ""
-      GITHUB_TOKEN: ""
+      GITHUB_TOKEN: "een"
       GITHUB_EMAIL: ""
     dockerhub:
       url: "jannah-registry:5000"
@@ -581,7 +581,7 @@ Jannah:
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "0"
+        wait_time: 60
         dependencies:
           parcona_postgres:
             namespace: jannah
@@ -711,7 +711,7 @@ Jannah:
                     storage: 18Gi
           pods:
             registry:
-              name: registry-pod
+              name: jannah-registry-pod
       secrets:
         image_registry:
           name: jannah-registry-key

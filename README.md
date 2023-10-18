@@ -191,3 +191,10 @@ Debug Utils
 - source boot.env.sh
 - cd ansible
 - ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags debug_task;
+
+
+PGBOUNCER_URI=$(kubectl get secret cluster1-pgbouncer --namespace postgres-operator -o jsonpath='{.data.pgbouncer-uri}' | base64 --decode)
+
+PGBOUNCER_URI=$(kubectl get secret cluster1-pguser-cluster1 --namespace postgres-operator -o jsonpath='{.data.pgbouncer-uri}' | base64 --decode)
+
+get svc/jannah-registry -n jannah -o jsonpath='{.spec.clusterIP}'

@@ -12,16 +12,16 @@
       tags:
         - "molecule_destroy"
         - "operator_e2e"
-    - name: "Un-install kind 0.18.0 - Darwin"
-      shell: |
-        brew uninstall kind;
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin"
-      async: 600
-      poll: 5
-      tags:
-        - "molecule_destroy"
-        - "operator_e2e"
+    # - name: "Un-install kind 0.18.0 - Darwin"
+    #   shell: |
+    #     brew uninstall kind;
+    #     exit 0;
+    #   when: ansible_facts['os_family'] == "Darwin"
+    #   async: 600
+    #   poll: 5
+    #   tags:
+    #     - "molecule_destroy"
+    #     - "operator_e2e"
     - name: "docker network rm kind"
       shell: |
         docker network rm kind;
