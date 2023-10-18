@@ -344,7 +344,7 @@ provisioner:
                             storage: 18Gi
                   pods:
                     registry:
-                      name: registry_pod
+                      name: registry-pod
               secrets:
                 # image registry ssl key
                 image_registry:
@@ -711,7 +711,7 @@ Jannah:
                     storage: 18Gi
           pods:
             registry:
-              name: registry_pod
+              name: registry-pod
       secrets:
         # image registry ssl key
         image_registry:
