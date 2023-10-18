@@ -700,7 +700,7 @@ Jannah:
               apiVersion: v1
               kind: PersistentVolumeClaim
               metadata:
-              name: jannah-docker-repo-pvc
+                name: jannah-docker-repo-pvc
               spec:
                 accessModes:
                   - ReadWriteOnce
