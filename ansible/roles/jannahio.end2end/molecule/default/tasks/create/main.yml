@@ -11,7 +11,7 @@
     - name: "Import Kubernetes cluster create tasks"
       include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:
-        - tasks/create/clusters/docker_desktop/main.yml
+        - clusters/docker_desktop/main.yml
       loop_control:
         loop_var: create_docker_desktop_task_items
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"

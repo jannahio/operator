@@ -713,12 +713,11 @@ Jannah:
             registry:
               name: registry-pod
       secrets:
-        # image registry ssl key
         image_registry:
           name: jannah-registry-key
           namespace: default
           apiVersion: v1
-        # image registry ssl cert
+        # image registry ssl key and certificate
         root_cert:
           name: jannah-cert
           cert: tls.crt

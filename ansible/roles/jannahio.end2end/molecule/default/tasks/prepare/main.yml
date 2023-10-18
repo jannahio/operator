@@ -39,17 +39,17 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Import create tasks - Darwin"
-      include_tasks: '{{ prepare_build_artifact_darwin_items }}'
-      with_fileglob:
-        - prepared_artifacts/main.yml
-      loop_control:
-        loop_var: prepare_build_artifact_darwin_items
-      when: ansible_facts['os_family'] == "Darwin"
-      tags:
-        - "prepare_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Import create tasks - Darwin"
+    #   include_tasks: '{{ prepare_build_artifact_darwin_items }}'
+    #   with_fileglob:
+    #     - prepared_artifacts/main.yml
+    #   loop_control:
+    #     loop_var: prepare_build_artifact_darwin_items
+    #   when: ansible_facts['os_family'] == "Darwin"
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
   rescue:
     - name: "Prepare Jannah Tasks Exception"
       ansible.builtin.debug:
