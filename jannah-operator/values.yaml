@@ -34,7 +34,7 @@ images:
     repository: localhost:5001/jannah-registry-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
-    port: 5001
+    port: 5000
 
 # imagePullSecrets:
 #   - name: jannah-registry-cred
