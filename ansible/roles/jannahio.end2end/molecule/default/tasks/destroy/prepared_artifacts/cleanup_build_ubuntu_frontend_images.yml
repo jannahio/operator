@@ -6,8 +6,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend"
         state: absent
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove frontend/ubuntu.frontend.Dockerfile"
@@ -15,8 +15,8 @@
         dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile"
         state: absent
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.frontend.Dockerfile.dockerignore"
@@ -24,8 +24,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/ubuntu.frontend.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove Ubuntu frontend image - arm64"
@@ -37,8 +37,8 @@
       async: 600
       poll: 5
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove Ubuntu frontend image - amd64"
@@ -50,8 +50,8 @@
       async: 600
       poll: 5
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -65,9 +65,8 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_ubuntu_frontend_images"
-        - "build_frontend_images"
-        - "build_ubuntu_images"
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

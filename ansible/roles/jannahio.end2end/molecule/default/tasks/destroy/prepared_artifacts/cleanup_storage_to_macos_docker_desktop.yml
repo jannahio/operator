@@ -9,7 +9,6 @@
         - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
-        - "debug_task"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"

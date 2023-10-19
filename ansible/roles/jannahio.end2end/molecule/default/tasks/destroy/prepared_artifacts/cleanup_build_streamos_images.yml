@@ -13,7 +13,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
         state: absent
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove images/streamos/streamos.Dockerfile"
@@ -21,7 +21,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/streamos.Dockerfile"
         state: absent
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/streamos.Dockerfile"
@@ -29,7 +29,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/streamos.Dockerfile"
         state: absent
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove streamos/streamos.Dockerfile.dockerignore"
@@ -37,7 +37,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/streamos.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/streamos.Dockerfile.dockerignore"
@@ -45,7 +45,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/streamos.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Import cleanup prepared build image tasks - streamos middleware and frontend"
@@ -70,7 +70,6 @@
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
       tags:
-        - "build_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove StreamOs boot image - amd64"
@@ -84,7 +83,6 @@
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
       tags:
-        - "build_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -98,7 +96,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_streamos_build_images"
+        - "destroy_streamos_build_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

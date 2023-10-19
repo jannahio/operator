@@ -6,8 +6,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove frontend/streamos.frontend.Dockerfile"
@@ -15,8 +15,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove streamos/streamos.frontend.Dockerfile.dockerignore"
@@ -24,8 +24,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/streamos.frontend.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove frontend image arm64/streamos"
@@ -37,8 +37,8 @@
       async: 600
       poll: 5
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove frontend image amd64/streamos"
@@ -50,8 +50,8 @@
       async: 600
       poll: 5
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -65,9 +65,9 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_frontend_images"
-        - "build_streamos_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_frontend_images"
+        - "destroy_streamos_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

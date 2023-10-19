@@ -198,3 +198,45 @@ PGBOUNCER_URI=$(kubectl get secret cluster1-pgbouncer --namespace postgres-opera
 PGBOUNCER_URI=$(kubectl get secret cluster1-pguser-cluster1 --namespace postgres-operator -o jsonpath='{.data.pgbouncer-uri}' | base64 --decode)
 
 get svc/jannah-registry -n jannah -o jsonpath='{.spec.clusterIP}'
+
+docker login jannah-registry:5000
+
+changed: [localhost] => {
+    "changed": true,
+    "cmd": "helm install -n jannah --create-namespace  jannah ./jannah-operator;\n",
+    "delta": "0:00:02.284968",
+    "end": "2023-10-18 23:11:10.688732",
+    "invocation": {
+        "module_args": {
+            "_raw_params": "helm install -n jannah --create-namespace  jannah ./jannah-operator;\n",
+            "_uses_shell": true,
+            "argv": null,
+            "chdir": "/Users/osmanjalloh/IdeaProjects/debug/operator",
+            "creates": null,
+            "executable": null,
+            "removes": null,
+            "stdin": null,
+            "stdin_add_newline": true,
+            "strip_empty_ends": true
+        }
+    },
+    "msg": "",
+    "rc": 0,
+    "start": "2023-10-18 23:11:08.403764",
+    "stderr": "",
+    "stderr_lines": [],
+    "stdout": "NAME: jannah\nLAST DEPLOYED: Wed Oct 18 23:11:08 2023\nNAMESPACE: jannah\nSTATUS: deployed\nREVISION: 1\nNOTES:\n1. Get the application URL by running these commands:\n  export POD_NAME=$(kubectl get pods --namespace jannah -l \"app.kubernetes.io/name=jannah-helm,app.kubernetes.io/instance=jannah\" -o jsonpath=\"{.items[0].metadata.name}\")\n  export CONTAINER_PORT=$(kubectl get pod --namespace jannah $POD_NAME -o jsonpath=\"{.spec.containers[0].ports[0].containerPort}\")\n  echo \"Visit http://127.0.0.1:8080 to use your application\"\n  kubectl --namespace jannah port-forward $POD_NAME 8080:$CONTAINER_PORT",
+    "stdout_lines": [
+        "NAME: jannah",
+        "LAST DEPLOYED: Wed Oct 18 23:11:08 2023",
+        "NAMESPACE: jannah",
+        "STATUS: deployed",
+        "REVISION: 1",
+        "NOTES:",
+        "1. Get the application URL by running these commands:",
+        "  export POD_NAME=$(kubectl get pods --namespace jannah -l \"app.kubernetes.io/name=jannah-helm,app.kubernetes.io/instance=jannah\" -o jsonpath=\"{.items[0].metadata.name}\")",
+        "  export CONTAINER_PORT=$(kubectl get pod --namespace jannah $POD_NAME -o jsonpath=\"{.spec.containers[0].ports[0].containerPort}\")",
+        "  echo \"Visit http://127.0.0.1:8080 to use your application\"",
+        "  kubectl --namespace jannah port-forward $POD_NAME 8080:$CONTAINER_PORT"
+    ]
+}

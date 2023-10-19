@@ -6,8 +6,8 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_middleware_images"
+        - "destroy_streamos_middleware_images"
+        - "destroy_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove middleware/streamos.middleware.Dockerfile"
@@ -15,7 +15,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
+        - "destroy_streamos_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove streamos/streamos.middleware.Dockerfile.dockerignore"
@@ -23,7 +23,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/streamos.middleware.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_streamos_middleware_images"
+        - "destroy_streamos_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove middleware image arm64/streamos"
@@ -35,7 +35,7 @@
       async: 600
       poll: 5
       tags:
-        - "cleanup_streamos_middleware_images"
+        - "destroy_streamos_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove middleware image amd64/streamos"
@@ -47,7 +47,7 @@
       async: 1200
       poll: 5
       tags:
-        - "cleanup_streamos_middleware_images"
+        - "destroy_streamos_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -61,8 +61,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_streamos_middleware_images"
-        - "build_ubuntu_images"
+        - "destroy_streamos_middleware_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

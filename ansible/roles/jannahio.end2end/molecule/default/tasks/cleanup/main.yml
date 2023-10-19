@@ -15,21 +15,6 @@
         - "molecule_cleanup"
         - "operator_e2e"
         - "cleanup_images"
-    - name: "Import cleanup tasks - Darwin"
-      include_tasks: '{{ cleanup_task_darwin_items }}'
-      with_fileglob:
-        - prepared_artifacts/main.yml
-        - clusters/kind/main.yml
-        - clusters/docker_desktop/main.yml
-      loop_control:
-        loop_var: cleanup_task_darwin_items
-      when: ansible_facts['os_family'] == "Darwin"
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
-        - "cleanup_images"
-        - "stop_frontend_images"
-        - "docker_desktop_infra"
     - name: "Import cleanup registry,secrets tasks - Darwin"
       include_tasks: '{{ prepare_registry_secrete_task_items }}'
       with_fileglob:
@@ -51,6 +36,21 @@
         - "molecule_cleanup"
         - "operator_e2e"
         - "cleanup_images"
+    - name: "Import cleanup tasks - Darwin"
+      include_tasks: '{{ cleanup_task_darwin_items }}'
+      with_fileglob:
+        - prepared_artifacts/main.yml
+        - clusters/kind/main.yml
+        - clusters/docker_desktop/main.yml
+      loop_control:
+        loop_var: cleanup_task_darwin_items
+      when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
+        - "stop_frontend_images"
+        - "docker_desktop_infra"
   rescue:
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:

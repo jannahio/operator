@@ -28,8 +28,8 @@ provisioner:
               GITHUB_EMAIL: ""
             dockerhub:
               url: "jannah-registry:5000"
-              USERNAME: "Jannah"
-              PASSWORD: "Deen"
+              USERNAME: ""
+              PASSWORD: ""
               EMAIL: ""
           stages:
             day1day2:
@@ -205,7 +205,7 @@ provisioner:
                 #  full|local|standalone
                 type: "full"
                 # docker-desktop|kind
-                destination: "kind"
+                destination: "docker-desktop"
                 # ubuntu|streamos
                 os: "ubuntu"
                 # dev|test|integration|train|stage|production
@@ -255,7 +255,7 @@ provisioner:
                       tag: "1.16.0"
                       port: 80
                       dockerfiles:
-                        # push to registry
+                        # push to registry - in production mode (jannah-boot image) will be set to True
                         push: True
                         streamos:
                           from: "nginx:1.16.0"
@@ -267,7 +267,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8000
                       dockerfiles:
-                        # push to registry
+                        # push to registry - in production mode (jannah-boot image) will be set to True
                         push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
@@ -279,6 +279,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
+                        # push to registry - in production mode (jannah-boot image) will be set to True
                         push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
@@ -293,6 +294,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
+                        # push to registry - in production mode (jannah-boot image) will be set to True
                         push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
@@ -308,6 +310,7 @@ provisioner:
                       port: 5000
                       aux_port: 5001
                       dockerfiles:
+                        # push to registry - in production mode (jannah-boot image) will be set to True
                         push: True
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
@@ -393,12 +396,12 @@ Jannah:
   credentials:
     github:
       GITHUB_USERNAME: "Jannah"
-      GITHUB_TOKEN: "Deen"
+      GITHUB_TOKEN: "Jannah"
       GITHUB_EMAIL: ""
     dockerhub:
       url: "jannah-registry:5000"
       USERNAME: "Jannah"
-      PASSWORD: "Deen"
+      PASSWORD: "Jannah"
       EMAIL: ""
   stages:
     day1day2:
@@ -574,14 +577,14 @@ Jannah:
         #  full|local|standalone
         type: "full"
         # docker-desktop|kind
-        destination: "kind"
+        destination: "docker-desktop"
         # ubuntu|streamos
         os: "ubuntu"
         # dev|test|integration|train|stage|production
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: 60
+        wait_time: "0"
         dependencies:
           parcona_postgres:
             namespace: jannah
@@ -615,7 +618,7 @@ Jannah:
             ubuntu: ubuntu
             streamos: streamos
             tag: "v0.0.1"
-            repository: jannahio
+            repository: localhost:5001
           images:
             proxy:
               name: jannah-nginx
@@ -624,7 +627,7 @@ Jannah:
               tag: "1.16.0"
               port: 80
               dockerfiles:
-                # push to registry
+                # push to registry - in production mode (jannah-boot image) will be set to True
                 push: True
                 streamos:
                   from: "nginx:1.16.0"
@@ -636,7 +639,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8000
               dockerfiles:
-                # push to registry
+                # push to registry - in production mode (jannah-boot image) will be set to True
                 push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
@@ -648,6 +651,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8100
               dockerfiles:
+                # push to registry - in production mode (jannah-boot image) will be set to True
                 push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
@@ -662,6 +666,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8200
               dockerfiles:
+                # push to registry - in production mode (jannah-boot image) will be set to True
                 push: True
                 streamos:
                   from: quay.io/centos/centos:stream9
@@ -677,19 +682,21 @@ Jannah:
               port: 5000
               aux_port: 5001
               dockerfiles:
+                # push to registry - in production mode (jannah-boot image) will be set to True
                 push: True
                 # For streamos use quay registry operator
                 # https://github.com/quay/quay-operator
                 # streamos:
                 #   from: quay.io/centos/centos:stream9
                 ubuntu:
-                  from: registry:2
+                  from: registry:2.6.2
           persistent_volumes:
             docker_registry:
               apiVersion: v1
               kind: PersistentVolume
               metadata:
                 name: jannah-docker-repo-pv
+                namespace: jannah
               spec:
                 capacity:
                   storage: 20Gi
@@ -703,6 +710,7 @@ Jannah:
               kind: PersistentVolumeClaim
               metadata:
                 name: jannah-docker-repo-pvc
+                namespace: jannah
               spec:
                 accessModes:
                   - ReadWriteOnce
@@ -713,11 +721,12 @@ Jannah:
             registry:
               name: jannah-registry-pod
       secrets:
+        # image registry ssl key
         image_registry:
           name: jannah-registry-key
           namespace: default
           apiVersion: v1
-        # image registry ssl key and certificate
+        # image registry ssl cert
         root_cert:
           name: jannah-cert
           cert: tls.crt

@@ -6,7 +6,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base"
         state: absent
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove base.Dockerfile"
@@ -14,7 +14,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base/base.Dockerfile"
         state: absent
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/base.Dockerfile"
@@ -22,7 +22,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile"
         state: absent
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove base.Dockerfile.dockerignore"
@@ -30,7 +30,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/base/base.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/base.Dockerfile.dockerignore"
@@ -38,7 +38,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/base.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "docker buildx stop/create"
@@ -46,7 +46,7 @@
         docker buildx rm kube;
         exit 0;
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "kubectl delete namespace buildkit"
@@ -54,7 +54,7 @@
         kubectl delete namespace buildkit;
         exit 0;
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -68,7 +68,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "cleanup_base_images"
+        - "destroy_base_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false

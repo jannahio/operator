@@ -5,7 +5,6 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "deploy_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove images/ubuntu directory"
@@ -13,7 +12,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
         state: absent
       tags:
-        - "remove_ubuntu_base_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove images/ubuntu/ubuntu.Dockerfile"
@@ -21,7 +20,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.Dockerfile"
         state: absent
       tags:
-        - "remove_ubuntu_base_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/ubuntu.Dockerfile"
@@ -29,7 +28,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile"
         state: absent
       tags:
-        - "remove_ubuntu_base_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove ubuntu/ubuntu.Dockerfile.dockerignore"
@@ -37,7 +36,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/ubuntu.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "remove_ubuntu_base_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove project/ubuntu.Dockerfile.dockerignore"
@@ -45,7 +44,7 @@
         path: "{{ Jannah.global.ansible.working_dir }}/ubuntu.Dockerfile.dockerignore"
         state: absent
       tags:
-        - "remove_ubuntu_base_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Import prepare build image tasks - ubuntu middleware and frontend"
@@ -68,7 +67,7 @@
       async: 9800
       poll: 5
       tags:
-        - "build_images"
+        - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
     - name: "Remove Ubuntu boot image - amd64"
@@ -80,7 +79,7 @@
       async: 9800
       poll: 5
       tags:
-        - "build_images"
+        - "docker_desktop_infra"
         - "molecule_destroy"
         - "operator_e2e"
   rescue:
@@ -88,8 +87,7 @@
       ansible.builtin.debug:
         msg: 'Builds Ubuntu Docker Images Exception'
       tags:
-        - "remove_ubuntu_base_images"
-        - "build_ubuntu_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
     - name: Re-emit failure
@@ -99,8 +97,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "remove_ubuntu_base_images"
-        - "build_ubuntu_images"
+        - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
   ignore_errors: false
