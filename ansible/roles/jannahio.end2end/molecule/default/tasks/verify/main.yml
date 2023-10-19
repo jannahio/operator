@@ -5,8 +5,23 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "verify_images"
-        - "molecule_verify"
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Wait for Registry service to deploy"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: jannah_stages_bootstrap_deploy_wait_time != 0
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
         - "operator_e2e"
     - name: "Import verify  docker desktop tasks - Darwin"
       include_tasks: '{{ verify_deploy_to_macos_docker_desktop_task_items }}'
