@@ -50,24 +50,24 @@
         - "prepare_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push Ubuntu frontend image - arm64"
-      shell: |
-        docker push \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-              ansible_facts['architecture'] != "x86_64"
-              and
-              jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image == True
-            )
-      async: 9800
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
-      tags:
-        - "prepare_images"
-        - "prepare_frontend_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Push Ubuntu frontend image - arm64"
+    #   shell: |
+    #     docker push \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #           ansible_facts['architecture'] != "x86_64"
+    #           and
+    #           jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image == True
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
+    #   tags:
+    #     - "prepare_images"
+    #     - "prepare_frontend_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
     - name: "Tag Ubuntu frontend image - amd64"
       shell: |
         docker tag \
@@ -103,24 +103,24 @@
         - "prepare_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push Ubuntu frontend image - amd64"
-      shell: |
-        docker push \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-              ansible_facts['architecture'] == "x86_64" 
-              and 
-              jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image == True
-            )
-      async: 9800
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
-      tags:
-        - "prepare_images"
-        - "prepare_frontend_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Push Ubuntu frontend image - amd64"
+    #   shell: |
+    #     docker push \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #           ansible_facts['architecture'] == "x86_64" 
+    #           and 
+    #           jannah_stages_bootstrap_deploy_push_frontend_ubuntu_image == True
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/web/JannahIonic/"
+    #   tags:
+    #     - "prepare_images"
+    #     - "prepare_frontend_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
   rescue:
     - name: "Tag and Push Ubuntu Frontend Docker Images Exception"
       ansible.builtin.debug:

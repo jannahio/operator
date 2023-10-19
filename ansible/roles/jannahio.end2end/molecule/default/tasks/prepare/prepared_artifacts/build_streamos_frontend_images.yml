@@ -46,22 +46,22 @@
         - "prepare_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push frontend image arm64/streamos"
-      shell: |
-        docker push \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-              ansible_facts['architecture'] != "x86_64" 
-              and 
-              jannah_stages_bootstrap_deploy_push_frontend_streamos_image == True
-            )
-      async: 9800
-      poll: 5
-      tags:
-        - "prepare_image"
-        - "prepare_frontend_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Push frontend image arm64/streamos"
+    #   shell: |
+    #     docker push \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #           ansible_facts['architecture'] != "x86_64" 
+    #           and 
+    #           jannah_stages_bootstrap_deploy_push_frontend_streamos_image == True
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   tags:
+    #     - "prepare_image"
+    #     - "prepare_frontend_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
     - name: "Tag frontend image amd64/streamos"
       shell: |
         docker tag \
@@ -93,20 +93,20 @@
         - "prepare_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push frontend image amd64/streamos"
-      shell: |
-        docker push \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] == "x86_64" 
-            )
-      async: 9800
-      poll: 5
-      tags:
-        - "prepare_image"
-        - "prepare_frontend_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Push frontend image amd64/streamos"
+    #   shell: |
+    #     docker push \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] == "x86_64" 
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   tags:
+    #     - "prepare_image"
+    #     - "prepare_frontend_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
   rescue:
     - name: "Tag and Push StreamOs Frontend Docker Images Exception"
       ansible.builtin.debug:

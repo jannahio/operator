@@ -37,17 +37,17 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push nginx image"
-      shell: |
-        docker push \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: jannah_stages_bootstrap_deploy_push_proxy_image == True
-      async: 9800
-      poll: 5
-      tags:
-        - "prepare_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Push nginx image"
+    #   shell: |
+    #     docker push \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: jannah_stages_bootstrap_deploy_push_proxy_image == True
+    #   async: 9800
+    #   poll: 5
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
   rescue:
     - name: "Tag and Push Ubuntu Docker Images Exception"
       ansible.builtin.debug:

@@ -45,23 +45,6 @@ spec:
             httpGet:
               path: /
               port: http
-        - name: {{ .Values.images.boot.name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.images.boot.repository }}:{{ .Values.images.boot.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.images.boot.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.images.boot.port }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
         - name: {{ .Values.images.frontend.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
