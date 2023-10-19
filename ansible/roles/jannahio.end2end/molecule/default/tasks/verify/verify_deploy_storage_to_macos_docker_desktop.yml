@@ -7,21 +7,17 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "deploy_storage"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
     - name: "Verify Deployed Percona Postgresql Operator - docker-desktop"
       shell: |
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: storage_pods_result
+      register: query_storage_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
     - name: "Verify Deployed Percona Postgresql Operator - kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -29,25 +25,29 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: storage_pods_result
+      register: query_storage_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
-    - debug: var=storage_pods_result
-    - assert:
+    - name: "query_storage_pods_result"
+      debug: var=query_storage_pods_result
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "Assert that non empty result list for query_storage_pods_result"
+      assert:
         that:
-          - storage_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}")
+          - query_storage_pods_result['stdout_lines'] | length > 4
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
   rescue:
     - name: "Deploy Operators Storage to MacOs Docker Desktop Exception"
       ansible.builtin.debug:
         msg: 'Deploy Operators Storage to MacOs Docker Desktop Exception'
       tags:
-        - "deploy_storage"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -55,8 +55,6 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "deploy_storage"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
   ignore_errors: false

@@ -73,6 +73,14 @@
         - "operator_e2e"
         - "standalone_implementation"
         - "molecule_converge"
+    - name: "Import molecule verify - for non-molecule based tasks runs"
+      include_tasks: '{{ item }}'
+      with_fileglob:
+        - ../molecule/default/tasks/verify/main.yml
+      tags:
+        - "deploy_jannah"
+        - "operator_e2e"
+        - "molecule_verify"
     - name: "Import molecule destroy - for non-molecule based tasks runs"
       include_tasks: '{{ destroy_task_items }}'
       with_fileglob:

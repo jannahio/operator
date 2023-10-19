@@ -5,28 +5,24 @@
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
       tags:
-        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
       tags:
-        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
       tags:
-        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "set_fact jannah_stages_bootstrap_deploy_mode"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_mode: "{{ Jannah.stages.bootstrap.deploy.mode }}"
       tags:
-        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Verify kubeflow - docker-desktop"
@@ -34,9 +30,8 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: kubeflow_pods_result
+      register: query_kubeflow_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Verify kubeflow - kind-cluster"
@@ -46,36 +41,30 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: kubeflow_pods_result
+      register: query_kubeflow_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
     - name: "Verify Deployed Jannah Operator - docker-desktop"
       shell: |
         kubectl get pods \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: jannah_pods_result
+      register: query_jannah_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
     - name: "Verify Deployed Jannah Operator - kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl get pods \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: jannah_pods_result
+      register: query_jannah_pods_result
       tags:
-        - "docker_desktop_infra"
         - "molecule_verify"
         - "operator_e2e"
-        - "debug_task"
-   
     # # if deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers  
     # - name: "Docker logs Jannah middleware arm64/ubuntu image in dev (container) mode"
     #   shell: |
@@ -219,18 +208,37 @@
     #     - "build_frontend_images"
     #     - "molecule_verify"
     #     - "operator_e2e"
-    - debug: var=kubeflow_pods_result
-    - assert:
+    - name: "query_kubeflow_pods_result"
+      debug: var=query_kubeflow_pods_result
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "query_jannah_pods_result"
+      debug: var=query_jannah_pods_result
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "Assert non empty result list for query_jannah_pods_result"
+      assert:
         that:
-          - kubeflow_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}")
-    - debug: var=jannah_pods_result
-    - assert:
+          - query_jannah_pods_result['stdout_lines'] | length > 4
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
+    - name: "Assert non empty result list for query_kubeflow_pods_result"
+      assert:
         that:
-          - jannah_pods_result.contains("{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}")
+          - query_kubeflow_pods_result['stdout_lines'] | length > 4 
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"  
   rescue:
     - name: "Verify  Operator MacOs Docker Desktop, Kind Cluster Exception"
       ansible.builtin.debug:
         msg: 'Verify Operator MacOs Docker Desktop, Kind Cluster Exception'
+      tags:
+        - "molecule_verify"
+        - "operator_e2e"
     - name: "Re-emit failure"
       vars:
         failed_task:
@@ -238,8 +246,6 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "verify_images"
         - "molecule_verify"
         - "operator_e2e"
-        - "build_frontend_images"
   ignore_errors: false
