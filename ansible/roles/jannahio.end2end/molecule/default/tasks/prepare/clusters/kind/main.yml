@@ -8,7 +8,6 @@
         - "deploy_storage"
         - "molecule_prepare"
         - "operator_e2e"
-        - "debug_task"
     - name: 'Create Jannah namespace if not already existing -- docker-desktop'
       kubernetes.core.k8s:
         definition:

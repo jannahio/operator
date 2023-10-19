@@ -1,53 +1,71 @@
-# ---
-# - name: "Tag and Push nginx docker images for use in Helm Chart"
-#   block:
-#     - name: "set_fact jannah_stages_bootstrap_deploy_push_proxy_image"
-#       ansible.builtin.set_fact:
-#         jannah_stages_bootstrap_deploy_push_proxy_image: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.push }}"
-#       tags:
-#         - "prepare_images"
-#         - "molecule_prepare"
-#         - "operator_e2e"
-#     - name: "Tag nginx image "
-#       shell: |
-#         docker tag {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.ubuntu.from }} \
-#           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-#       when: jannah_stages_bootstrap_deploy_push_proxy_image == True
-#       async: 9800
-#       poll: 5
-#       tags:
-#         - "prepare_images"
-#         - "molecule_prepare"
-#         - "operator_e2e"
-#     - name: "Push nginx image"
-#       shell: |
-#         docker push \
-#           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-#       when: jannah_stages_bootstrap_deploy_push_proxy_image == True
-#       async: 9800
-#       poll: 5
-#       tags:
-#         - "prepare_images"
-#         - "molecule_prepare"
-#         - "operator_e2e"
-#   rescue:
-#     - name: "Tag and Push Ubuntu Docker Images Exception"
-#       ansible.builtin.debug:
-#         msg: "Tag and Push Ubuntu Docker Images Exception"
-#       tags:
-#         - "prepare_images"
-#         - "prepare_ubuntu_images"
-#         - "molecule_prepare"
-#         - "operator_e2e" 
-#     - name: Re-emit failure
-#       vars:
-#         failed_task:
-#           result: '{{ ansible_failed_result }}'
-#       fail:
-#         msg: '{{ failed_task }}'
-#       tags:
-#         - "prepare_images"
-#         - "prepare_ubuntu_images"
-#         - "molecule_prepare"
-#         - "operator_e2e"
-#   ignore_errors: false
+---
+- name: "Tag and Push nginx docker images for use in Helm Chart"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_push_proxy_image"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_push_proxy_image: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.push }}"
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Tag nginx image "
+      shell: |
+        docker tag {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.ubuntu.from }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: jannah_stages_bootstrap_deploy_push_proxy_image == True
+      async: 9800
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Push nginx image - kind cluster"
+      shell: |
+        kind load docker-image \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: jannah_stages_bootstrap_deploy_push_proxy_image == "kind"
+      async: 9800
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Push nginx image"
+      shell: |
+        docker push \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: jannah_stages_bootstrap_deploy_push_proxy_image == True
+      async: 9800
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+  rescue:
+    - name: "Tag and Push Ubuntu Docker Images Exception"
+      ansible.builtin.debug:
+        msg: "Tag and Push Ubuntu Docker Images Exception"
+      tags:
+        - "prepare_images"
+        - "prepare_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e" 
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "prepare_images"
+        - "prepare_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+  ignore_errors: false

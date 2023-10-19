@@ -47,19 +47,19 @@
 #      tags:
 #        - "molecule_create"
 #        - "operator_e2e"
-    - name: "Create cluster - Darwin(arm64)"
-      environment:
-        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |
-        kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
-        -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
-      async: 1200
-      poll: 15
-      tags:
-        - "molecule_create"
-        - "operator_e2e"
+    # - name: "Create cluster - Darwin(arm64)"
+    #   environment:
+    #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+    #   shell: |
+    #     kind create cluster --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+    #     -v 100 --wait {{ Jannah.stages.bootstrap.deploy.kind.wait }};
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
+    #   async: 1200
+    #   poll: 15
+    #   tags:
+    #     - "molecule_create"
+    #     - "operator_e2e"
   # --config "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/kind_config_amd64.yml" \
 # Implements https://kind.sigs.k8s.io/docs/user/local-registry/
     # - name: "Create kind cluster - with registry - Part 1. Create registry container"
@@ -82,30 +82,30 @@
     #     - "deploy_images"
     #     - "molecule_create"
     #     - "operator_e2e"
-    # - name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
-    #   environment:
-    #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-    #     reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-    #     reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
-    #   shell: |
-    #     cat <<EOF | kind create cluster --config=-
-    #     kind: Cluster
-    #     apiVersion: kind.x-k8s.io/v1alpha4
-    #     name: "{{ Jannah.stages.bootstrap.deploy.kind.name }}"
-    #     containerdConfigPatches:
-    #     - |-
-    #       [plugins."io.containerd.grpc.v1.cri".registry]
-    #         config_path = "/etc/containerd/certs.d"
-    #     EOF
-    #   when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-    #   args:
-    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
-    #   async: 1200
-    #   poll: 15
-    #   tags:
-    #     - "deploy_images"
-    #     - "molecule_create"
-    #     - "operator_e2e"
+    - name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+        reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
+        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
+      shell: |
+        cat <<EOF | kind create cluster --config=-
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        name: "{{ Jannah.stages.bootstrap.deploy.kind.name }}"
+        containerdConfigPatches:
+        - |-
+          [plugins."io.containerd.grpc.v1.cri".registry]
+            config_path = "/etc/containerd/certs.d"
+        EOF
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
+      async: 1200
+      poll: 15
+      tags:
+        - "deploy_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: "kind export kubeconfig to kind/config"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -136,9 +136,7 @@
     #   shell: |
     #     for node in $(kind get nodes --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}"); do
     #       docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
-    #       cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
-    #     [host."http://${reg_name}:${map_port}"]
-    #     EOF
+    #       cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml" [host."http://${reg_name}:${map_port}"]EOF
     #     done
     #   when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
     #   args:

@@ -254,8 +254,8 @@ provisioner:
                       tag: "1.16.0"
                       port: 80
                       dockerfiles:
-                        # push to registry
-                        push: True
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: False
                         streamos:
                           from: "nginx:1.16.0"
                         ubuntu:
@@ -266,8 +266,8 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8000
                       dockerfiles:
-                        # push to registry
-                        push: True
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -278,7 +278,8 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
-                        push: True
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -292,7 +293,8 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
-                        push: True
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -307,7 +309,8 @@ provisioner:
                       port: 5000
                       aux_port: 5001
                       dockerfiles:
-                        push: True
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: False
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:

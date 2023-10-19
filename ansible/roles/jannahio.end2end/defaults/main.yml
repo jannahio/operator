@@ -28,8 +28,8 @@ provisioner:
               GITHUB_EMAIL: ""
             dockerhub:
               url: "jannah-registry:5000"
-              USERNAME: ""
-              PASSWORD: ""
+              USERNAME: "Jannah"
+              PASSWORD: "Deen"
               EMAIL: ""
           stages:
             day1day2:
@@ -256,7 +256,7 @@ provisioner:
                       port: 80
                       dockerfiles:
                         # push to registry
-                        push: True
+                        push: False
                         streamos:
                           from: "nginx:1.16.0"
                         ubuntu:
@@ -268,7 +268,7 @@ provisioner:
                       port: 8000
                       dockerfiles:
                         # push to registry
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -279,7 +279,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -293,7 +293,7 @@ provisioner:
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
-                        push: True
+                        push: False
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -308,7 +308,7 @@ provisioner:
                       port: 5000
                       aux_port: 5001
                       dockerfiles:
-                        push: True
+                        push: False
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:
@@ -392,13 +392,13 @@ Jannah:
       working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
   credentials:
     github:
-      GITHUB_USERNAME: ""
-      GITHUB_TOKEN: "een"
+      GITHUB_USERNAME: "Jannah"
+      GITHUB_TOKEN: "Deen"
       GITHUB_EMAIL: ""
     dockerhub:
       url: "jannah-registry:5000"
-      USERNAME: ""
-      PASSWORD: ""
+      USERNAME: "Jannah"
+      PASSWORD: "Deen"
       EMAIL: ""
   stages:
     day1day2:
@@ -625,7 +625,7 @@ Jannah:
               port: 80
               dockerfiles:
                 # push to registry
-                push: True
+                push: False
                 streamos:
                   from: "nginx:1.16.0"
                 ubuntu:
@@ -637,7 +637,7 @@ Jannah:
               port: 8000
               dockerfiles:
                 # push to registry
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -648,7 +648,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8100
               dockerfiles:
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -662,7 +662,7 @@ Jannah:
               pullPolicy: IfNotPresent
               port: 8200
               dockerfiles:
-                push: True
+                push: False
                 streamos:
                   from: quay.io/centos/centos:stream9
                 ubuntu:
@@ -677,7 +677,7 @@ Jannah:
               port: 5000
               aux_port: 5001
               dockerfiles:
-                push: True
+                push: False
                 # For streamos use quay registry operator
                 # https://github.com/quay/quay-operator
                 # streamos:

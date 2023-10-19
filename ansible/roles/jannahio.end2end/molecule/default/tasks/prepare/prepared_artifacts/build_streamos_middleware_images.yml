@@ -8,6 +8,13 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
     - name: "Tag StreamOs middleware image - arm64"
       shell: |
         docker tag \
@@ -15,6 +22,23 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
               ansible_facts['architecture'] != "x86_64" 
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Push StreamOs middleware image - arm64 - kind cluster"
+      shell: |
+        kind load docker-image \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
             )
       async: 9800
       poll: 5
@@ -48,6 +72,23 @@
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \;
       when: (
               ansible_facts['architecture'] == "x86_64" 
+            )
+      async: 9800
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Push StreamOs middleware image - amd64 - kind cluseter"
+      shell: |
+        kind load docker-image \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \;
+      when: (
+              ansible_facts['architecture'] == "x86_64"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
             )
       async: 9800
       poll: 5

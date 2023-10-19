@@ -61,6 +61,7 @@
         - ../molecule/default/tasks/prepare/main.yml
       tags:
         - "molecule_prepare"
+        - "molecule_prepare_debug"
         - "operator_e2e"
     - name: "Import dependency and jannah and deployment tasks (molecule converge) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
