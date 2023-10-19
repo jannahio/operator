@@ -30,7 +30,7 @@
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: jannah_stages_bootstrap_deploy_push_proxy_image == "kind"
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
       async: 9800
       poll: 5
       tags:
