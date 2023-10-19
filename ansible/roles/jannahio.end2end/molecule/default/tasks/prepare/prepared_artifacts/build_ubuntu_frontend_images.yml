@@ -34,7 +34,7 @@
         - "operator_e2e"
     - name: "Push Ubuntu frontend image - arm64 - kind cluseter"
       shell: |
-        kind load docker-image \
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
               ansible_facts['architecture'] != "x86_64"
@@ -87,7 +87,7 @@
         - "operator_e2e"
     - name: "Push Ubuntu frontend image - amd64 - kind cluster"
       shell: |
-        kind load docker-image \
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
               ansible_facts['architecture'] == "x86_64" 

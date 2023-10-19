@@ -28,7 +28,7 @@
         - "operator_e2e"
     - name: "Push nginx image - kind cluster"
       shell: |
-        kind load docker-image \
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: jannah_stages_bootstrap_deploy_push_proxy_image == "kind"
       async: 9800

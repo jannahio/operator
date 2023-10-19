@@ -615,7 +615,7 @@ Jannah:
             ubuntu: ubuntu
             streamos: streamos
             tag: "v0.0.1"
-            repository: localhost:5001
+            repository: jannahio
           images:
             proxy:
               name: jannah-nginx

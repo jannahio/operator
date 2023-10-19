@@ -31,7 +31,7 @@
         - "operator_e2e"
     - name: "Push StreamOs boot image - arm64 - kind cluster" 
       shell: |
-        kind load docker-image \
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when:  (
                 ansible_facts['architecture'] != "x86_64" 
@@ -81,7 +81,7 @@
         - "operator_e2e"
     - name: "Push StreamOs boot image - amd64 - kind cluster"
       shell: |
-        kind load docker-image \
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
       when: (
               ansible_facts['architecture'] == "x86_64" 
