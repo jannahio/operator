@@ -30,7 +30,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: query_kubeflow_pods_result
+      register: query_to_verify_kubeflow_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -41,7 +41,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: query_kubeflow_pods_result
+      register: query_to_verify_kubeflow_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -50,7 +50,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: query_jannah_pods_result
+      register: query_to_verify_jannah_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -61,7 +61,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: query_jannah_pods_result
+      register: query_to_verify_jannah_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -208,27 +208,27 @@
     #     - "build_frontend_images"
     #     - "molecule_verify"
     #     - "operator_e2e"
-    - name: "query_kubeflow_pods_result"
-      debug: var=query_kubeflow_pods_result
+    - name: "query_to_verify_kubeflow_pods_result"
+      debug: var=query_to_verify_kubeflow_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "query_jannah_pods_result"
-      debug: var=query_jannah_pods_result
+    - name: "query_to_verify_jannah_pods_result"
+      debug: var=query_to_verify_jannah_pods_result
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_jannah_pods_result"
+    - name: "Assert non empty result list for query_to_verify_jannah_pods_result"
       assert:
         that:
-          - query_jannah_pods_result['stdout_lines'] | length >= 3
+          - query_to_verify_jannah_pods_result['stdout_lines'] | length >= 3
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_kubeflow_pods_result"
+    - name: "Assert non empty result list for query_to_verify_kubeflow_pods_result"
       assert:
         that:
-          - query_kubeflow_pods_result['stdout_lines'] | length >= 3 
+          - query_to_verify_kubeflow_pods_result['stdout_lines'] | length >= 3 
       tags:
         - "molecule_verify"
         - "operator_e2e"  

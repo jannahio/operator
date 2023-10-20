@@ -188,14 +188,14 @@ Jannah:
         #  full|local|standalone
         type: "full"
         # docker-desktop|kind
-        destination: "kind"
+        destination: "docker-desktop"
         # ubuntu|streamos
         os: "ubuntu"
         # dev|test|integration|train|stage|production
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "60"
+        wait_time: "0"
         dependencies:
           parcona_postgres:
             namespace: jannah
