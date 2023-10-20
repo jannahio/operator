@@ -260,7 +260,8 @@
       shell: |
         helm install \
         -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
-        --create-namespace  {{ Jannah.stages.bootstrap.deploy.helm_values.common.name }} ./jannah-operator;
+        --create-namespace  {{ Jannah.stages.bootstrap.deploy.helm_values.common.name }} \
+        {{ Jannah.global.ansible.working_dir }}/jannah-operator;
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       async: 600
       poll: 5

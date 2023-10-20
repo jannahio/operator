@@ -1,7 +1,7 @@
 ---
 - name: "Using keys/values from the all file, generate molecule file for downstream bootstrapping purposes"
   block:
-    - name: "Generate molecule.yml for Charmed jannah-opertor"
+    - name: "Generate molecule.yml jannah-opertor"
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
         dest: "roles/jannahio.end2end/molecule/default/molecule.yml"
@@ -22,7 +22,6 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
     - name: "Generate molecule.yml so can remove sensitive variables"
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
@@ -33,7 +32,6 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
     - name: "remove sensitive variables from provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY/molecule.yml"
       shell: |
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME |= ""' molecule.yml
@@ -43,6 +41,7 @@
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= ""' molecule.yml
         yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter |= "python3"' molecule.yml
+        yq -i 'with(.; .Jannah = .provisioner.inventory.group_vars.all.Jannah )' molecule.yml
       args:
         chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
       tags:

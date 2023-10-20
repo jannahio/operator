@@ -112,7 +112,7 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Wait for Registry service to deploy"
+    - name: "Debug Wait"
       shell: |
         sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
       when: jannah_stages_bootstrap_deploy_wait_time != 0
@@ -256,7 +256,7 @@
     #     - "deploy_images"
     #     - "molecule_create"
     #     - "operator_e2e"
-    - name: "Wait for Registry service to deploy"
+    - name: "Debug wait"
       shell: |
         sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
       when: jannah_stages_bootstrap_deploy_wait_time != 0

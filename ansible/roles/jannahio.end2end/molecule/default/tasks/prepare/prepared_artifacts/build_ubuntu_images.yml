@@ -31,7 +31,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push Ubuntu boot image - arm64 - kind cluster"
+    - name: "Load Ubuntu boot image - arm64 - kind cluster"
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
@@ -81,7 +81,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push Ubuntu boot image - amd64 - kind cluster"
+    - name: "Load Ubuntu boot image - amd64 - kind cluster"
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
