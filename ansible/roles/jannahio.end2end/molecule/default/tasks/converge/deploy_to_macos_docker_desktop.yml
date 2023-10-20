@@ -79,13 +79,13 @@
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
       when: (
-        (
-        jannah_stages_bootstrap_deploy_type == "standalone"
-        or
-        jannah_stages_bootstrap_deploy_type == "local"
-        )
-        and
-        jannah_stages_bootstrap_deploy_destination == "kind"
+              (
+              jannah_stages_bootstrap_deploy_type == "standalone"
+              or
+              jannah_stages_bootstrap_deploy_type == "local"
+              )
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind"
         )
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
@@ -100,12 +100,12 @@
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
       when: (
-        (
-        jannah_stages_bootstrap_deploy_type == "standalone"
-        or
-        jannah_stages_bootstrap_deploy_type == "local"
-        )
-        and
+              (
+              jannah_stages_bootstrap_deploy_type == "standalone"
+              or
+              jannah_stages_bootstrap_deploy_type == "local"
+              )
+              and
         jannah_stages_bootstrap_deploy_destination == "docker-desktop"
         )
       tags:
@@ -198,8 +198,10 @@
         - "molecule_converge"
         - "operator_e2e"
     - name: "Kubeflow install (full deployment to kind cluster)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
-        export KUBECONFIG=../config; 
         while ! {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
       when: jannah_stages_bootstrap_deploy_type == "full" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
@@ -283,181 +285,181 @@
         - "molecule_converge"
         - "operator_e2e"
     # if deploy mode is dev, native Jannah services (jannah-frontend, jannah-middleware) are deployed in local containers  
-    - name: "Docker run Jannah middleware arm64/ubuntu image in dev (container) mode"
-      shell: |
-        docker run \
-        --name \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] != "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "ubuntu"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
-      tags:
-        - "deploy_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah middleware amd64/ubuntu image in dev (container) mode"
-      shell: |
-        docker run \
-        --name \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] == "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "ubuntu"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
-      tags:
-        - "deploy_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah middleware arm64/streamos image in dev (container) mode"
-      shell: |
-        docker \
-        run --name \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] != "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "streamos"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
-      tags:
-        - "deploy_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah middleware amd64/streamos image in dev (container) mode"
-      shell: |
-        docker \
-        run \
-        --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] == "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "streamos"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
-      tags:
-        - "deploy_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah frontend arm64/ubuntu image in dev (container) mode"
-      shell: |
-        docker run \
-        --name \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
-      when: (
-            ansible_facts['architecture'] != "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "ubuntu"
-            )
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
-        - "build_frontend_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah frontend amd64/ubuntu image in dev (container) mode"
-      shell: |
-        docker \
-        run \
-        --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-            ansible_facts['architecture'] != "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "ubuntu"
-            )
-      async: 600
-      poll: 5
-      tags:
-        - "deploy_images"
-        - "build_frontend_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah frontend amd64/streamos image in dev (container) mode"
-      shell: |
-        docker run \
-        --name \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{ Jannah.stages.bootstrap.deploy.helm_values.common.tags }};
-      when: (
-            ansible_facts['architecture'] == "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "streamos"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
-      tags:
-        - "deploy_images"
-        - "build_frontend_images"
-        - "molecule_converge"
-        - "operator_e2e"
-    - name: "Docker run Jannah frontend arm64/streamos image in dev (container) mode"
-      shell: |
-        docker \
-        run --name\
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
-        -d \
-        {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
-      when: (
-            ansible_facts['architecture'] != "x86_64" 
-            and 
-            jannah_stages_bootstrap_deploy_mode == "dev"
-            and
-            jannah_stages_bootstrap_deploy_os == "streamos"
-            )
-      async: 600
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
-      tags:
-        - "deploy_images"
-        - "molecule_converge"
-        - "operator_e2e"
+    # - name: "Docker run Jannah middleware arm64/ubuntu image in dev (container) mode"
+    #   shell: |
+    #     docker run \
+    #     --name \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] != "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "ubuntu"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah middleware amd64/ubuntu image in dev (container) mode"
+    #   shell: |
+    #     docker run \
+    #     --name \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] == "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "ubuntu"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah middleware arm64/streamos image in dev (container) mode"
+    #   shell: |
+    #     docker \
+    #     run --name \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] != "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "streamos"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah middleware amd64/streamos image in dev (container) mode"
+    #   shell: |
+    #     docker \
+    #     run \
+    #     --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] == "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "streamos"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql"
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah frontend arm64/ubuntu image in dev (container) mode"
+    #   shell: |
+    #     docker run \
+    #     --name \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+    #   when: (
+    #         ansible_facts['architecture'] != "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "ubuntu"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   tags:
+    #     - "deploy_images"
+    #     - "build_frontend_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah frontend amd64/ubuntu image in dev (container) mode"
+    #   shell: |
+    #     docker \
+    #     run \
+    #     --name {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #         ansible_facts['architecture'] != "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "ubuntu"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   tags:
+    #     - "deploy_images"
+    #     - "build_frontend_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah frontend amd64/streamos image in dev (container) mode"
+    #   shell: |
+    #     docker run \
+    #     --name \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{ Jannah.stages.bootstrap.deploy.helm_values.common.tags }};
+    #   when: (
+    #         ansible_facts['architecture'] == "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "streamos"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
+    #   tags:
+    #     - "deploy_images"
+    #     - "build_frontend_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    # - name: "Docker run Jannah frontend arm64/streamos image in dev (container) mode"
+    #   shell: |
+    #     docker \
+    #     run --name\
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }} \
+    #     -d \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
+    #   when: (
+    #         ansible_facts['architecture'] != "x86_64" 
+    #         and 
+    #         jannah_stages_bootstrap_deploy_mode == "dev"
+    #         and
+    #         jannah_stages_bootstrap_deploy_os == "streamos"
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/web/JannahIonic/"
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
   rescue:
     - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:

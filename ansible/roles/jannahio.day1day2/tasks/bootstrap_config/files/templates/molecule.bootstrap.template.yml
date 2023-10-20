@@ -255,7 +255,7 @@ provisioner:
                       port: 80
                       dockerfiles:
                         # push to registry - in production mode (jannah-boot image) will be set to True
-                        push: False
+                        push: True
                         streamos:
                           from: "nginx:1.16.0"
                         ubuntu:
@@ -267,7 +267,7 @@ provisioner:
                       port: 8000
                       dockerfiles:
                         # push to registry - in production mode (jannah-boot image) will be set to True
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -279,7 +279,7 @@ provisioner:
                       port: 8100
                       dockerfiles:
                         # push to registry - in production mode (jannah-boot image) will be set to True
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -294,7 +294,7 @@ provisioner:
                       port: 8200
                       dockerfiles:
                         # push to registry - in production mode (jannah-boot image) will be set to True
-                        push: False
+                        push: True
                         streamos:
                           from: quay.io/centos/centos:stream9
                         ubuntu:
@@ -310,7 +310,7 @@ provisioner:
                       aux_port: 5001
                       dockerfiles:
                         # push to registry - in production mode (jannah-boot image) will be set to True
-                        push: False
+                        push: True
                         # For streamos use quay registry operator
                         # https://github.com/quay/quay-operator
                         # streamos:
