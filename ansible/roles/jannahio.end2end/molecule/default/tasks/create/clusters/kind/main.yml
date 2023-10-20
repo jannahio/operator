@@ -10,6 +10,12 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
     - name: "Install kind 0.18.0 - Darwin(arm64)"
       shell: |
         brew install kind;
@@ -106,6 +112,13 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "Wait for Registry service to deploy"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: jannah_stages_bootstrap_deploy_wait_time != 0
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
     - name: "kind export kubeconfig to kind/config"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -186,36 +199,35 @@
     #     - "molecule_create"
     #     - "operator_e2e"
     # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-    - name: 'Create kind cluster - with registry - Part 5 A. Create Namespace'
-      environment:
-        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      tags:
-        - "deploy_images"
-        - "molecule_create"
-        - "operator_e2e" 
-    # - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
+    # - name: 'Create kind cluster - with registry - Part 5 A. Create Namespace'
     #   environment:
     #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-    #   shell: |   
-    #     kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
-    #     exit 0;
-    #   when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-    #   args:
-    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
-    #   async: 1200
-    #   poll: 15
+    #   kubernetes.core.k8s:
+    #     definition:
+    #       apiVersion: v1
+    #       kind: Namespace
+    #       metadata:
+    #         name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+    #   when: jannah_stages_bootstrap_deploy_destination == "kind"
     #   tags:
     #     - "deploy_images"
     #     - "molecule_create"
-    #     - "operator_e2e"
+    #     - "operator_e2e" 
+    - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |   
+        kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
+        exit 0;
+      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
+      async: 1200
+      poll: 15
+      tags:
+        - "deploy_images"
+        - "molecule_create"
+        - "operator_e2e"
     # - name: "Create kind cluster - with registry - Part 5 B. Document the local registry"
     #   environment:
     #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -244,12 +256,18 @@
     #     - "deploy_images"
     #     - "molecule_create"
     #     - "operator_e2e"
+    - name: "Wait for Registry service to deploy"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: jannah_stages_bootstrap_deploy_wait_time != 0
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
     - name: "kubectl get pods -A kind cluster"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl get pods -A
-      when: ansible_facts['os_family'] == "Darwin"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 600
