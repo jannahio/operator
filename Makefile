@@ -352,7 +352,7 @@ set-to-kind-cluster-standalone-streamos-production-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
 
 # Install Jannah
-install: jannah-config molecule-destroy molecule-reset molecule-converge
+install: jannah-config molecule-destroy molecule-reset molecule-converge molecule-verify
 # Test Jannah
 test: jannah-config molecule-destroy molecule-reset molecule-test
 
