@@ -32,7 +32,7 @@
         - "prepare_frontend_images"
         - "molecule_prepare"
         - "operator_e2e"
-    - name: "Push Ubuntu frontend image - arm64 - kind cluseter"
+    - name: "Load Ubuntu frontend image - arm64 - kind cluseter"
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};

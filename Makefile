@@ -356,6 +356,8 @@ install: jannah-config molecule-destroy molecule-reset molecule-converge
 # Test Jannah
 test: jannah-config molecule-destroy molecule-reset molecule-test
 
+#Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
+clean: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode jannah-config molecule-destroy jannah-python-clean
 
 deploy-to-docker-desktop-full-ubuntu-dev-mode: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
@@ -381,6 +383,8 @@ deploy-to-docker-desktop-standalone-streamos-dev-mode: jannah-python  set-to-doc
 	@sleep $(WAIT_TIME)
 deploy-to-docker-desktop-standalone-streamos-production-mode: jannah-python set-to-docker-desktop-standalone-streamos-production-mode install
 	@sleep $(WAIT_TIME)
+
+
 deploy-to-kind-cluster-full-ubuntu-dev-mode: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
 deploy-to-kind-cluster-full-ubuntu-production-mode: jannah-python set-to-kind-cluster-full-ubuntu-production-mode install
@@ -437,7 +441,7 @@ deploy-to-kind-cluster-standalone-streamos-production-mode
 
 jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
 
-jannah-deployment-with-ansible: jannah-config jannah-python set-to-kind-cluster-full-ubuntu-dev-mode
+jannah-deployment-with-ansible: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;
 	WAIT_TIME=60 ansible-playbook -i inventory/ ansible/site.yml -vvvv \
 	--connection=local \
@@ -448,8 +452,4 @@ jannah-deployment-with-ansible: jannah-config jannah-python set-to-kind-cluster-
 	molecule_create,\
 	molecule_prepare,\
 	molecule_converge,\
-	molecule_verify;\
-
-
-#Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
-clean: jannah-python jannah-config molecule-destroy jannah-python-clean
+	molecule_verify;

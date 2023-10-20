@@ -33,11 +33,11 @@
         - "operator_e2e"
         - "molecule_prepare_debug"
     - name: "Import prepare  docker desktop tasks - Darwin"
-      include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
+      include_tasks: '{{ prepare_main_macos_docker_desktop_task_items }}'
       with_fileglob:
         - docker_desktop/main.yml
       loop_control:
-        loop_var: prepare_macos_docker_desktop_task_items
+        loop_var: prepare_main_macos_docker_desktop_task_items
       when: (
               ansible_facts['os_family'] == "Darwin"
               and

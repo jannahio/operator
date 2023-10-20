@@ -186,21 +186,36 @@
     #     - "molecule_create"
     #     - "operator_e2e"
     # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-    - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
+    - name: 'Create kind cluster - with registry - Part 5 A. Create Namespace'
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |   
-        kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
-        exit 0;
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
-      async: 1200
-      poll: 15
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+      when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "deploy_images"
         - "molecule_create"
-        - "operator_e2e"
+        - "operator_e2e" 
+    # - name: "Create kind cluster - with registry - Part 5 A. Create Namespace"
+    #   environment:
+    #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+    #   shell: |   
+    #     kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
+    #     exit 0;
+    #   when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
+    #   async: 1200
+    #   poll: 15
+    #   tags:
+    #     - "deploy_images"
+    #     - "molecule_create"
+    #     - "operator_e2e"
     # - name: "Create kind cluster - with registry - Part 5 B. Document the local registry"
     #   environment:
     #     KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
