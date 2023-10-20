@@ -386,9 +386,3 @@ provisioner:
     MOLECULE_EPHEMERAL_DIRECTORY: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
 verifier:
   name: ansible
-
-# For running tasks outside of molecule, with ansible-playbook
-Jannah:
-  global:
-  credentials:
-  stages:

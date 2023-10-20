@@ -5,7 +5,6 @@
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
         dest: "roles/jannahio.end2end/molecule/default/molecule.yml"
-        backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-configurations"
@@ -26,7 +25,15 @@
       template:
         src: "files/templates/molecule.bootstrap.template.yml"
         dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
-        backup: yes
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
+    - name: "Generate default/main.yml so can remove sensitive variables"
+      template:
+        src: "files/templates/ansible.bootstrap.template.yml"
+        dest: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/ansible.main.yml"
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-configurations"
@@ -41,7 +48,6 @@
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD |= ""' molecule.yml
         yq -i '.provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL |= ""' molecule.yml
         yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter |= "python3"' molecule.yml
-        yq -i 'with(.; .Jannah = .provisioner.inventory.group_vars.all.Jannah )' molecule.yml
       args:
         chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
       tags:
@@ -49,12 +55,27 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
+    #Essentially doing this: yq -i 'with(.; .Jannah = .provisioner.inventory.group_vars.all.Jannah )' molecule.yml
+    #in roun about wy
+    - name: "remove sensitive variables from provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY/ansible.main.yml"
+      shell: |
+        yq -i '.Jannah.credentials.github.GITHUB_USERNAME |= ""' ansible.main.yml
+        yq -i '.Jannah.credentials.github.GITHUB_TOKEN |= ""' ansible.main.yml
+        yq -i '.Jannah.credentials.github.GITHUB_EMAIL |= ""' ansible.main.ymll
+        yq -i '.Jannah.credentials.dockerhub.USERNAME |= ""' ansible.main.yml
+        yq -i '.Jannah.credentials.dockerhub.PASSWORD |= ""' ansible.main.yml
+        yq -i '.Jannah.credentials.dockerhub.EMAIL |= ""' ansible.main.yml
+      args:
+        chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
+      tags:
+        - "d1d2-generate-molecule-configurations"
+        - "d1d2-configurations"
+        - "molecule-notest"
+        - "never"
     - name: "Generate .env for jannahio.end2end"
       template:
         src: "files/templates/env.template"
         dest: "roles/jannahio.end2end/molecule/default/.env"
-        backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-generate-molecule-environment-variables"
@@ -66,9 +87,8 @@
     # i.e. running with ansible-playbook
     - name: "Generate roles/jannahio.end2end/defaults/main.yml"
       template:
-        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/molecule.yml"
+        src: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}/ansible.main.yml"
         dest: "roles/jannahio.end2end/defaults/main.yml"
-        backup: yes
       tags:
         - "d1d2-generate-molecule-configurations"
         - "d1d2-generate-molecule-environment-variables"

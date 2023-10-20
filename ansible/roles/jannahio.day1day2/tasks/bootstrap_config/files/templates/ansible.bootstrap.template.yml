@@ -4,16 +4,16 @@ Jannah:
   global:
     namespace: jannah-operator-system
     ansible:
-      working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
+      working_dir: "{{ provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir }}"
   credentials:
     github:
-      GITHUB_USERNAME: ""
-      GITHUB_TOKEN: ""
+      GITHUB_USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_USERNAME }}"
+      GITHUB_TOKEN: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.github.GITHUB_TOKEN }}"
     dockerhub:
       url: "jannah-registry:5000"
-      USERNAME: ""
-      PASSWORD: ""
-      EMAIL: ""
+      USERNAME: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.USERNAME }}"
+      PASSWORD: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.PASSWORD }}"
+      EMAIL: "{{ provisioner.inventory.group_vars.all.Jannah.credentials.dockerhub.EMAIL }}"
   stages:
     day1day2:
       sub_dir:
@@ -186,16 +186,16 @@ Jannah:
                 image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
       deploy:
         #  full|local|standalone
-        type: "full"
+        type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
         # docker-desktop|kind
-        destination: "kind"
+        destination: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.destination }}"
         # ubuntu|streamos
-        os: "ubuntu"
+        os: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.os }}"
         # dev|test|integration|train|stage|production
         # if mode is dev, native Jannah services are deployed in local containers 
-        mode: "dev"
+        mode: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode }}"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "60"
+        wait_time: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time }}"
         dependencies:
           parcona_postgres:
             namespace: jannah
@@ -245,7 +245,7 @@ Jannah:
                 ubuntu:
                   from: "nginx:1.16.0"
             boot:
-              name: jannah-boot
+              name:  jannah-boot
               repository: jallohmediabuild/jannah-boot
               pullPolicy: IfNotPresent
               port: 8000
@@ -257,7 +257,7 @@ Jannah:
                 ubuntu:
                   from: ubuntu:23.04
             frontend:
-              name: jannah-web
+              name:  jannah-web
               repository: jallohmediabuild/jannah-web
               pullPolicy: IfNotPresent
               port: 8100
@@ -272,7 +272,7 @@ Jannah:
                 repo: "https://github.com/jannahio/frontend.git"
                 branch: "main"
             middleware:
-              name: jannah-compute
+              name:  jannah-compute
               repository: jallohmediabuild/jannah-compute
               pullPolicy: IfNotPresent
               port: 8200
@@ -287,7 +287,7 @@ Jannah:
                 repo: "https://github.com/jannahio/middleware.git"
                 branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
             registry:
-              name: jannah-registry
+              name:  jannah-registry
               repository: jallohmediabuild/jannah-registry
               pullPolicy: IfNotPresent
               port: 5000
@@ -341,7 +341,7 @@ Jannah:
         root_cert:
           name: jannah-cert
           cert: tls.crt
-          key: tls.key
+          key:  tls.key
         # For image registry automated image pull cred
         registry_cred:
           name: jannah-registry-cred
