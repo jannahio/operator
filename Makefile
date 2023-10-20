@@ -353,6 +353,8 @@ set-to-kind-cluster-standalone-streamos-production-mode:
 
 # Install Jannah
 install: jannah-config molecule-destroy molecule-reset molecule-converge molecule-verify
+# Un Install Jannah
+uninstall: jannah-config molecule-destroy molecule-reset
 # Test Jannah
 test: jannah-config molecule-destroy molecule-reset molecule-test
 
