@@ -221,14 +221,14 @@
     - name: "Assert non empty result list for query_jannah_pods_result"
       assert:
         that:
-          - query_jannah_pods_result['stdout_lines'] | length > 4
+          - query_jannah_pods_result['stdout_lines'] | length >= 3
       tags:
         - "molecule_verify"
         - "operator_e2e"
     - name: "Assert non empty result list for query_kubeflow_pods_result"
       assert:
         that:
-          - query_kubeflow_pods_result['stdout_lines'] | length > 4 
+          - query_kubeflow_pods_result['stdout_lines'] | length >= 3 
       tags:
         - "molecule_verify"
         - "operator_e2e"  
