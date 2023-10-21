@@ -10,7 +10,6 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
     - name: "Create MOLECULE_EPHEMERAL_DIRECTORY directory"
       file:
         path: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
@@ -56,7 +55,7 @@
         - "molecule-notest"
         - "never"
     #Essentially doing this: yq -i 'with(.; .Jannah = .provisioner.inventory.group_vars.all.Jannah )' molecule.yml
-    #in roun about wy
+    #in round about way
     - name: "remove sensitive variables from provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY/ansible.main.yml"
       shell: |
         yq -i '.Jannah.credentials.github.GITHUB_USERNAME |= ""' ansible.main.yml
@@ -65,6 +64,9 @@
         yq -i '.Jannah.credentials.dockerhub.USERNAME |= ""' ansible.main.yml
         yq -i '.Jannah.credentials.dockerhub.PASSWORD |= ""' ansible.main.yml
         yq -i '.Jannah.credentials.dockerhub.EMAIL |= ""' ansible.main.yml
+        yq -i \
+        'with(.; .Jannah.stages.bootstrap.deploy.helm_values.common.repository = .Jannah.stages.bootstrap.deploy.helm_values.images.registry.name )' \
+        ansible.main.yml
       args:
         chdir: "{{ provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY }}"
       tags:
@@ -82,7 +84,6 @@
         - "d1d2-configurations"
         - "molecule-notest"
         - "never"
-
     # We need the defaults/main.yml for running the Ansible playbooks outside of Molecule
     # i.e. running with ansible-playbook
     - name: "Generate roles/jannahio.end2end/defaults/main.yml"

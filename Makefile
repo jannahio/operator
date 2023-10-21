@@ -22,7 +22,10 @@ jannah-boot-credentials:
 	   echo "Error: $(JANNAHHOME)/jannah-operator/ not found"; \
 	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
 	fi
-
+# configurations patches	
+	@yq -i \
+        'with(.; .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.helm_values.common.repository = .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.helm_values.images.registry.name )' \
+        $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
 	$(JANNAHHOME)/jannah-operator/molecule.yml
 
@@ -48,6 +51,7 @@ jannah-boot-credentials:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.global.ansible.working_dir = "$(WORKING_DIR)"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.env.MOLECULE_EPHEMERAL_DIRECTORY = "$(WORKING_DIR)/tmp/EPHEMERAL"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.host_vars.localhost.ansible_python_interpreter = "$(JANNAH_PYTHON)/bin/python3"' ~/jannah-operator/molecule.yml
+	
 
 
 jannah-python-backup: jannah-boot-credentials
@@ -442,6 +446,55 @@ deploy-to-kind-cluster-standalone-streamos-dev-mode \
 deploy-to-kind-cluster-standalone-streamos-production-mode
 
 jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
+
+ansible-cleanup: 
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_cleanup;
+
+
+ansible-destroy: ansible-cleanup
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_destroy;
+
+ansible-prepare: ansible-destroy
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_prepare;
+
+ansible-converge: ansible-prepare
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_converge;	
+
+ansible-verify: ansible-converge
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_verify;
+
+ansible-test: ansible-verify
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_destroy;
 
 jannah-deployment-with-ansible: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;

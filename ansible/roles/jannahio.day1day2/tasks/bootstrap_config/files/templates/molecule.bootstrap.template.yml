@@ -245,7 +245,7 @@ provisioner:
                     ubuntu: ubuntu
                     streamos: streamos
                     tag: "v0.0.1"
-                    repository: localhost:5001
+                    repository: jannah-registry
                   images:
                     proxy:
                       name: jannah-nginx
@@ -261,7 +261,7 @@ provisioner:
                         ubuntu:
                           from: "nginx:1.16.0"
                     boot:
-                      name:  jannah-boot
+                      name: jannah-boot
                       repository: jallohmediabuild/jannah-boot
                       pullPolicy: IfNotPresent
                       port: 8000
@@ -273,7 +273,7 @@ provisioner:
                         ubuntu:
                           from: ubuntu:23.04
                     frontend:
-                      name:  jannah-web
+                      name: jannah-web
                       repository: jallohmediabuild/jannah-web
                       pullPolicy: IfNotPresent
                       port: 8100
@@ -288,7 +288,7 @@ provisioner:
                         repo: "https://github.com/jannahio/frontend.git"
                         branch: "main"
                     middleware:
-                      name:  jannah-compute
+                      name: jannah-compute
                       repository: jallohmediabuild/jannah-compute
                       pullPolicy: IfNotPresent
                       port: 8200
@@ -303,7 +303,7 @@ provisioner:
                         repo: "https://github.com/jannahio/middleware.git"
                         branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
                     registry:
-                      name:  jannah-registry
+                      name: jannah-registry
                       repository: jallohmediabuild/jannah-registry
                       pullPolicy: IfNotPresent
                       port: 5000
@@ -357,7 +357,7 @@ provisioner:
                 root_cert:
                   name: jannah-cert
                   cert: tls.crt
-                  key:  tls.key
+                  key: tls.key
                 # For image registry automated image pull cred
                 registry_cred:
                   name: jannah-registry-cred
