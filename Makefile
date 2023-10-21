@@ -431,6 +431,10 @@ deploy-to-docker-desktop-standalone-ubuntu-production-mode \
 deploy-to-docker-desktop-standalone-streamos-dev-mode \
 deploy-to-docker-desktop-standalone-streamos-production-mode
 
+deploy-completed-docker-desktop-matrix: deploy-to-docker-desktop-full-ubuntu-dev-mode \
+deploy-to-docker-desktop-local-ubuntu-dev-mode \
+deploy-to-docker-desktop-standalone-ubuntu-dev-mode;
+
 # Deploy Kind Cluster Matrix
 deploy-kind-matrix: deploy-to-kind-cluster-full-ubuntu-dev-mode \
 deploy-to-kind-cluster-full-ubuntu-production-mode \
@@ -444,6 +448,10 @@ deploy-to-kind-cluster-standalone-ubuntu-dev-mode \
 deploy-to-kind-cluster-standalone-ubuntu-production-mode \
 deploy-to-kind-cluster-standalone-streamos-dev-mode \
 deploy-to-kind-cluster-standalone-streamos-production-mode
+
+deploy-completed-kind-matrix: deploy-to-kind-cluster-full-ubuntu-dev-mode \
+deploy-to-kind-cluster-local-ubuntu-dev-mode \
+deploy-to-kind-cluster-standalone-ubuntu-dev-mode
 
 jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
 
