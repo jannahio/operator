@@ -29,7 +29,7 @@
       when: (
               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
               and 
-              jannah_stages_bootstrap_deploy_wait_time > 0
+              jannah_stages_bootstrap_deploy_wait_time | int > 0
             )
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
