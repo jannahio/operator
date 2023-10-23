@@ -30,7 +30,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: query_to_verify_kubeflow_pods_result
+      register: query_to_verify_kubeflow_pods_result_docker_desktop
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -41,7 +41,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.kubeflow.namespace }}"
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: query_to_verify_kubeflow_pods_result
+      register: query_to_verify_kubeflow_pods_result_kind_cluster
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -50,7 +50,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      register: query_to_verify_jannah_pods_result
+      register: query_to_verify_jannah_pods_result_docker_desktop
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -61,7 +61,7 @@
         kubectl get pods \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
       when: jannah_stages_bootstrap_deploy_destination == "kind"
-      register: query_to_verify_jannah_pods_result
+      register: query_to_verify_jannah_pods_result_kind_cluster
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -208,58 +208,58 @@
     #     - "build_frontend_images"
     #     - "molecule_verify"
     #     - "operator_e2e"
-    - name: "query_to_verify_kubeflow_pods_result - docker-desktop"
-      debug: var=query_to_verify_kubeflow_pods_result
+    - name: "query_to_verify_kubeflow_pods_result_docker_desktop"
+      debug: var=query_to_verify_kubeflow_pods_result_docker_desktop
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "query_to_verify_kubeflow_pods_result - kind-cluster"
-      debug: var=query_to_verify_kubeflow_pods_result
+    - name: "query_to_verify_kubeflow_pods_result_kind_cluster"
+      debug: var=query_to_verify_kubeflow_pods_result_kind_cluster
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "query_to_verify_jannah_pods_result - docker-desktop"
-      debug: var=query_to_verify_jannah_pods_result
+    - name: "query_to_verify_jannah_pods_result_docker_desktop"
+      debug: var=query_to_verify_jannah_pods_result_docker_desktop
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "query_to_verify_jannah_pods_result - kind-cluster"
-      debug: var=query_to_verify_jannah_pods_result
+    - name: "query_to_verify_jannah_pods_result_kind_cluster"
+      debug: var=query_to_verify_jannah_pods_result_kind_cluster
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_to_verify_jannah_pods_result - docker-desktop"
+    - name: "Assert non empty result list for query_to_verify_jannah_pods_result_docker_desktop"
       assert:
         that:
-          - query_to_verify_jannah_pods_result['stdout_lines'] | length >= 3
+          - query_to_verify_jannah_pods_result_docker_desktop['stdout_lines'] | length >= 3
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_to_verify_jannah_pods_result - kind-cluster"
+    - name: "Assert non empty result list for query_to_verify_jannah_pods_result_kind_cluster"
       assert:
         that:
-          - query_to_verify_jannah_pods_result['stdout_lines'] | length >= 3
+          - query_to_verify_jannah_pods_result_kind_cluster['stdout_lines'] | length >= 3
       when: jannah_stages_bootstrap_deploy_destination == "kind"
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_to_verify_kubeflow_pods_result - docker-desktop"
+    - name: "Assert non empty result list for query_to_verify_kubeflow_pods_result_docker_desktop"
       assert:
         that:
-          - query_to_verify_kubeflow_pods_result['stdout_lines'] | length >= 3
+          - query_to_verify_kubeflow_pods_result_docker_desktop['stdout_lines'] | length >= 3
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop" 
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Assert non empty result list for query_to_verify_kubeflow_pods_result - kind-cluster"
+    - name: "Assert non empty result list for query_to_verify_kubeflow_pods_result_kind_cluster"
       assert:
         that:
-          - query_to_verify_kubeflow_pods_result['stdout_lines'] | length >= 3
+          - query_to_verify_kubeflow_pods_result_kind_cluster['stdout_lines'] | length >= 3
       when: jannah_stages_bootstrap_deploy_destination == "kind" 
       tags:
         - "molecule_verify"
