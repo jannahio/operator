@@ -153,8 +153,6 @@
         - PIPELINE_VERSION: "2.0.1"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       when: jannah_stages_bootstrap_deploy_type == "local" and jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"

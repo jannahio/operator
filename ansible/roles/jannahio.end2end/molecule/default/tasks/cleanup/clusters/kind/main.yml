@@ -1,7 +1,7 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
-    - name: "Jannah un-install"
+    - name: "Jannah un-install - kind cluster"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
@@ -12,10 +12,24 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+    - name: "Jannah kubeflow-user-example-com - kind cluster"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl delete all --all -n kubeflow-user-example-com;
+        exit 0;
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
         msg: 'Clean Prepared Operator MacOs Docker Desktop Exception'
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
     - name: Re-emit failure
       vars:
         failed_task:
