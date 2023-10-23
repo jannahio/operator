@@ -16,7 +16,7 @@
     - name: "Wait for Registry service to deploy"
       shell: |
         sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
-      when: jannah_stages_bootstrap_deploy_wait_time != 0
+      when: jannah_stages_bootstrap_deploy_wait_time | int != 0
       tags:
         - "molecule_verify"
         - "operator_e2e"
@@ -27,11 +27,10 @@
         - verify_deploy_storage_to_macos_docker_desktop.yml
       loop_control:
         loop_var: verify_deploy_to_macos_docker_desktop_task_items
-      when: ansible_facts['os_family'] == "Darwin" and (
-                                                        jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-                                                        or
-                                                        jannah_stages_bootstrap_deploy_destination == "kind"
-                                                        )
+      when: ( jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+              or
+              jannah_stages_bootstrap_deploy_destination == "kind"
+            )
       tags:
         - "verify_images"
         - "molecule_verify"

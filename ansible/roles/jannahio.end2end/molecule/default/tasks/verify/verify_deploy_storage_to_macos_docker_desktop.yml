@@ -29,17 +29,17 @@
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "query_to_verify_storage_pods_result_docker_desktop"
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      debug: var=query_to_verify_storage_pods_result_docker_desktop
-        - "molecule_verify"
-        - "operator_e2e"
-    - name: "query_to_verify_storage_pods_result_kind_cluster"
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      debug: var=query_to_verify_storage_pods_result_kind_cluster
-      tags:
-        - "molecule_verify"
-        - "operator_e2e"
+    # - name: "query_to_verify_storage_pods_result_docker_desktop"
+    #   when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+    #   debug: var=query_to_verify_storage_pods_result_docker_desktop
+    #     - "molecule_verify"
+    #     - "operator_e2e"
+    # - name: "query_to_verify_storage_pods_result_kind_cluster"
+    #   when: jannah_stages_bootstrap_deploy_destination == "kind"
+    #   debug: var=query_to_verify_storage_pods_result_kind_cluster
+    #   tags:
+    #     - "molecule_verify"
+    #     - "operator_e2e"
     - name: "Assert that non empty result list for query_to_verify_storage_pods_result_docker_desktop"
       when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       assert:
