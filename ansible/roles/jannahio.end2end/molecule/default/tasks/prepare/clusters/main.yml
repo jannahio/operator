@@ -69,7 +69,7 @@
         # some of the tasks (like copying certs to nodes) should be done as part of the
         # helm post-install 
         - registry/main.yml
-        - secrets/main.yml
+        # - secrets/main.yml
       loop_control:
         loop_var: prepare_cluster_registry_task_items
       when: (
