@@ -59,7 +59,18 @@
     #     - "prepare_images"
     #     - "molecule_prepare"
     #     - "operator_e2e"
-    - name: "Tag rigistry image "
+    - name: "Pull registry image"
+      shell: |
+        docker pull {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.dockerfiles.ubuntu.from }};
+        exit 0;
+      when: jannah_stages_bootstrap_deploy_push_proxy_image == True
+      async: 9800
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+    - name: "Tag registry image"
       shell: |
         docker tag {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.dockerfiles.ubuntu.from }} \
           {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};

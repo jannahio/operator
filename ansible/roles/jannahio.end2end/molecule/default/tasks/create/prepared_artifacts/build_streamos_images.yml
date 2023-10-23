@@ -40,6 +40,20 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "Pull streamos image"
+      shell: |
+        docker pull "{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.dockerfiles.streamos.from }}";
+        exit 0;        
+      when: (
+              jannah_stages_bootstrap_deploy_os == "streamos"
+            )
+      async: 9800
+      poll: 5
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: "Build StreamOs boot image - arm64 - docker-desktop"
       shell: |
         docker buildx build \

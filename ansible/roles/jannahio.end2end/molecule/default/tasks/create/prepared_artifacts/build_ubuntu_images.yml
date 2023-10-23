@@ -33,6 +33,20 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "Pull ubuntu image"
+      shell: |
+        docker pull "{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.dockerfiles.ubuntu.from }}";
+        exit 0;        
+      when: (
+              jannah_stages_bootstrap_deploy_os == "ubuntu"
+            )
+      async: 9800
+      poll: 5
+      tags:
+        - "build_images"
+        - "build_frontend_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: "Import prepare build image tasks - ubuntu middleware and frontend"
       include_tasks: '{{ prepare_ubuntu_middleware_and_frontend_task_items }}'
       with_fileglob:
