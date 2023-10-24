@@ -459,7 +459,7 @@ deploy-completed-kind-matrix: clean deploy-to-kind-cluster-full-ubuntu-dev-mode 
 deploy-to-kind-cluster-local-ubuntu-dev-mode \
 deploy-to-kind-cluster-standalone-ubuntu-dev-mode
 
-jannah-deployments: deploy-docker-desktop-matrix clean deploy-kind-matrix
+jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
 
 ansible-cleanup: 
 	. $(JANNAH_PYTHON)/bin/activate;
