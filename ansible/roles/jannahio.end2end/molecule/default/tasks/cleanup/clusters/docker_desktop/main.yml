@@ -2,7 +2,7 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
-    - name: "Jannah un-install"
+    - name: "Jannah un-install - docker-desktop"
       shell: |
         kubectl delete all --all -n \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
@@ -11,7 +11,7 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Jannah kubeflow-user-example-com"
+    - name: "Jannah kubeflow-user-example-com - docker-desktop"
       shell: |
         kubectl delete all --all -n kubeflow-user-example-com;
         exit 0;

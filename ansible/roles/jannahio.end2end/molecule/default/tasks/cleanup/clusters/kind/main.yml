@@ -12,7 +12,7 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: "Jannah kubeflow-user-example-com - kind cluster"
+    - name: "kubectl delete all --all -n kubeflow-user-example-com - kind cluster"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |

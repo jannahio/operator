@@ -363,7 +363,11 @@ uninstall: jannah-config molecule-destroy molecule-reset
 test: jannah-config molecule-destroy molecule-reset molecule-test
 
 #Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
-clean: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode jannah-config molecule-destroy jannah-python-clean
+clean: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode \
+jannah-config molecule-destroy \
+set-to-docker-desktop-full-ubuntu-dev-mode \
+jannah-config molecule-destroy jannah-python-clean
+
 
 deploy-to-docker-desktop-full-ubuntu-dev-mode: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
@@ -453,7 +457,7 @@ deploy-completed-kind-matrix: deploy-to-kind-cluster-full-ubuntu-dev-mode \
 deploy-to-kind-cluster-local-ubuntu-dev-mode \
 deploy-to-kind-cluster-standalone-ubuntu-dev-mode
 
-jannah-deployments: deploy-docker-desktop-matrix deploy-kind-matrix
+jannah-deployments: deploy-docker-desktop-matrix clean deploy-kind-matrix
 
 ansible-cleanup: 
 	. $(JANNAH_PYTHON)/bin/activate;
