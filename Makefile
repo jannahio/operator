@@ -363,11 +363,13 @@ uninstall: jannah-config molecule-destroy molecule-reset
 test: jannah-config molecule-destroy molecule-reset molecule-test
 
 #Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
-clean: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode \
-jannah-config molecule-destroy \
-set-to-docker-desktop-full-ubuntu-dev-mode \
+clean-docker-desktop: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode \
 jannah-config molecule-destroy jannah-python-clean
 
+clean-kind-cluster: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode \
+jannah-config molecule-destroy jannah-python-clean
+
+clean: clean-kind-cluster clean-docker-desktop
 
 deploy-to-docker-desktop-full-ubuntu-dev-mode: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode install
 	@sleep $(WAIT_TIME)
@@ -435,7 +437,7 @@ deploy-to-docker-desktop-standalone-ubuntu-production-mode \
 deploy-to-docker-desktop-standalone-streamos-dev-mode \
 deploy-to-docker-desktop-standalone-streamos-production-mode
 
-deploy-completed-docker-desktop-matrix: deploy-to-docker-desktop-full-ubuntu-dev-mode \
+deploy-completed-docker-desktop-matrix: clean deploy-to-docker-desktop-full-ubuntu-dev-mode \
 deploy-to-docker-desktop-local-ubuntu-dev-mode \
 deploy-to-docker-desktop-standalone-ubuntu-dev-mode;
 
@@ -453,7 +455,7 @@ deploy-to-kind-cluster-standalone-ubuntu-production-mode \
 deploy-to-kind-cluster-standalone-streamos-dev-mode \
 deploy-to-kind-cluster-standalone-streamos-production-mode
 
-deploy-completed-kind-matrix: deploy-to-kind-cluster-full-ubuntu-dev-mode \
+deploy-completed-kind-matrix: clean deploy-to-kind-cluster-full-ubuntu-dev-mode \
 deploy-to-kind-cluster-local-ubuntu-dev-mode \
 deploy-to-kind-cluster-standalone-ubuntu-dev-mode
 
