@@ -381,7 +381,7 @@ deploy-to-docker-desktop-local-ubuntu-dev-mode: jannah-python set-to-docker-desk
 	@sleep $(WAIT_TIME)
 deploy-to-docker-desktop-local-ubuntu-production-mode: jannah-python set-to-docker-desktop-local-ubuntu-production-mode install
 	@sleep $(WAIT_TIME)
-deploy-to-docker-desktop-local-streamos-dev-mode: jannah-python set-to-docker-desktop-local-streamos-dev-mode install 
+deploy-to-docker-desktop-local-streamos-dev-mode: jannah-python set-to-docker-desktop-local-streamos-dev-mode install
 	@sleep $(WAIT_TIME)
 deploy-to-docker-desktop-local-streamos-production-mode: jannah-python set-to-docker-desktop-local-streamos-production-mode install
 	@sleep $(WAIT_TIME)
