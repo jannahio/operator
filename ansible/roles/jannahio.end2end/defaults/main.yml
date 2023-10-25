@@ -4,7 +4,7 @@ Jannah:
   global:
     namespace: jannah-operator-system
     ansible:
-      working_dir: "/Users/osmanjalloh/IdeaProjects/debug/operator"
+      working_dir: "/Users/osmanjalloh/working/debug/operator"
   credentials:
     github:
       GITHUB_USERNAME: ""
