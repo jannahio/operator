@@ -7,6 +7,8 @@
         kubectl delete all --all -n \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
         exit 0;
+      async: 60
+      poll: 5
       tags:
         - "docker_desktop_infra"
         - "molecule_cleanup"
@@ -15,6 +17,8 @@
       shell: |
         kubectl delete all --all -n kubeflow-user-example-com;
         exit 0;
+      async: 60
+      poll: 5
       tags:
         - "docker_desktop_infra"
         - "molecule_cleanup"

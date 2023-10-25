@@ -8,8 +8,9 @@
         kubectl delete all --all -n \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
         exit 0;
+      async: 60
+      poll: 5
       tags:
-        - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: "kubectl delete all --all -n kubeflow-user-example-com - kind cluster"
@@ -18,8 +19,9 @@
       shell: |
         kubectl delete all --all -n kubeflow-user-example-com;
         exit 0;
+      async: 60
+      poll: 5
       tags:
-        - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
   rescue:
@@ -27,7 +29,6 @@
       ansible.builtin.debug:
         msg: 'Clean Prepared Operator MacOs Docker Desktop Exception'
       tags:
-        - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
     - name: Re-emit failure
@@ -37,7 +38,6 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "multipass_infra"
         - "molecule_cleanup"
         - "operator_e2e"
   ignore_errors: false
