@@ -141,7 +141,7 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
-    - name: "Build Ubuntu frontend image - amd64 kin cluster"
+    - name: "Build Ubuntu frontend image - amd64 kind cluster"
       shell: |
         docker build \
           -t \

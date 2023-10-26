@@ -27,17 +27,17 @@
   rescue:
     - name: "Clean Prepared Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
-        msg: 'Clean Prepared Operator MacOs Docker Desktop Exception'
+        msg: '{{ ansible_failed_result }}'
       tags:
         - "molecule_cleanup"
         - "operator_e2e"
-    - name: Re-emit failure
-      vars:
-        failed_task:
-          result: '{{ ansible_failed_result }}'
-      fail:
-        msg: '{{ failed_task }}'
-      tags:
-        - "molecule_cleanup"
-        - "operator_e2e"
+    # - name: Re-emit failure
+    #   vars:
+    #     failed_task:
+    #       result: '{{ ansible_failed_result }}'
+    #   fail:
+    #     msg: '{{ failed_task }}'
+    #   tags:
+    #     - "molecule_cleanup"
+    #     - "operator_e2e"
   ignore_errors: false
