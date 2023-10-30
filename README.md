@@ -1,4 +1,4 @@
-Jannah.io September 2023
+Jannah.io October 2023
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
 - www.jannah.io: A lab (laboratory) for developing cloud native software solutions.
@@ -10,7 +10,6 @@ Jannah.io September 2023
     - Venture Capitalists
     - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
     - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
-
 
 Recap:
 In our previous (introductory) video, we invited you to join us on a journey.
@@ -33,7 +32,7 @@ In our previous (introductory) video, we invited you to join us on a journey.
     - https://docs.djangoproject.com/en/4.2/ref/models/instances/#django.db.models.Model.
 - The Django application will have a VueJS web based frontend, as well as native Android (Kotlin), and iOS (SwiftUI) mobile applications.
 
-Demo:
+Demo Continues:
 - Purpose is to showcase the developer environment.
     - I will perform the following steps:
         1) Clone the operator code base.
@@ -86,11 +85,15 @@ Demo:
             - Run 'python manage.py runserver' command to start the Django application locally
             - Enter sample data via the Django Web admin.
                 1) Sites
-                    - Site 1
-                    - Site 2
+                    - Jannah Site 1
+                        - Jannah installation 1.
+                    - Jannah Site 2
+                        - Jannah installation 2.
                 2) Users
-                    - Osman
-                    - Babar
+                    - Osman Jalloh
+                        - Jannah site admin.
+                    - Babar Jalloh
+                        - Jannah developer.
                 3) Boot Layer Logs
                     - Boot Layer Operator Deployment Logs
                         - All logs leading up to the deployment of the operator Django application.
@@ -101,7 +104,7 @@ Demo:
                 6) Compute Layer Logs
                     - All data related to Compute (Applications, Business Logic) components of the Jannah infrastructure.
                 7) UX Layer Logs
-                    - All data that are related to user interaction on the Jannah infrastructure
+                    - All data that are related to user interaction on the Jannah infrastructure.
                 8) Feedback Layer Logs
                     - All data related to user feedback, including error ticket trackers.
                 9) Workflow Metadata Layer
@@ -113,20 +116,31 @@ Demo:
                     - Compute Workflows: All workflows related to compute (application) components within Jannah infrastructure.
                     - UX Workflows: All workflows related to UX within the Jannah infrastructure.
                     - Feedback Workflows: All workflows related to Feedback components within the Jannah infrastructure.
-        8) Run 'ionic serve' command to install npm packages and start the web app locally.
-        9) Show applications and mobile app emulators for local Jannah development.
-        10) Ending with current milestone.
+        8) Show applications and mobile app emulators for local Jannah development. 
+            - Middleware Application
+              - This is where we left off from the previous demo
+                - Sample data was entered for the various data models. 
+                - Quick review of the sample data (web admin, graphql interface).
+            - Frontend Applications (UI):
+              - Ionic Web Application 
+                - Run 'ionic serve' command to install npm packages and start the web app locally.
+              - Swift UI Application 
+                - Run the emulator. 
+              - Android Application
+                - Run the emulator.
+        9) Ending with current milestone.
             - Current problems needing solutions
-                - Debug Kotlin Apollo Connection between Android app and Django GraphQL API.
+                - Complete Kotlin Apollo connection between Android app and Django GraphQL API.
                 - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
-                -
-            - Challenge/Invitation to join team, and solve problems
-                - Audience:
-                    - Business Developers
-                    - Venture Capitalists
-                    - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
-                    - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+                - Complete the Jannah Helm Chart deploments.
 
+
+
+
+
+
+
+                
 -------------------------------------------------------------------------------------------------------
 April 17th, 20203
 Introducing the Jannah Software Accelerator project.

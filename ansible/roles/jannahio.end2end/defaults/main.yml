@@ -4,7 +4,7 @@ Jannah:
   global:
     namespace: jannah-operator-system
     ansible:
-      working_dir: "/Users/osmanjalloh/working/debug/operator"
+      working_dir: "/Users/osmanjalloh/working/developer_environment_presentation/operator"
   credentials:
     github:
       GITHUB_USERNAME: ""
@@ -195,7 +195,7 @@ Jannah:
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "100"
+        wait_time: "0"
         dependencies:
           parcona_postgres:
             namespace: jannah
