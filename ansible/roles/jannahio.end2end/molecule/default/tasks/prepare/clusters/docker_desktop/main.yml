@@ -9,7 +9,7 @@
           metadata:
             name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
       tags:
-        - "deploy_images"
+        - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
   rescue:
@@ -17,7 +17,7 @@
       ansible.builtin.debug:
         msg: 'Prepare kind cluster Exception'
       tags:
-        - "deploy_images"
+        - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
     - name: Re-emit failure
@@ -27,7 +27,7 @@
       fail:
         msg: '{{ failed_task }}'
       tags:
-        - "deploy_images"
+        - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
   ignore_errors: false

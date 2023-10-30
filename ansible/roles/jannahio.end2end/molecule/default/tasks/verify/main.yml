@@ -13,7 +13,7 @@
       tags:
         - "molecule_verify"
         - "operator_e2e"
-    - name: "Wait for Registry service to deploy"
+    - name: "Wait for services to deploy"
       shell: |
         sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
       when: jannah_stages_bootstrap_deploy_wait_time | int != 0

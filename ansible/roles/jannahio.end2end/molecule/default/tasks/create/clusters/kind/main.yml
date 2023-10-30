@@ -219,7 +219,7 @@
       shell: |   
         kubectl create namespace "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}";
         exit 0;
-      when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
+      # when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       async: 1200

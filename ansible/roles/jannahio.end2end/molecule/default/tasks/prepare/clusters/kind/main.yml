@@ -1,55 +1,35 @@
 ---
-- name: "Prepare kind cluster"
-  block:
-    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
-      ansible.builtin.set_fact:
-        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
-      tags:
-        - "deploy_storage"
-        - "molecule_prepare"
-        - "operator_e2e"
-    - name: 'Create Jannah namespace if not already existing -- docker-desktop'
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e"
-    - name: 'Create Jannah namespace if not already existing -- kind'
-      environment:
-        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e"
-  rescue:
-    - name: "Prepare kind cluster Exception"
-      ansible.builtin.debug:
-        msg: 'Prepare kind cluster Exception'
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e"
-    - name: Re-emit failure
-      vars:
-        failed_task:
-          result: '{{ ansible_failed_result }}'
-      fail:
-        msg: '{{ failed_task }}'
-      tags:
-        - "deploy_images"
-        - "molecule_prepare"
-        - "operator_e2e"
-  ignore_errors: false
+# - name: "Prepare kind cluster"
+#   block:
+#     - name: 'Create Jannah namespace if not already existing -- kind'
+#       environment:
+#         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+#       kubernetes.core.k8s:
+#         definition:
+#           apiVersion: v1
+#           kind: Namespace
+#           metadata:
+#             name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+#       tags:
+#         - "pepare_images"
+#         - "molecule_prepare"
+#         - "operator_e2e"
+#   rescue:
+#     - name: "Prepare kind cluster Exception"
+#       ansible.builtin.debug:
+#         msg: 'Prepare kind cluster Exception'
+#       tags:
+#         - "pepare_images"
+#         - "molecule_prepare"
+#         - "operator_e2e"
+#     - name: Re-emit failure
+#       vars:
+#         failed_task:
+#           result: '{{ ansible_failed_result }}'
+#       fail:
+#         msg: '{{ failed_task }}'
+#       tags:
+#         - "pepare_images"
+#         - "molecule_prepare"
+#         - "operator_e2e"
+#   ignore_errors: false
