@@ -285,7 +285,7 @@ Jannah:
                   from: ubuntu:23.04
               github:
                 repo: "https://github.com/jannahio/middleware.git"
-                branch: "task-aVYVi17T-base-jannah-django-app-model.login_jannah.graphql.cursor_addendum"
+                branch: "main"
             registry:
               name:  jannah-registry
               repository: jallohmediabuild/jannah-registry
@@ -332,11 +332,11 @@ Jannah:
             registry:
               name: jannah-registry-pod
       secrets:
-        # image registry ssl key
         image_registry:
           name: jannah-registry-key
           namespace: default
           apiVersion: v1
+        # image registry ssl key
         # image registry ssl cert
         root_cert:
           name: jannah-cert
