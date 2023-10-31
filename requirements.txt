@@ -32,3 +32,4 @@ Pillow==10.0.0
 ipython
 jupyterlab
 tensorflow
+torch
