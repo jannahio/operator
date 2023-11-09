@@ -133,13 +133,6 @@ Demo Continues:
                 - Complete Kotlin Apollo connection between Android app and Django GraphQL API.
                 - Now that the iOS application can talk to the Django app, lets display the content/results from the API calls.
                 - Complete the Jannah Helm Chart deploments.
-
-
-
-
-
-
-
                 
 -------------------------------------------------------------------------------------------------------
 April 17th, 20203

@@ -59,11 +59,21 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>source ~/.zprofile
-10_Install_Ansible_Tooling.workflow
-
-
-</string>
+					<string>curl -o rustup.sh  --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+chmod +x ./rustup.sh
+./rustup.sh -y
+source ~/.cargo/env 
+source ~/.cargo/env
+rustc --version
+rustup default stable
+rustup update
+brew install protobuf
+rustup target add wasm32-unknown-unknown
+rustup update nightly
+rustup target add wasm32-unknown-unknown --toolchain nightly
+rustup show
+rustup component add rust-src
+cargo install --force --locked cargo-contract</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -180,7 +190,7 @@
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>309.000000:184.000000</string>
+				<string>365.500000:534.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>

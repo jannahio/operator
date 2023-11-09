@@ -1,0 +1,104 @@
+- Feedback
+    - Logs and User Feedbacks
+        - Data Mininng and ML Modeling of feedback logs
+- UX
+    - Jannah Web App
+        - Ionic + VueJS
+    - Jannah iOS (SwiftUI) App
+    - Jannah Andriod (Kotlins) App
+    - Jannah Website (Shop and Blog)
+        - Signup/Login/Logout
+        - Dashboard App (Landing Page)
+           - Boot App
+           - Networking App
+           - Storage App
+           - Compute App
+           - UX App
+           - Feedback App
+        - Project Onboarding App
+        - Blog and Social Media Integaraion	
+    - Jannah Social Media Presence
+    - Jannah Project Onboarding
+    - Jannah Flavors
+        - Enterprise
+        - Community
+Need App Icon
+- Compute
+    - App Models
+      - Workflows:
+        - Add icons for each flow (or use material design icons?) 
+    - API
+        - Add pagination support
+    - Persisting media files for runtime usage
+- Storage
+    - Django ORM: Postgres Integrations
+    - Django config secret management
+        - https://pypi.org/project/django-environ/
+    - orchestrate-django-application-with-kubernetes
+        - orchestrate-django-application-with-kubernetes
+    - Container Storage Infrastructure (CSI)
+- Network
+  - Configurations Necessary to Get Django Container to Connect to Postgres
+  - Ingress/Egress Configurations
+- Boot
+  - Day1 Day2 Blockchain Boostrapping
+  - Create Enterprise and Community Repositories
+- Grooming
+    - Dev Environment Presentation
+        - Backend Apps
+        - Frontend Apps
+    - Tensorglow, PyTorch, ML Toolset
+        - Import logs data into Jupyter Notebook for Data Science analysis
+    - Jannah Helm Chart
+        - Chart Development Guide
+        - Creating Your Own Charts
+        - Run Stateless Application Deployment
+        - Run Single Instance Stateful Application
+        - K8 Deployment
+        - Writing a Deployment
+        - Kind Cluster Deployment - pull-to-the-host-and-side-load	
+        - Kind Cluster Deployment - local-registry
+        - Terraform  Grooming
+        - Jinja Template Grooming for using includes/blocks for Simplifying Molecule.cng Values.yml Generation
+        - Containerd Deep Dive
+        - Podman Deployment Grooming
+        - Molecule Configuration Deep Dive
+        - Jannah Helm Chart
+        - https://helm.sh/docs/topics/charts/
+        - Run (dry-run) with kubectl and kustomize to generate the output files into a directory
+        - Populate Values.yml, Deployment with Jannah Containers
+        - Add dependency fields. (i.e):
+            - dependencies:
+                - name: postgres
+                    version: 1.2.3
+                    repository: https://example.com/charts
+                    tags:
+                     - back-end
+                - name: kubeflow
+                    version: 3.2.1
+                    tags:	
+                     - back-end
+                    repository: https://another.example.com/charts
+    - Blockchain Dapp
+        - Ethereum Platform
+        
+- Research
+    - Research Best ML Algorithms for Logs Analysis.
+        - https://colab.research.google.com/github/tensorflow/text/blob/master/docs/guide/bert_preprocessing_guide.ipynb
+        - https://www.zebrium.com/blog/part-1-machine-learning-for-logs
+    - Getting Started with wireguard
+        - https://www.intruder.io/blog/how-to-secure-the-kubernetes-api-behind-a-vpn
+    - Keras Excursions
+        - https://keras.io/keras_core/guides/getting_started_with_keras_core/ - done
+        - https://keras.io/keras_core/guides/functional_api/ - pending
+            - Writing a custom train step
+                - TensorFloww [TODO]
+                    - https://keras.io/keras_core/guides/custom_train_step_in_tensorflow/
+                - JAX
+                    - https://keras.io/keras_core/guides/custom_train_step_in_jax/
+                - PyTorch
+                    - https://keras.io/keras_core/guides/custom_train_step_in_torch/
+                - Training & evaluation with the built-in methods
+                    - https://keras.io/keras_core/guides/training_with_built_in_methods/
+    - Jannah Internship/Fellowship
+
