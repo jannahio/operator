@@ -34,3 +34,6 @@ jupyterlab
 tensorflow
 torch
 pydot
+kfp
+kfp-kubernetes
+kubeflow-training

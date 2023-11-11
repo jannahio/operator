@@ -5,7 +5,7 @@
 replicaCount: 1
 
 images:
-  proxy:
+  proxy: 
     name: jannah-nginx
     repository: docker.io/jannah-registry/jannah-nginx
     pullPolicy: IfNotPresent
@@ -13,25 +13,25 @@ images:
     tag: v0.0.1
   boot:
     name:  jannah-boot
-    repository: docker.io/jannah-registry/jannah-boot-arm64-ubuntu
+    repository: docker.io/jannah-registry/jannah-boot-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8000
   frontend:
     name:  jannah-web
-    repository: docker.io/jannah-registry/jannah-web-arm64-ubuntu
+    repository: docker.io/jannah-registry/jannah-web-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8100
   middleware:
     name:  jannah-compute
-    repository: docker.io/jannah-registry/jannah-compute-arm64-ubuntu
+    repository: docker.io/jannah-registry/jannah-compute-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8200
   registry:
     name:  jannah-registry
-    repository: docker.io/jannah-registry/jannah-registry-arm64-ubuntu
+    repository: docker.io/jannah-registry/jannah-registry-amd64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 5000
@@ -84,7 +84,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
