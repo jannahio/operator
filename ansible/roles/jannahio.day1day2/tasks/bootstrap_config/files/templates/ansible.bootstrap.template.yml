@@ -306,7 +306,7 @@ Jannah:
               apiVersion: v1
               kind: PersistentVolume
               metadata:
-                name: jannah-docker-repo-pv
+                name: jannah-docker-repository-pv
                 namespace: jannah
               spec:
                 capacity:
@@ -320,7 +320,7 @@ Jannah:
               apiVersion: v1
               kind: PersistentVolumeClaim
               metadata:
-                name: jannah-docker-repo-pvc
+                name: jannah-docker-repository-pvc
                 namespace: jannah
               spec:
                 accessModes:

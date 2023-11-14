@@ -30,10 +30,14 @@ channels
 daphne
 Pillow==10.0.0
 ipython
+ipywidgets
 jupyterlab
 tensorflow
+matplotlib 
+tensorflow_datasets
 torch
 pydot
 kfp
 kfp-kubernetes
 kubeflow-training
+papermill
