@@ -186,7 +186,7 @@ Jannah:
                 image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
       deploy:
         #  full|local|standalone
-        type: "full"
+        type: "local"
         # docker-desktop|kind
         destination: "kind"
         # ubuntu|streamos
