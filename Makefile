@@ -2,6 +2,7 @@ SHELL=/bin/bash
 WORKING_DIR=$(shell pwd)
 PYTHON3_BIN=$(shell which python3)
 PIP3_BIN=$(shell which pip3)
+CHIP_ARCHITECTURE=$(shell uname -p)
 JANNAHHOME ?= $(HOME)
 ANSIBLE_VAULT_DEFAULT_PASS_FILE ?= $(JANNAHHOME)/jannah-operator/ansible_defaultpass.txt
 JANNAH_PYTHON=$(WORKING_DIR)/jannah-python
@@ -82,6 +83,22 @@ jannah-python: jannah-boot-credentials
 	. $(JANNAH_PYTHON)/bin/activate;\
     $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
+	# Account for https://developer.apple.com/forums/thread/700906 
+	if [ "$(CHIP_ARCHITECTURE)" = "arm" ]; \
+	then \
+		if [ -f "$(JANNAH_PYTHON)/tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl" ]; \
+		then \
+			echo "tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl is present."; \
+		else \
+			echo "tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl is not present. Downloading now ..."; \
+			pushd $(JANNAH_PYTHON) && \
+			wget https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.14/tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl; \
+			$(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) $(JANNAH_PYTHON)/tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl; \
+			popd; \
+		fi \
+	else \
+		$(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) tensorflow-text; \
+	fi
 
 jannah-config:
 	# Make sure the molecule config is available
@@ -153,7 +170,7 @@ molecule-test: jannah-config
 	molecule $(ANSIBLE_VERBOSE_LEVEL) test;\
 	popd;
 
-# TODO: Write a Makefile function for setting vatriables for the deployment matrix. 
+# TODO: Write a Makefile function for setting variables for the deployment matrix. 
 # Or use the config bootstrap ansible role to create various molecule config files for the matrix permutations
 # add .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.architecture
 
