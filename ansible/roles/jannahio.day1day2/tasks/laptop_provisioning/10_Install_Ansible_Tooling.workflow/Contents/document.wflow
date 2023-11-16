@@ -66,8 +66,7 @@ brew upgrade;
 brew install wget
 brew install operator-sdk
 brew install hashicorp/tap/hashicorp-vagrant
-brew install --cask multipass
-brew install kdoctor  cocoapods helm kind
+brew install kdoctor  cocoapods helm kind graphviz
 helm repo add bitnami https://charts.bitnami.com/bitnami
 npm install -g @ionic/cli@latest native-run pnpm
 </string>
@@ -187,7 +186,7 @@ npm install -g @ionic/cli@latest native-run pnpm
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>421.000000:565.000000</string>
+				<string>365.500000:388.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
