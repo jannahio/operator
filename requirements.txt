@@ -33,6 +33,7 @@ ipython
 ipywidgets
 jupyterlab
 tensorflow
+pandas
 matplotlib 
 tensorflow_datasets
 torch
