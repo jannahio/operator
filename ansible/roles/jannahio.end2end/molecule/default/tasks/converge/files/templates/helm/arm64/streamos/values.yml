@@ -17,24 +17,85 @@ images:
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.port }}
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-boot
+        labels:
+          app: jannah-boot
+          service: jannah-boot
+      spec:
+        ports:
+          port: 8000
+          name: http
+        selector:
+          app: jannah-boot
   frontend:
     name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}
     repository: docker.io/{{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.port }}
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-web
+        labels:
+          app: jannah-web
+          service: jannah-web
+      spec:
+        ports:
+          port: 8100
+          name: http
+          protocol: TCP
+        selector:
+          app: jannah-web
+        version1: v1
   middleware:
     name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}
     repository: docker.io/{{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.port }}
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-compute
+        labels:
+          app: jannah-compute
+          service: jannah-compute
+      spec:
+        ports:
+          port: 8200
+          name: http
+        selector:
+          app: jannah-compute
+        version1: v1 
+        version2: v2 
+        version3: v3
   registry:
     name:  {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}
     repository: docker.io/{{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}
     pullPolicy: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.pullPolicy }}
     tag: {{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}
     port: {{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.port }}
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-registry
+        labels:
+          app: jannah-registry
+          service: jannah-registry
+      spec:
+        ports:
+         - port: 5000
+           name: http
+        selector:
+          app: jannah-registry
 
 # imagePullSecrets:
 #   - name: {{ Jannah.stages.bootstrap.secrets.registry_cred.name }}

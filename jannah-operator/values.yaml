@@ -5,7 +5,7 @@
 replicaCount: 1
 
 images:
-  proxy: 
+  proxy:
     name: jannah-nginx
     repository: docker.io/jannah-registry/jannah-nginx
     pullPolicy: IfNotPresent
@@ -13,28 +13,89 @@ images:
     tag: v0.0.1
   boot:
     name:  jannah-boot
-    repository: docker.io/jannah-registry/jannah-boot-amd64-ubuntu
+    repository: docker.io/jannah-registry/jannah-boot-arm64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8000
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-boot
+        labels:
+          app: jannah-boot
+          service: jannah-boot
+      spec:
+        ports:
+          port: 8000
+          name: http
+        selector:
+          app: jannah-boot
   frontend:
     name:  jannah-web
-    repository: docker.io/jannah-registry/jannah-web-amd64-ubuntu
+    repository: docker.io/jannah-registry/jannah-web-arm64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8100
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-web
+        labels:
+          app: jannah-web
+          service: jannah-web
+      spec:
+        ports:
+          port: 8100
+          name: http
+          protocol: TCP
+        selector:
+          app: jannah-web
+        version1: v1
   middleware:
     name:  jannah-compute
-    repository: docker.io/jannah-registry/jannah-compute-amd64-ubuntu
+    repository: docker.io/jannah-registry/jannah-compute-arm64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 8200
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-compute
+        labels:
+          app: jannah-compute
+          service: jannah-compute
+      spec:
+        ports:
+          port: 8200
+          name: http
+        selector:
+          app: jannah-compute
+        version1: v1 
+        version2: v2 
+        version3: v3
   registry:
     name:  jannah-registry
-    repository: docker.io/jannah-registry/jannah-registry-amd64-ubuntu
+    repository: docker.io/jannah-registry/jannah-registry-arm64-ubuntu
     pullPolicy: IfNotPresent
     tag: v0.0.1
     port: 5000
+    service:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jannah-registry
+        labels:
+          app: jannah-registry
+          service: jannah-registry
+      spec:
+        ports:
+         - port: 5000
+           name: http
+        selector:
+          app: jannah-registry
 
 # imagePullSecrets:
 #   - name: jannah-registry-cred
@@ -84,7 +145,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
+resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

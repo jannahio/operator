@@ -1,0 +1,212 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.images.middleware.name  }}-{{ .Values.images.middleware.service.spec.version1 }}
+  labels:
+    version: {{ .Values.images.middleware.service.spec.version1 }}
+    {{- include "jannah-helm.middleware.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      version: {{ .Values.images.middleware.service.spec.version1 }}
+      {{- include "jannah-helm.middleware.selectorLabels" . | nindent 6 }}  
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        version: {{ .Values.images.middleware.service.spec.version1 }}
+        {{- include "jannah-helm.middleware.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jannah-helm.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.images.middleware.name  }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.images.middleware.repository }}:{{ .Values.images.middleware.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.middleware.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.images.middleware.port }}
+              protocol: TCP
+          livenessProbe:
+            # httpGet:
+            #   path: /admin
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+          readinessProbe:
+            # httpGet:
+            #   path: /graphql
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.images.middleware.name  }}-{{ .Values.images.middleware.service.spec.version2 }}
+  labels:
+    version: {{ .Values.images.middleware.service.spec.version2  }}
+    {{- include "jannah-helm.middleware.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      version: {{ .Values.images.middleware.service.spec.version2 }}
+      {{- include "jannah-helm.middleware.selectorLabels" . | nindent 6 }}  
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        version: {{ .Values.images.middleware.service.spec.version2 }}
+        {{- include "jannah-helm.middleware.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jannah-helm.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.images.middleware.name  }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.images.middleware.repository }}:{{ .Values.images.middleware.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.middleware.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.images.middleware.port }}
+              protocol: TCP
+          livenessProbe:
+            # httpGet:
+            #   path: /admin
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+          readinessProbe:
+            # httpGet:
+            #   path: /graphql
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.images.middleware.name  }}-{{ .Values.images.middleware.service.spec.version3 }}
+  labels:
+    version: {{ .Values.images.middleware.service.spec.version3 }}
+    {{- include "jannah-helm.middleware.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      version: {{ .Values.images.middleware.service.spec.version3  }}
+      {{- include "jannah-helm.middleware.selectorLabels" . | nindent 6 }}  
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        version: {{ .Values.images.middleware.service.spec.version3 }}
+        {{- include "jannah-helm.middleware.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jannah-helm.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.images.middleware.name  }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.images.middleware.repository }}:{{ .Values.images.middleware.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.middleware.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.images.middleware.port }}
+              protocol: TCP
+          livenessProbe:
+            # httpGet:
+            #   path: /admin
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+          readinessProbe:
+            # httpGet:
+            #   path: /graphql
+            #   port: http
+            exec:
+              command:
+              - ps
+              - aux
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -43,12 +43,49 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Frontend labels
+*/}}
+{{- define "jannah-helm.frontend.labels" -}}
+{{ include "jannah-helm.labels" . }}
+app: {{ .Values.images.frontend.name }}
+service: {{ .Values.images.frontend.name }}
+{{- end }}
+{{/*
+Middleware labels
+*/}}
+{{- define "jannah-helm.middleware.labels" -}}
+{{ include "jannah-helm.labels" . }}
+app: {{ .Values.images.middleware.name }}
+service: {{ .Values.images.middleware.name }}
+{{- end }}
+
+
+{{/*
 Selector labels
 */}}
 {{- define "jannah-helm.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "jannah-helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Selector frontend labels
+*/}}
+{{- define "jannah-helm.frontend.selectorLabels" -}}
+{{ include "jannah-helm.selectorLabels" . }}
+app: {{ .Values.images.frontend.name }}
+service: {{ .Values.images.frontend.name }}
+{{- end }}
+{{/*
+Selector middleware labels
+*/}}
+{{- define "jannah-helm.middleware.selectorLabels" -}}
+{{ include "jannah-helm.selectorLabels" . }}
+app: {{ .Values.images.middleware.name }}
+service: {{ .Values.images.middleware.name }}
+{{- end }}
+
+
 
 {{/*
 Create the name of the service account to use

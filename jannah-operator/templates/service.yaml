@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,35 @@ spec:
       name: http
   selector:
     {{- include "jannah-helm.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.images.frontend.name }}
+  labels:
+    {{- include "jannah-helm.frontend.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.images.frontend.service.type }}
+  ports:
+    - port: {{ .Values.images.frontend.service.spec.ports.port }}
+      targetPort: {{ .Values.images.frontend.service.spec.ports.name }}
+      protocol: {{ .Values.images.frontend.service.spec.ports.protocol }}
+      name: {{ .Values.images.frontend.service.spec.ports.name }}
+  selector:
+    {{- include "jannah-helm.frontend.selectorLabels" . | nindent 4 }}          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.images.middleware.name }}
+  labels:
+    {{- include "jannah-helm.middleware.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.images.middleware.service.type }}
+  ports:
+    - port: {{ .Values.images.middleware.service.spec.ports.port }}
+      targetPort: {{ .Values.images.middleware.service.spec.ports.name }}
+      protocol: {{ .Values.images.middleware.service.spec.ports.protocol }}
+      name: {{ .Values.images.middleware.service.spec.ports.name }}
+  selector:
+    {{- include "jannah-helm.middleware.selectorLabels" . | nindent 4 }}  

@@ -42,3 +42,7 @@ kfp
 kfp-kubernetes
 kubeflow-training
 papermill
+virtualenv
+jaxlib
+jax
+keras-nlp
