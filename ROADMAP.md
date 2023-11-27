@@ -2,6 +2,12 @@
     - Logs and User Feedbacks
         - Data Mininng and ML Modeling of feedback logs
 - UX
+    - Pagination and Relay Strategy
+      - Thinking in Relay
+        - https://relay.dev/docs/principles-and-architecture/thinking-in-relay/
+      - Thinking in Graphql
+        - https://relay.dev/docs/principles-and-architecture/thinking-in-graphql/
+
     - Jannah Web App
         - Ionic + VueJS
     - Jannah iOS (SwiftUI) App
@@ -22,7 +28,7 @@
     - Jannah Flavors
         - Enterprise
         - Community
-Need App Icon
+    - Need Icons for various flows   
 - Compute
     - App Models
       - Workflows:
@@ -39,7 +45,7 @@ Need App Icon
     - Container Storage Infrastructure (CSI)
 - Network
   - Configurations Necessary to Get Django Container to Connect to Postgres
-  - Ingress/Egress Configurations
+    - Gateway (Ingress/Egress) Configurations
 - Boot
   - Day1 Day2 Blockchain Boostrapping
   - Create Enterprise and Community Repositories
