@@ -7,11 +7,14 @@
         - https://relay.dev/docs/principles-and-architecture/thinking-in-relay/
       - Thinking in Graphql
         - https://relay.dev/docs/principles-and-architecture/thinking-in-graphql/
+      - Apollo Pagination
+        - https://medium.com/apollo-stack/understanding-pagination-rest-graphql-and-relay-b10f835549e7
+        - https://www.howtographql.com/graphql-python/8-pagination/
 
     - Jannah Web App
         - Ionic + VueJS
     - Jannah iOS (SwiftUI) App
-    - Jannah Andriod (Kotlins) App
+    - Jannah Andriod (Kotlin) App
     - Jannah Website (Shop and Blog)
         - Signup/Login/Logout
         - Dashboard App (Landing Page)
@@ -22,9 +25,7 @@
            - UX App
            - Feedback App
         - Project Onboarding App
-        - Blog and Social Media Integaraion	
-    - Jannah Social Media Presence
-    - Jannah Project Onboarding
+        - Blog and Social Media Integraion	
     - Jannah Flavors
         - Enterprise
         - Community
@@ -34,14 +35,13 @@
       - Workflows:
         - Add icons for each flow (or use material design icons?) 
     - API
-        - Add pagination support
+        - Add pagination support ( Refer to UI Pagination and Relay Strategy )
     - Persisting media files for runtime usage
 - Storage
     - Django ORM: Postgres Integrations
     - Django config secret management
         - https://pypi.org/project/django-environ/
     - orchestrate-django-application-with-kubernetes
-        - orchestrate-django-application-with-kubernetes
     - Container Storage Infrastructure (CSI)
 - Network
   - Configurations Necessary to Get Django Container to Connect to Postgres
@@ -53,7 +53,7 @@
     - Dev Environment Presentation
         - Backend Apps
         - Frontend Apps
-    - Tensorglow, PyTorch, ML Toolset
+    - Tensorflow, PyTorch, ML Toolsets
         - Import logs data into Jupyter Notebook for Data Science analysis
     - Jannah Helm Chart
         - Chart Development Guide
@@ -69,7 +69,6 @@
         - Containerd Deep Dive
         - Podman Deployment Grooming
         - Molecule Configuration Deep Dive
-        - Jannah Helm Chart
         - https://helm.sh/docs/topics/charts/
         - Run (dry-run) with kubectl and kustomize to generate the output files into a directory
         - Populate Values.yml, Deployment with Jannah Containers
@@ -96,7 +95,7 @@
         - https://www.intruder.io/blog/how-to-secure-the-kubernetes-api-behind-a-vpn
     - Keras Excursions
         - https://keras.io/keras_core/guides/getting_started_with_keras_core/ - done
-        - https://keras.io/keras_core/guides/functional_api/ - pending
+        - https://keras.io/keras_core/guides/functional_api/ - done
             - Writing a custom train step
                 - TensorFloww [TODO]
                     - https://keras.io/keras_core/guides/custom_train_step_in_tensorflow/
