@@ -1,7 +1,7 @@
 ---
 # Implements
 # https://docs.percona.com/percona-operator-for-postgresql/2.0/kubectl.html#procedure
-- name: "Deploy Operators Storage to MacOs Docker Desktop"
+- name: "Deploy Storage Operator to MacOs Docker Desktop"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
@@ -30,16 +30,17 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "molecule_converge_debug"
+        - "molecule_prepare_debug_1"
     - name: "Read-write git checkout percona-postgresql-operator.git"
       ansible.builtin.git:
         repo: "https://github.com/percona/percona-postgresql-operator.git"
         dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona/percona-postgresql-operator"
+        # version: "v2.2.0" 
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "molecule_converge_debug"
+        - "molecule_prepare_debug_1"
     - name: "Generate percona-postgresql-operator/deploy/cr.yml"
       template:
         src: "files/templates/helm/percona/deploy/cr.yaml"
@@ -48,97 +49,120 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "molecule_converge_debug"
+        - "molecule_prepare_debug_1"
     - name: "Deploy Percona Postgresql Operator Bundle - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
         {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona/percona-postgresql-operator/deploy/bundle.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "molecule_converge_debug_1"
-    - name: "Deploy Percona Postgresql Operator Bundle - kind-cluster"
-      environment:
-        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |
-        kubectl apply --server-side -f \
-        {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona/percona-postgresql-operator/deploy/bundle.yaml \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
-        - "molecule_converge_debug_1"
+        - "molecule_prepare_debug_1"
     - name: "Deploy Percona Postgresql Operator CR - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
         {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona/percona-postgresql-operator/deploy/cr.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-        - "molecule_converge_debug_1"
-    - name: "Deploy Percona Postgresql Operator CR - kind-cluster"
-      environment:
-        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |
-        kubectl apply --server-side -f \
-        {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona/percona-postgresql-operator/deploy/cr.yaml \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
-        - "molecule_converge_debug_1"
+        - "molecule_prepare_debug_1"
+    # - name: "Deploy Percona Postgresql Operator CR - docker-desktop - wait for crd/perconapgclusters.pgv2.percona.com"
+    #   shell: |
+    #     kubectl wait --for=condition=Established=True --timeout=60s perconapgcluster.pgv2.percona.com/cluster1 -n jannah
+    #   tags:
+    #     - "docker_desktop_infra"
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    #     - "molecule_prepare_debug"
     - name: "Deploy Percona Postgresql Operator - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
         https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/bundle.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Deploy Percona Postgresql Operator - kind-cluster"
-      environment:
-        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-      shell: |
-        kubectl apply --server-side -f \
-        https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/bundle.yaml \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
-      tags:
-        - "docker_desktop_infra"
-        - "molecule_converge"
-        - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: "Deploy Percona Distribution for PostgreSQL cluster - docker-desktop"
       shell: |
         kubectl apply -f https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/cr.yaml \
         -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "docker-desktop"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Deploy Percona Distribution for PostgreSQL cluster -kind"
-      environment:
-        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+        - "molecule_prepare_debug"
+    - name: "Deploy Percona Postgresql Operator CR - docker-desktop - wait for crd/perconapgclusters.pgv2.percona.com"
       shell: |
-        kubectl apply -f https://raw.githubusercontent.com/percona/percona-postgresql-operator/v2.2.0/deploy/cr.yaml \
-        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
-      when: jannah_stages_bootstrap_deploy_destination == "kind"
+        kubectl wait --for=condition=Established=True --timeout=60s crd/perconapgclusters.pgv2.percona.com;
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
+        - "molecule_prepare_debug_1"
+    - name: "Generate .env for middleware - ubuntu"
+      template:
+        src: "files/templates/helm/middleware/env.template"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/.env"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: "Generate .env for middleware - streamos"
+      template:
+        src: "files/templates/helm/middleware/env.template"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/.env"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: "Get pgbouncer-uri - docker-desktop"
+      shell: |
+        kubectl get secret cluster1-pguser-cluster1 -n jannah --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
+      register: cluster1_pguser_cluster1_pgbouncer_uri
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: "cluster1_pguser_cluster1_pgbouncer_uri"
+      debug: var=cluster1_pguser_cluster1_pgbouncer_uri
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: "Get pgbouncer-uri - docker-desktop"
+      shell: |
+        echo "\nDATABASE_URL={{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}"  >> \
+        "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/.env";
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: 'Create pgbouncer_uri secret'
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            namespace: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+            name: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
+          stringData:
+            pgbouncer-uri: "{{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}"
+      tags:
+        - "pepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_debug" 
   rescue:
     - name: "Deploy Operators Storage to MacOs Docker Desktop Exception"
       ansible.builtin.debug:
@@ -147,6 +171,7 @@
         - "deploy_storage"
         - "molecule_converge"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -157,4 +182,5 @@
         - "deploy_storage"
         - "molecule_converge"
         - "operator_e2e"
+        - "molecule_prepare_debug"
   ignore_errors: false

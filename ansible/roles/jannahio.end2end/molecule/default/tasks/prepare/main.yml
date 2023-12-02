@@ -38,7 +38,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        # - "molecule_prepare_debug"
     - name: "Import prepare  docker desktop tasks - Darwin"
       include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -57,7 +57,7 @@
         - "molecule_prepare"
         - "molecule_prepare_debug"
         - "operator_e2e"
-    - name: "Import create tasks - Darwin"
+    - name: "Import artifact prepare tasks"
       include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
         - prepared_artifacts/main.yml

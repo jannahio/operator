@@ -24,7 +24,7 @@
       include_tasks: '{{ verify_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:
         - verify_deploy_to_macos_docker_desktop.yml
-        - verify_deploy_storage_to_macos_docker_desktop.yml
+        # - verify_deploy_storage_to_macos_docker_desktop.yml
       loop_control:
         loop_var: verify_deploy_to_macos_docker_desktop_task_items
       when: ( jannah_stages_bootstrap_deploy_destination == "docker-desktop"

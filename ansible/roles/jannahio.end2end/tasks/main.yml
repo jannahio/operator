@@ -73,6 +73,7 @@
         - "operator_e2e"
         - "standalone_implementation"
         - "molecule_converge"
+        - "molecule_converge_debug"
     - name: "Import molecule verify - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:

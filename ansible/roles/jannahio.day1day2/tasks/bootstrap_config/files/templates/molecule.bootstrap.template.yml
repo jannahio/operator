@@ -317,6 +317,15 @@ provisioner:
                         #   from: quay.io/centos/centos:stream9
                         ubuntu:
                           from: registry:2
+                  storage:
+                    parcona_db:
+                      PerconaPGCluster:
+                        user:
+                          name: jannah
+                          database: jannahdb
+                          options: "SUPERUSER"
+                          password:
+                            type: ASCII
                   persistent_volumes:
                     docker_registry:
                       apiVersion: v1
@@ -365,6 +374,8 @@ provisioner:
                 # and docker CLI access
                 auth:
                   name: jannah-auth
+                percona_db:
+                  name: parcona-auth
                 config:
                   options:
                     log-level:

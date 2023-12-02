@@ -196,5 +196,4 @@ Debug Utils
 -Ansible
 - export ANSIBLE_VAULT_DEFAULT_PASS_FILE=~/jannah-operator/ansible_defaultpass.txt
 - source boot.env.sh
-- cd ansible
-- ansible-playbook -i inventory/ site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags debug_task;
+- ansible-playbook -i ansible/inventory/ ansible/site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags task_debug;

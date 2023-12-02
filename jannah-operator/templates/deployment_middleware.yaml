@@ -40,6 +40,12 @@ spec:
             - name: http
               containerPort: {{ .Values.images.middleware.port }}
               protocol: TCP
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: my-db-secret
+                  key: pgbouncer-uri
           livenessProbe:
             # httpGet:
             #   path: /admin

@@ -41,8 +41,8 @@
     - Django ORM: Postgres Integrations
     - Django config secret management
         - https://pypi.org/project/django-environ/
-    - orchestrate-django-application-with-kubernetes
     - Container Storage Infrastructure (CSI)
+        - PVC allocations
 - Network
   - Configurations Necessary to Get Django Container to Connect to Postgres
     - Gateway (Ingress/Egress) Configurations
@@ -60,12 +60,11 @@
         - Creating Your Own Charts
         - Run Stateless Application Deployment
         - Run Single Instance Stateful Application
-        - K8 Deployment
         - Writing a Deployment
         - Kind Cluster Deployment - pull-to-the-host-and-side-load	
         - Kind Cluster Deployment - local-registry
         - Terraform  Grooming
-        - Jinja Template Grooming for using includes/blocks for Simplifying Molecule.cng Values.yml Generation
+        - Jinja Template Grooming for using includes/blocks for Simplifying Molecule.conf Values.yml Generation
         - Containerd Deep Dive
         - Podman Deployment Grooming
         - Molecule Configuration Deep Dive

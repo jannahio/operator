@@ -47,6 +47,7 @@
         - "prepare_clusters"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug" 
     - name: "Import prepare  kind cluster tasks - Darwin"
       include_tasks: '{{ prepare_kind_cluster_task_items }}'
       with_fileglob:
@@ -62,6 +63,7 @@
         - "prepare_clusters"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug" 
     - name: "Import prepare registry tasks - Darwin"
       include_tasks: '{{ prepare_cluster_registry_task_items }}'
       with_fileglob:
@@ -96,11 +98,13 @@
         - "prepare_clusters"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug" 
     - debug: var=prepare_jannah_tasks_debug_resources
       tags:
         - "prepare_clusters"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug" 
     - name: Re-emit failure
       vars:
         failed_task:
@@ -111,4 +115,5 @@
         - "prepare_clusters"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug" 
   ignore_errors: false

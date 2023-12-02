@@ -12,6 +12,18 @@
         - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
+    - name: "Import prepare  storage for docker desktop tasks - Darwin"
+      include_tasks: '{{ prepare_deploy_to_macos_docker_desktop_task_items }}'
+      with_fileglob:
+        - deploy_storage_to_macos_docker_desktop.yml
+      loop_control:
+        loop_var: prepare_deploy_to_macos_docker_desktop_task_items
+      tags:
+        - "pepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_debug"
   rescue:
     - name: "Prepare kind cluster Exception"
       ansible.builtin.debug:
@@ -20,6 +32,7 @@
         - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -30,4 +43,5 @@
         - "pepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
   ignore_errors: false
