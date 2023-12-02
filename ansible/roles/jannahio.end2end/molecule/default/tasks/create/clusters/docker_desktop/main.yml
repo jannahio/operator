@@ -1,2 +1,49 @@
 ---
-# Docker desktop already comes with a K8s instance.
+# Docker-desktop cluster is already created
+# We will create any artifacts here that will be needed at image build time
+- name: "Create artifacts Needed at Image Build Time"
+  block:
+    - name: 'Create Jannah namespace if not already existing'
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Import create storage for docker desktop tasks - Darwin"
+      include_tasks: '{{ create_deploy_to_macos_docker_desktop_task_items }}'
+      with_fileglob:
+        - deploy_storage_to_macos_docker_desktop.yml
+      loop_control:
+        loop_var: create_deploy_to_macos_docker_desktop_task_items
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+  rescue:
+    - name: "Create artifacts Needed at Image Build Time Exception"
+      ansible.builtin.debug:
+        msg: 'Create artifacts Needed at Image Build Time Exception'
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+  ignore_errors: false
