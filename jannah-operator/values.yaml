@@ -169,3 +169,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+secrets:
+  - name: "parcona-auth"
+    key: "pgbouncer-uri"

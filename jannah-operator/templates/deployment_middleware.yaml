@@ -44,8 +44,10 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets[0].name }}
-                  key: {{ .Values.secrets[0].key }}
+                  {{- range $index, $dbsecret := .Values.secrets }}
+                  name: {{ $dbsecret.name }}
+                  key: {{ $dbsecret.key }}
+                  {{- end }}  
           livenessProbe:
             # httpGet:
             #   path: /admin
@@ -121,8 +123,10 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets[0].name }}
-                  key: {{ .Values.secrets[0].key }}
+                  {{- range $index, $dbsecret := .Values.secrets }}
+                  name: {{ $dbsecret.name }}
+                  key: {{ $dbsecret.key }}
+                  {{- end }}  
           livenessProbe:
             # httpGet:
             #   path: /admin
@@ -198,8 +202,10 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets[0].name }}
-                  key: {{ .Values.secrets[0].key }}
+                  {{- range $index, $dbsecret := .Values.secrets }}
+                  name: {{ $dbsecret.name }}
+                  key: {{ $dbsecret.key }}
+                  {{- end }}  
           livenessProbe:
             # httpGet:
             #   path: /admin
