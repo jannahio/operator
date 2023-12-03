@@ -48,8 +48,33 @@
           stringData:
             pgbouncer-uri: "{{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}"
       tags:
-        - "pepare_images"
-        - "molecule_prepare"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Create tmp/EPHEMERAL/cr directory - docker-desktop"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Generate update postgres for with custom user and database - docker-desktop"
+      template:
+        src: "files/templates/helm/percona/deploy/cr.yaml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/cr.yaml"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Generate update postgres for with custom user and database - docker-desktop"
+      shell: |
+        kubectl apply --server-side -f \
+        {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/cr.yaml \
+        -n "{{ Jannah.stages.bootstrap.deploy.dependencies.parcona_postgres.namespace }}";
+      tags:
+        - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug" 
   rescue:

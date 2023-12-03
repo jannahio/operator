@@ -527,7 +527,8 @@ ansible-test: ansible-verify
 	--tags \
 	molecule_destroy;
 
-jannah-deployment-with-ansible: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode jannah-config
+# set-to-kind-cluster-full-ubuntu-dev-mode
+jannah-deployment-with-ansible: jannah-python deploy-to-docker-desktop-full-ubuntu-dev-mode jannah-config
 	. $(JANNAH_PYTHON)/bin/activate;
 	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
 	--connection=local \
