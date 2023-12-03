@@ -63,6 +63,19 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug_1"
+      # https://docs.percona.com/percona-operator-for-postgresql/2.0/users.html#defaults
+    - name: "Get pgbouncer-uri - docker-desktop"
+      shell: |
+        kubectl get secret \
+        "cluster1-pguser-{{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.name }}" \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
+      # To be used downstream ( prepared_artifacts ) as environment variable in the middleware
+      register: cluster1_pguser_cluster1_pgbouncer_uri
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug" 
     - name: "cluster1_pguser_cluster1_pgbouncer_uri - ubuntu"
       debug: var=cluster1_pguser_cluster1_pgbouncer_uri
       tags:
