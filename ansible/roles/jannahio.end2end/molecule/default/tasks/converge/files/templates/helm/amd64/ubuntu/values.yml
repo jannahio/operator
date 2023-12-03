@@ -168,3 +168,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+secrets:
+  - name: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
+    key: "pgbouncer-uri"

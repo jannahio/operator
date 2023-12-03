@@ -30,7 +30,8 @@
       ansible.builtin.git:
         repo: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.repo }}" 
         dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware"
-        version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.branch }}" 
+        version: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.github.branch }}"
+        force: yes 
       tags:
         - "build_images"
         - "build_middleware_images"

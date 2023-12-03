@@ -1,5 +1,5 @@
 ---
-- name: "Deploy Operator to MacOs Docker Desktop Kubernetes Cluster"
+- name: "Deploy Operator to MacOs Docker  Kind Cluster"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_type"
       ansible.builtin.set_fact:
@@ -22,24 +22,28 @@
         - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Kubeflow install (standalone deployment) docker-desktop cluster scoped-resources"
+    - name: "Kubeflow install (standalone deployment) kind cluster scoped-resources"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl apply -k \
         "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION";
       when: (
-        jannah_stages_bootstrap_deploy_type == "standalone"
-        or
-        jannah_stages_bootstrap_deploy_type == "local"
-        )
+              jannah_stages_bootstrap_deploy_type == "standalone"
+              or
+              jannah_stages_bootstrap_deploy_type == "local"
+          )
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Kubeflow install (standalone deployment) docker-desktop cluster - wait for crd/applications.app.k8s.io"
+    - name: "Kubeflow install (standalone deployment) kind cluster - wait for crd/applications.app.k8s.io"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io;
         exit 0;
@@ -48,25 +52,33 @@
               or
               jannah_stages_bootstrap_deploy_type == "local"
         )
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Kubeflow install (standalone deployment) - docker-desktop - dev?ref"
+    - name: "Kubeflow install (standalone deployment) - kind - dev?ref"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=$PIPELINE_VERSION";
       when: jannah_stages_bootstrap_deploy_type == "standalone"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Kubeflow install (local deployment) - docker-desktop - platform-agnostic-pns"
+    - name: "Kubeflow install (local deployment) - kind - platform-agnostic-pns"
       environment:
         - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"
       when: jannah_stages_bootstrap_deploy_type == "local"
       tags:
         - "docker_desktop_infra"
@@ -91,16 +103,37 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
-    - name: "Kubeflow install (full deployment to docker-desktop)"
+    - name: "set_fact kubeconfig_path"
+      ansible.builtin.set_fact:
+        kubeconfig_path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    # - name: "kind export kubeconfig to /kubeflow/config - Darwin(amd64)"
+    #   shell: |
+    #     KUBECONFIG=config kind export kubeconfig --name {{ Jannah.stages.bootstrap.deploy.kind.name }}
+    #   when: jannah_stages_bootstrap_deploy_type == "full"
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kubeflow/"
+    #   async: 600
+    #   poll: 5
+    #   tags:
+    #     - "molecule_converge"
+    #     - "operator_e2e"
+    - name: "Kubeflow install (full deployment to kind cluster)"
+      environment:
+        - PIPELINE_VERSION: "2.0.1"
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         while ! {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/install_kustomize/kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done;
-      when: jannah_stages_bootstrap_deploy_type == "full"
+      when: jannah_stages_bootstrap_deploy_type == "full" 
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kubeflow/manifests"
       tags:
         - "docker_desktop_infra"
         - "molecule_converge"
-        - "operator_e2e" 
+        - "operator_e2e"
     - name: "Generate Helm values file off off the molecule configuration file - amd64/ubuntu"
       template:
         src: "files/templates/helm/amd64/ubuntu/values.yml"
@@ -137,24 +170,24 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e" 
-    - name: "deploy-to-docker-desktop-full-ubuntu-dev-mode"
+    - name: "deploy-to-kind-cluster-full-ubuntu-dev-mode"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         helm install \
         -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
         --create-namespace  --generate-name \
         {{ Jannah.global.ansible.working_dir }}/jannah-operator;
-      async: 600
-      poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
-        - "deploy_images"
+        - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e"
   rescue:
-    - name: "Deploy Operator to MacOs Docker Desktop Kubernetes Cluster Exception"
+    - name: "Inline Prepare Operator MacOs Docker Desktop Exception"
       ansible.builtin.debug:
-        msg: 'Deploy Operator to MacOs Docker Desktop Kubernetes Cluster Exception'
+        msg: 'Inline Prepare Operator MacOs Docker Desktop Exception'
       tags:
         - "deploy_images"
         - "molecule_converge"
