@@ -65,7 +65,7 @@
     - name: "Get pgbouncer-uri - docker-desktop"
       shell: |
         kubectl get secret \
-        "cluster1-pguser-{{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.name }}" \
+        "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}" \
         -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
         --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
       # To be used downstream ( prepared_artifacts ) as environment variable in the middleware
