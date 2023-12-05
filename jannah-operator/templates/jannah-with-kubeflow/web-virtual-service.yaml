@@ -10,7 +10,7 @@ spec:
   http:
   - match:
     - uri:
-        exact: /productpage
+        exact: /admin
     - uri:
         prefix: /static
     - uri:
@@ -18,7 +18,7 @@ spec:
     - uri:
         exact: /logout
     - uri:
-        prefix: /api/v1/products
+        prefix: /graphql
     route:
     - destination:
         host: productpage
