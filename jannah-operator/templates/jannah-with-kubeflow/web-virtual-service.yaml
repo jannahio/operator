@@ -10,7 +10,7 @@ spec:
   http:
   - match:
     - uri:
-        exact: /admin
+        exact: /
     - uri:
         prefix: /static
     - uri:
@@ -18,9 +18,11 @@ spec:
     - uri:
         exact: /logout
     - uri:
-        prefix: /graphql
+        prefix: /register
+    - uri:
+        prefix: /workflows
     route:
     - destination:
-        host: productpage
+        host: jannah-web
         port:
-          number: 9080
+          number: 8100

@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: jannah-web
+  name: jannah-compute
 spec:
   hosts:
   - "*"
@@ -17,6 +17,6 @@ spec:
         exact: /media
     route:
     - destination:
-        host: productpage
+        host: jannah-compute
         port:
-          number: 9080
+          number: 8200
