@@ -1,11 +1,15 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: jannah-gateway
+  name: {{ .Values.gateway.name }}
 spec:
   selector:
-    istio: ingressgateway # use istio default controller
-    app: jannah-gateway
+    matchLabels:
+      {{- include "jannah-helm.gateway.selectorLabels" . | nindent 6 }}  
+  template:
+    metadata:
+      labels:
+        {{- include "jannah-helm.gateway.selectorLabels" . | nindent 8 }}
   servers:
   - port:
       number: 80
