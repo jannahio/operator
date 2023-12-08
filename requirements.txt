@@ -46,7 +46,8 @@ virtualenv
 jaxlib
 jax
 keras-nlp
-psycopg2-binary
+psycopg[binary]
+#psycopg2-binary
 dj_database_url
 # dj-database-url
 python-decouple

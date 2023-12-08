@@ -2,14 +2,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: {{ .Values.gateway.name }}
+  namespace: jannah
 spec:
   selector:
-    matchLabels:
-      {{- include "jannah-helm.gateway.selectorLabels" . | nindent 6 }}  
-  template:
-    metadata:
-      labels:
-        {{- include "jannah-helm.gateway.selectorLabels" . | nindent 8 }}
+    {{- include "jannah-helm.gateway.selectorLabels" . | nindent 6 }}  
   servers:
   - port:
       number: 80

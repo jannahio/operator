@@ -172,3 +172,7 @@ affinity: {}
 secrets:
   - name: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
     key: "pgbouncer-uri"
+
+gateway:
+ name: jannah-gateway
+ istio: ingressgateway
