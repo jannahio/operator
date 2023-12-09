@@ -6,5 +6,5 @@ ADD . /jannah_graphql
 WORKDIR /jannah_graphql
 RUN python3 -m pip install --break-system-packages -r requirements.txt
 RUN python3 manage.py makemigrations
-RUN python manage.py migrate
+RUN python3 manage.py migrate
 ENTRYPOINT ["python3","manage.py","runserver", "0.0.0.0:{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.port }}"]

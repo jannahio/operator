@@ -126,20 +126,20 @@ spec:
 
   proxy:
     pgBouncer:
-      replicas: 3
-      image: perconalab/percona-postgresql-operator:main-ppg16-pgbouncer
-#      exposeSuperusers: true
+      replicas: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.replicas }}
+      image: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.image }}
+      exposeSuperusers: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.exposeSuperusers }}
 #      resources:
 #        limits:
 #          cpu: 200m
 #          memory: 128Mi
 #
-#      expose:
-#        annotations:
-#          my-annotation: value1
-#        labels:
-#          my-label: value2
-#        type: LoadBalancer
+      expose:
+        annotations:
+          layer: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.expose.annotations.layer }}
+        labels:
+          app: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.expose.labels.app }}
+        type: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.proxy.pgBouncer.expose.type }}
 #        loadBalancerSourceRanges:
 #          - 10.0.0.0/8
 #
