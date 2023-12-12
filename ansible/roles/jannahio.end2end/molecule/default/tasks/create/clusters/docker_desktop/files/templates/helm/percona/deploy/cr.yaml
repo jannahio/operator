@@ -24,7 +24,7 @@ spec:
     - name: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.name }}
       databases:
         - {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.database }}
-      options: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.options }}
+      options: "{{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.options }}"
       password:
         type: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.password.type }}
       secretName: {{ Jannah.stages.bootstrap.secrets.percona_db.name }}

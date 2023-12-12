@@ -323,7 +323,7 @@ provisioner:
                         user:
                           name: jannah
                           database: jannahdb
-                          options: "SUPERUSER"
+                          options: SUPERUSER
                           password:
                             type: ASCII
                         proxy:
@@ -336,7 +336,7 @@ provisioner:
                                 layer: storage
                               labels:
                                 app: database
-                              type: LoadBalancer  
+                              type: LoadBalancer
                   persistent_volumes:
                     docker_registry:
                       apiVersion: v1

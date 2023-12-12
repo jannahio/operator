@@ -173,6 +173,7 @@ affinity: {}
 secrets:
   - name: "parcona-auth"
     key: "pgbouncer-uri"
+    
 gateway:
  name: jannah-gateway
  istio: ingressgateway

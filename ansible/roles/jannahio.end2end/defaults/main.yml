@@ -195,7 +195,7 @@ Jannah:
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "0"
+        wait_time: "30"
         dependencies:
           parcona_postgres:
             namespace: jannah
@@ -310,6 +310,17 @@ Jannah:
                   options: "SUPERUSER"
                   password:
                     type: ASCII
+                proxy:
+                  pgBouncer:
+                    replicas: 3
+                    image: perconalab/percona-postgresql-operator:main-ppg16-pgbouncer
+                    exposeSuperusers: true
+                    expose:
+                      annotations:
+                        layer: storage
+                      labels:
+                        app: database
+                      type: LoadBalancer
           persistent_volumes:
             docker_registry:
               apiVersion: v1

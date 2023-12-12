@@ -3,6 +3,13 @@
 # https://docs.percona.com/percona-operator-for-postgresql/2.0/kubectl.html#procedure
 - name: "Deploy Storage Operator to MacOs Docker Desktop"
   block:
+    - name: "set_fact tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Deploy Percona Postgresql Operator - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
@@ -23,6 +30,14 @@
     - name: "Deploy Percona Postgresql Operator CR - docker-desktop - wait for crd/perconapgclusters.pgv2.percona.com"
       shell: |
         kubectl wait --for=condition=Established=True --timeout=60s crd/perconapgclusters.pgv2.percona.com;
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Wait for Create tmp/EPHEMERAL/cr directory - docker-desktop"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time | int != 0
       tags:
         - "molecule_create"
         - "operator_e2e"
@@ -58,6 +73,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+
     - name: "Generate update postgres for with custom user and database - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
