@@ -170,7 +170,30 @@
         - "docker_desktop_infra"
         - "molecule_converge"
         - "operator_e2e" 
-    - name: "deploy-to-kind-cluster-full-ubuntu-dev-mode"
+    - name: "kubectl label namespace default istio-injection=enabled - kind cluster"
+      shell: |
+        kubectl label namespace default istio-injection=enabled;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "kubectl label namespace jannah istio-injection=enabled - kind cluster"
+      shell: |
+        kubectl label namespace \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} istio-injection=enabled;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "deploy-to-kind-cluster-full-ubuntu-dev-mode kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
@@ -182,6 +205,30 @@
         chdir: "{{ Jannah.global.ansible.working_dir }}"
       tags:
         - "docker_desktop_infra"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "kubectl wait --for=condition=programmed jannah gateway - kind-cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl wait --for=condition=programmed gtw jannah-gateway;
+      tags:
+        - "deploy_images"
+        - "molecule_converge"
+        - "operator_e2e"
+    - name: "istioctl analyze gateway configs - kind-cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1/bin/istioctl \
+        analyze -n \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio"
+      tags:
+        - "deploy_images"
         - "molecule_converge"
         - "operator_e2e"
   rescue:

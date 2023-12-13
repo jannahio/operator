@@ -42,20 +42,6 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
-    # - name: 'Create pgbouncer_uri secret'
-    #   kubernetes.core.k8s:
-    #     definition:
-    #       apiVersion: v1
-    #       kind: Secret
-    #       metadata:
-    #         namespace: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
-    #         name: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
-    #       stringData:
-    #         pgbouncer-uri: "{{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}"
-    #   tags:
-    #     - "molecule_create"
-    #     - "operator_e2e"
-    #     - "molecule_create_debug"
     - name: "Create tmp/EPHEMERAL/cr directory - docker-desktop"
       file:
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/"

@@ -281,6 +281,17 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "Import install crds for docker kind cluster - Darwin"
+      include_tasks: '{{ deploy_istio_to_kind_cluster_items }}'
+      with_fileglob:
+        - deploy_istio_to_kind_cluster.yml
+      loop_control:
+        loop_var: deploy_istio_to_kind_cluster_items
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Import create storage for kind cluster tasks - Darwin"
       include_tasks: '{{ create_deploy_to_kind_cluster_task_items }}'
       with_fileglob:

@@ -15,6 +15,17 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+    - name: "Import install crds for docker desktop tasks - Darwin"
+      include_tasks: '{{ deploy_istio_to_macos_docker_desktop_task_items }}'
+      with_fileglob:
+        - deploy_istio_to_macos_docker_desktop.yml
+      loop_control:
+        loop_var: deploy_istio_to_macos_docker_desktop_task_items
+      tags:
+        - "create_storage"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Import create storage for docker desktop tasks - Darwin"
       include_tasks: '{{ create_deploy_to_macos_docker_desktop_task_items }}'
       with_fileglob:

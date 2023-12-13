@@ -1,0 +1,100 @@
+---
+# Part of implementation
+# https://istio.io/latest/docs/setup/additional-setup/getting-started/
+- name: "Install Kubernetes Gateway API CRDs to MacOs Docker Desktop"
+  block:
+    - name: "Create istio download directory - Docker Desktop"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio"
+        state: directory
+        mode: 0755
+      when: jannah_stages_bootstrap_deploy_type == "full"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Download istio - Docker Desktop"
+      environment:
+        - ISTIO_VERSION: "1.20.1"
+      shell: |
+        curl -L https://istio.io/downloadIstio | sh -;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Deploy Percona Postgresql Operator - docker-desktop"
+      shell: |
+        kubectl kustomize \
+        "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.0.0" \
+        | kubectl apply -f -;
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Install istio - Docker Desktop"
+      shell: |
+        {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1/bin/istioctl \
+        install -f samples/bookinfo/demo-profile-no-gateways.yaml -y
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "kubectl label namespace default istio-injection=enabled - Docker Desktop"
+      shell: |
+        kubectl label namespace default istio-injection=enabled;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "kubectl label jannah istio-injection=enabled - Docker Desktop"
+      shell: |
+        kubectl label \
+        namespace {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
+        istio-injection=enabled;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+  rescue:
+    - name: "Install Kubernetes Gateway API CRDs to MacOs Docker Desktop Exception"
+      ansible.builtin.debug:
+        msg: 'Install Kubernetes Gateway API CRDs to MacOs Docker Desktop Exception'
+      tags:
+        - "deploy_crds"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "deploy_crds"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+  ignore_errors: false

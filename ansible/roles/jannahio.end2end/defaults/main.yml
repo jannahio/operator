@@ -195,7 +195,7 @@ Jannah:
         # if mode is dev, native Jannah services are deployed in local containers 
         mode: "dev"
         # for multiple/matrix debug purposes, the generic wait time between deployment types
-        wait_time: "30"
+        wait_time: "120"
         dependencies:
           parcona_postgres:
             namespace: jannah

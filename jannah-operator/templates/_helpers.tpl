@@ -72,9 +72,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Selector gateway labels
 */}}
 {{- define "jannah-helm.gateway.selectorLabels" -}}
-{{ include "jannah-helm.selectorLabels" . }}
 istio: {{ .Values.gateway.istio }} 
-gateway: {{ .Values.gateway.name }}  
 {{- end }}
 
 {{/*
