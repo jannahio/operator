@@ -10,6 +10,9 @@ spec:
   - matches:
     - path:
         type: PathPrefix
+        value: /static/graphene_django
+    - path:
+        type: PathPrefix
         value: /graphql
     - path:
         type: PathPrefix

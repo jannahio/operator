@@ -10,7 +10,7 @@ spec:
   - matches:
     - path:
         type: PathPrefix
-        value: /static
+        value: /static/admin
     - path:
         type: PathPrefix
         value: /login
