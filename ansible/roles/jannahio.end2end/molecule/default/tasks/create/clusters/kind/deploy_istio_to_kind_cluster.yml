@@ -8,7 +8,6 @@
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio"
         state: directory
         mode: 0755
-      when: jannah_stages_bootstrap_deploy_type == "full"
       tags:
         - "deploy_istio"
         - "molecule_create"
