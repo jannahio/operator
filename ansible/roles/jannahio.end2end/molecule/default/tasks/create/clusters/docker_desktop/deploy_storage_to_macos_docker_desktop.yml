@@ -42,6 +42,32 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+    - name: "Get pgbouncer-uri - docker-desktop"
+      shell: |
+        kubectl get secret cluster1-pguser-cluster1 -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
+      # To be used downstream as environment variable in the middleware
+      register: cluster1_pguser_cluster1_pgbouncer_uri
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug_1"
+    - name: 'Create pgbouncer_uri secret - dpcker-decktop'
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            namespace: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}"
+            name: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
+          stringData:
+            pgbouncer-uri: "{{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"    
     - name: "Create tmp/EPHEMERAL/cr directory - docker-desktop"
       file:
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/"
@@ -59,8 +85,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
-
-    - name: "Generate update postgres for with custom user and database - docker-desktop"
+    - name: "Apply update postgres for with custom user and database - docker-desktop"
       shell: |
         kubectl apply --server-side -f \
         {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/cr.yaml \

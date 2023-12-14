@@ -3,6 +3,13 @@
 # https://docs.percona.com/percona-operator-for-postgresql/2.0/kubectl.html#procedure
 - name: "Deploy Storage Operator to Kind cluster"
   block:
+    - name: "set_fact tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Deploy Percona Postgresql Operator - kind cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -33,6 +40,14 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug_1"
+    - name: "Wait for Create tmp/EPHEMERAL/cr directory - docker-desktop"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time | int != 0
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Get pgbouncer-uri - kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -78,7 +93,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
-    - name: "Generate update postgres for with custom user and database - kind"
+    - name: "Apply update postgres for with custom user and database - kind"
       shell: |
         kubectl apply --server-side -f \
         {{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/cr/cr.yaml \

@@ -84,6 +84,30 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+    - name: "kubectl apply -f samples/addons - kind cluster"
+      shell: |
+        kubectl apply -f samples/addons
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "kubectl rollout status deployment/kiali - kind-cluster"
+      shell: |
+        kubectl rollout status deployment/kiali -n istio-system
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
   rescue:
     - name: "Install Kubernetes Gateway API CRDs to kind cluster Exception"
       ansible.builtin.debug:
