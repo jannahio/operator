@@ -108,6 +108,7 @@
           [plugins."io.containerd.grpc.v1.cri".registry]
             config_path = "/etc/containerd/certs.d"
         EOF
+        
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"

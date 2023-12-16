@@ -2,11 +2,11 @@ apiVersion: pgv2.percona.com/v2
 kind: PerconaPGCluster
 metadata:
   name: cluster1
-#  finalizers:
-#  - percona.com/delete-pvc
-#  - percona.com/delete-ssl
+ finalizers:
+ - percona.com/delete-pvc
+ - percona.com/delete-ssl
 spec:
-  crVersion: 2.3.0
+  crVersion: 2.2.0
 #  secrets:
 #    customTLSSecret:
 #      name: cluster1-cert
@@ -20,14 +20,16 @@ spec:
 #    repoName: repo1
 
 #  openshift: true
+
   users:
-    - name: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.name }}
-      databases:
-        - {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.database }}
-      options: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.options }}
-      password:
-        type: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.password.type }}
-      secretName: {{ Jannah.stages.bootstrap.secrets.percona_db.name }}
+   - name: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.name }}
+     databases:
+       - {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.database }}
+     options: "{{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.options }}"
+     password:
+       type: {{ Jannah.stages.bootstrap.deploy.helm_values.storage.parcona_db.PerconaPGCluster.user.password.type }}
+     secretName: "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}"
+
 #  databaseInitSQL:
 #    key: init.sql
 #    name: cluster1-init-sql
@@ -56,33 +58,21 @@ spec:
 #          endpoint: "s3.ca-central-1.amazonaws.com"
 #          region: "ca-central-1"
 
-  image: perconalab/percona-postgresql-operator:main-ppg16-postgres
+  image: percona/percona-postgresql-operator:2.2.0-ppg15-postgres
   imagePullPolicy: Always
   postgresVersion: 15
 #  port: 5432
 
-#  expose:
-#    annotations:
-#      my-annotation: value1
-#    labels:
-#      my-label: value2
-#    type: LoadBalancer
-#    loadBalancerSourceRanges:
-#      - 10.0.0.0/8
+  # expose:
+  #  annotations:
+  #    my-annotation: value1
+  #  labels:
+  #    my-label: value2
+  #  type: LoadBalancer
 
   instances:
-  - name: instance1
+  - name: jammat
     replicas: 3
-
-    affinity:
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 1
-          podAffinityTerm:
-            labelSelector:
-              matchLabels:
-                postgres-operator.crunchydata.com/data: postgres
-            topologyKey: kubernetes.io/hostname
 #    resources:
 #      limits:
 #        cpu: 2.0
@@ -100,7 +90,7 @@ spec:
 #        whenUnsatisfiable: DoNotSchedule
 #        labelSelector:
 #          matchLabels:
-#            postgres-operator.crunchydata.com/instance-set: instance1
+#            postgres-operator.crunchydata.com/instance-set: jammat
 #
 #    tolerations:
 #    - effect: NoSchedule
@@ -122,36 +112,35 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 1Gi
+          storage: 3Gi
 
   proxy:
     pgBouncer:
       replicas: 3
-      image: perconalab/percona-postgresql-operator:main-ppg16-pgbouncer
+      image: percona/percona-postgresql-operator:2.2.0-ppg15-pgbouncer
       exposeSuperusers: true
 #      resources:
 #        limits:
 #          cpu: 200m
 #          memory: 128Mi
 #
-#      expose:
-#        annotations:
-#          my-annotation: value1
-#        labels:
-#          my-label: value2
-#        type: LoadBalancer
-#        loadBalancerSourceRanges:
-#          - 10.0.0.0/8
+      expose:
+      #  annotations:
+      #    my-annotation: value1
+      #  labels:
+      #    my-label: value2
+       type: LoadBalancer
 #
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  postgres-operator.crunchydata.com/role: pgbouncer
-              topologyKey: kubernetes.io/hostname
+#      affinity:
+#        podAntiAffinity:
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#          - weight: 1
+#            podAffinityTerm:
+#              labelSelector:
+#                matchLabels:
+#                  postgres-operator.crunchydata.com/cluster: keycloakdb
+#                  postgres-operator.crunchydata.com/role: pgbouncer
+#              topologyKey: kubernetes.io/hostname
 #
 #      tolerations:
 #      - effect: NoSchedule
@@ -182,7 +171,7 @@ spec:
     pgbackrest:
 #      metadata:
 #        labels:
-      image: perconalab/percona-postgresql-operator:main-ppg16-pgbackrest
+      image: percona/percona-postgresql-operator:2.2.0-ppg15-pgbackrest
 #      configuration:
 #        - secret:
 #            name: cluster1-pgbackrest-secrets
@@ -207,16 +196,7 @@ spec:
 #        repo2-path: /pgbackrest/postgres-operator/cluster1-multi-repo/repo2
 #        repo3-path: /pgbackrest/postgres-operator/cluster1-multi-repo/repo3
 #        repo4-path: /pgbackrest/postgres-operator/cluster1-multi-repo/repo4
-      repoHost:
-        affinity:
-          podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-             - weight: 1
-               podAffinityTerm:
-                 labelSelector:
-                   matchLabels:
-                     postgres-operator.crunchydata.com/data: pgbackrest
-                 topologyKey: kubernetes.io/hostname
+#      repoHost:
 #        priorityClassName: high-priority
 #
 #        topologySpreadConstraints:
@@ -226,6 +206,16 @@ spec:
 #          labelSelector:
 #            matchLabels:
 #              postgres-operator.crunchydata.com/pgbackrest: ""
+#        affinity:
+#          podAntiAffinity:
+#            preferredDuringSchedulingIgnoredDuringExecution:
+#             - weight: 1
+#             podAffinityTerm:
+#               labelSelector:
+#               matchLabels:
+#                 postgres-operator.crunchydata.com/cluster: keycloakdb
+#                 postgres-operator.crunchydata.com/role: pgbouncer
+#               topologyKey: kubernetes.io/hostname
 #
       manual:
         repoName: repo1
@@ -279,19 +269,3 @@ spec:
 #          max_worker_processes: 2
 #          shared_buffers: 1GB
 #          work_mem: 2MB
-
-#  extensions:
-#    image: perconalab/percona-postgresql-operator:main
-#    imagePullPolicy: Always
-#    storage:
-#      type: s3
-#      bucket: pg-extensions
-#      region: eu-central-1
-#      secret:
-#        name: cluster1-extensions-secret
-#    builtin:
-#      pg_stat_monitor: true
-#      pg_audit: true
-#    custom:
-#    - name: pg_cron
-#      version: 1.6.1

@@ -27,7 +27,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
-    - name: "Deploy Percona Postgresql Operator - docker-desktop"
+    - name: "Deploy CRDS for Operator - docker-desktop"
       shell: |
         kubectl kustomize \
         "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.0.0" \

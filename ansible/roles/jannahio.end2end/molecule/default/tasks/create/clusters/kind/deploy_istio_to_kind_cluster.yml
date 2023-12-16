@@ -27,7 +27,7 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
-    - name: "Deploy Percona Postgresql Operator - kind-cluster"
+    - name: "Deploy CRDS for Operator - kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |

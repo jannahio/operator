@@ -9,6 +9,33 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+    - name: "Create tmp/EPHEMERAL/cr directory - docker-desktop"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona-postgresql-operator"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Git checkout repository"
+      ansible.builtin.git:
+        repo: "https://github.com/percona/percona-postgresql-operator" 
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona-postgresql-operator"
+        version: "v2.2.0"
+        force: yes 
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
+    - name: "Generate update postgres for with custom user and database - docker-desktop"
+      template:
+        src: "files/templates/percona/deploy/cr.yaml"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/percona-postgresql-operator/deploy/cr.yaml"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "Import Kubernetes cluster create tasks"
       include_tasks: '{{ create_docker_desktop_task_items }}'
       with_fileglob:

@@ -302,25 +302,25 @@ Jannah:
                 ubuntu:
                   from: registry:2
           storage:
-                    parcona_db:
-                      PerconaPGCluster:
-                        user:
-                          name: jannah
-                          database: jannahdb
-                          options: "SUPERUSER"
-                          password:
-                            type: ASCII
-                        proxy:
-                          pgBouncer:
-                            replicas: 3
-                            image: perconalab/percona-postgresql-operator:main-ppg16-pgbouncer
-                            exposeSuperusers: true
-                            expose:
-                              annotations:
-                                layer: storage
-                              labels:
-                                app: database
-                              type: LoadBalancer
+            parcona_db:
+              PerconaPGCluster:
+                user:
+                  name: jannah
+                  database: jannahdb
+                  options: SUPERUSER
+                  password:
+                    type: ASCII
+                proxy:
+                  pgBouncer:
+                    replicas: 3
+                    image: perconalab/percona-postgresql-operator:main-ppg16-pgbouncer
+                    exposeSuperusers: true
+                    expose:
+                      annotations:
+                        layer: storage
+                      labels:
+                        app: database
+                      type: LoadBalancer
           persistent_volumes:
             docker_registry:
               apiVersion: v1
