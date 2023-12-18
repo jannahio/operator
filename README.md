@@ -196,4 +196,4 @@ Debug Utils
 -Ansible
 - export ANSIBLE_VAULT_DEFAULT_PASS_FILE=~/jannah-operator/ansible_defaultpass.txt
 - source boot.env.sh
-- ansible-playbook -i ansible/inventory/ ansible/site.yml -vvvv --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags task_debug;
+- ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_cleanup,molecule_destroy;ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_create

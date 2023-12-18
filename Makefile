@@ -84,7 +84,7 @@ jannah-python: jannah-boot-credentials
     $(JANNAH_PYTHON)/bin/pip3 install $(BREAK_PACKAGES) -r $(WORKING_DIR)/requirements.txt;\
     . $(JANNAH_PYTHON)/bin/activate;\
 	# Account for https://developer.apple.com/forums/thread/700906 
-	if [ "$(CHIP_ARCHITECTURE)" = "arm" ]; \
+	if [ "$(CHIP_ARCHITECTURE)" = "aarch64" ] || [ "$(CHIP_ARCHITECTURE)" = "arm" ]; \
 	then \
 		if [ -f "$(JANNAH_PYTHON)/tensorflow_text-2.14.0-cp311-cp311-macosx_11_0_arm64.whl" ]; \
 		then \
