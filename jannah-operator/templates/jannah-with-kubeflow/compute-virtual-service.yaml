@@ -8,18 +8,31 @@ spec:
   - name: {{ .Values.gateway.name }}
   rules:
   - matches:
+  - matches:
     - path:
         type: PathPrefix
         value: /static/graphene_django
     - path:
         type: PathPrefix
+        value: /static/admin/img/
+    - path:
+        type: PathPrefix
+        value: /static/admin/fonts/
+    - path:
+        type: PathPrefix
+        value: /static/admin/js/
+    - path:
+        type: PathPrefix
+        value: /static/admin/css/
+    - path:
+        type: PathPrefix
         value: /graphql
     - path:
         type: PathPrefix
-        value: /admin
+        value: /admin/logout
     - path:
         type: PathPrefix
-        value: /media
+        value: /admin
     backendRefs:
     - name: {{ .Values.images.middleware.name  }}
       port: {{ .Values.images.middleware.port }}

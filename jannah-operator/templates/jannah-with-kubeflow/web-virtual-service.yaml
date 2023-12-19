@@ -10,19 +10,28 @@ spec:
   - matches:
     - path:
         type: PathPrefix
-        value: /static/admin
+        value: /static/admin/
+    - path:
+        type: PathPrefix
+        value: /src/
+    - path:
+        type: PathPrefix
+        value: /favicon.png
     - path:
         type: PathPrefix
         value: /login
     - path:
         type: PathPrefix
-        value: /logout
+        value: /@vite/
     - path:
         type: PathPrefix
-        value: /register
+        value: /node_modules/
     - path:
         type: PathPrefix
-        value: /workflows
+        value: /@id/
+    - path:
+        type: PathPrefix
+        value: /
     backendRefs:
     - name: {{ .Values.images.frontend.name  }}
       port: {{ .Values.images.frontend.port }}

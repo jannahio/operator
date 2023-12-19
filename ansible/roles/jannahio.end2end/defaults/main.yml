@@ -188,7 +188,7 @@ Jannah:
         #  full|local|standalone
         type: "standalone"
         # docker-desktop|kind
-        destination: "kind"
+        destination: "docker-desktop"
         # ubuntu|streamos
         os: "ubuntu"
         # dev|test|integration|train|stage|production
