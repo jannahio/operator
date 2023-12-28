@@ -1,11 +1,37 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
-    - name: "Jannah un-install - kind cluster"
+    - name: "un-deploy-to-kind-cluster-full-ubuntu-dev-mode kind-cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        helm uninstall \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
+        -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
+      async: 60
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}"
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete all --all -n jannah - kind cluster"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl delete all --all -n \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns jannah - kind cluster"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl delete ns \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
         exit 0;
       async: 60
@@ -18,6 +44,39 @@
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl delete all --all -n kubeflow-user-example-com;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns kubeflow-user-example-com - kind cluster"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl delete ns kubeflow-user-example-com;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete all --all -n default - kind cluster"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl delete all --all -n default;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns default - kind cluster"
+      environment:
+        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl delete ns default;
         exit 0;
       async: 60
       poll: 5

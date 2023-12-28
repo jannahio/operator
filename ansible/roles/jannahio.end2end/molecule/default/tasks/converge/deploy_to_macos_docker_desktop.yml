@@ -163,8 +163,9 @@
     - name: "deploy-to-docker-desktop-full-ubuntu-dev-mode - docker-desktop"
       shell: |
         helm install \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
         -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
-        --create-namespace  --generate-name \
+        --create-namespace  \
         {{ Jannah.global.ansible.working_dir }}/jannah-operator;
       async: 600
       poll: 5

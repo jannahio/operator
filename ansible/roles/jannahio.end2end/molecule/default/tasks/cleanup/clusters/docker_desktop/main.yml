@@ -2,9 +2,33 @@
 ---
 - name: "Uninstall Jannah specific services"
   block:
-    - name: "Jannah un-install - docker-desktop"
+    - name: "helm uninstall jannah - docker-desktop"
+      shell: |
+        helm uninstall \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }} \
+        -n {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL"
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete all --all from jannah - docker-desktop"
       shell: |
         kubectl delete all --all -n \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns jannah - docker-desktop"
+      shell: |
+        kubectl delete ns \
         {{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }};
         exit 0;
       async: 60
@@ -16,6 +40,36 @@
     - name: "kubectl delete all --all -n kubeflow-user-example-com - docker-desktop"
       shell: |
         kubectl delete all --all -n kubeflow-user-example-com;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns kubeflow-user-example-com - docker-desktop"
+      shell: |
+        kubectl delete ns kubeflow-user-example-com;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete all --all -n default - docker-desktop"
+      shell: |
+        kubectl delete all --all -n default;
+        exit 0;
+      async: 60
+      poll: 5
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+    - name: "kubectl delete ns default - docker-desktop"
+      shell: |
+        kubectl delete ns default;
         exit 0;
       async: 60
       poll: 5
