@@ -15,6 +15,44 @@
         - "molecule_cleanup"
         - "operator_e2e"
         - "cleanup_images"
+    - name: "Create backup within work directory"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/backup"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"  
+    - name: "Create backup within /tmp directory"
+      file:
+        path: "/tmp/Jannah_Working_dir_Backup"
+        state: directory
+        mode: 0755
+      tags:
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "cleanup_images"
+    - name: "Backup to working_dir/backup"
+      ansible.posix.synchronize:
+        src: "{{ Jannah.global.ansible.working_dir }}/tmp"
+        dest: "{{ Jannah.global.ansible.working_dir }}/backup" 
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=*node_modules/*"
+        recursive: true
+        times: true
+        delay_updates: true
+    - name: "Backup to /tmp/Jannah_Working_dir_Backup"
+      ansible.posix.synchronize:
+        src: "{{ Jannah.global.ansible.working_dir }}/tmp"
+        dest: "/tmp/Jannah_Working_dir_Backup" 
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=*node_modules/*"
+        recursive: true
+        times: true
+        delay_updates: true
     - name: "Import cleanup registry,secrets tasks - Darwin"
       include_tasks: '{{ prepare_registry_secrete_task_items }}'
       with_fileglob:
