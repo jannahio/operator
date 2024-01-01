@@ -286,7 +286,7 @@ provisioner:
                           from: ubuntu:23.04
                       github:
                         repo: "https://github.com/jannahio/frontend.git"
-                        branch: "task-zegNbOAJ-android-implementation-Complete-Apollo-integration-with-Django-application.tutorial.6.connect_ui"
+                        branch: "main"
                     middleware:
                       name: jannah-compute
                       repository: jallohmediabuild/jannah-compute
@@ -301,7 +301,7 @@ provisioner:
                           from: ubuntu:23.04
                       github:
                         repo: "https://github.com/jannahio/middleware.git"
-                        branch: "task-zegNbOAJ-android-implementation-Complete-Apollo-integration-with-Django-application.7.add_more_info.pagination.postgres_db"
+                        branch: "main"
                     registry:
                       name: jannah-registry
                       repository: jallohmediabuild/jannah-registry
