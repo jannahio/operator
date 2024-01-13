@@ -84,7 +84,24 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug"
+    - name: "kubectl create ns istio-system - kind cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl create ns istio-system;
+        exit 0;
+      async: 600
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/istio/istio-1.20.1"
+      tags:
+        - "deploy_istio"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"
     - name: "kubectl apply -f samples/addons - kind cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl apply -f samples/addons
       async: 600
@@ -97,6 +114,8 @@
         - "operator_e2e"
         - "molecule_create_debug"
     - name: "kubectl rollout status deployment/kiali - kind-cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       shell: |
         kubectl rollout status deployment/kiali -n istio-system
       async: 600
