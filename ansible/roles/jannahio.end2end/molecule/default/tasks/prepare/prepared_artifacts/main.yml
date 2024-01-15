@@ -8,6 +8,7 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
@@ -15,6 +16,7 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: "Import prepare build_base_image tasks - Darwin"
       include_tasks: '{{ prepare_build_base_image_task_items }}'
       with_fileglob:
@@ -76,6 +78,7 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
   rescue:
     - name: "Prepare Build Artifact for Jannah Deployment Exception"
       ansible.builtin.debug:

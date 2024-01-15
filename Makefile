@@ -487,13 +487,21 @@ ansible-cleanup:
 	molecule_cleanup;
 
 
-ansible-destroy: ansible-cleanup
+ansible-destroy:
 	. $(JANNAH_PYTHON)/bin/activate;
 	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
 	--connection=local \
 	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
 	--tags \
 	molecule_destroy;
+
+ansible-create: ansible-destroy
+	. $(JANNAH_PYTHON)/bin/activate;
+	WAIT_TIME=60 ansible-playbook -i ansible/inventory/ ansible/site.yml $(ANSIBLE_VERBOSE_LEVEL) \
+	--connection=local \
+	--vault-id defaultpass@$(ANSIBLE_VAULT_DEFAULT_PASS_FILE) 
+	--tags \
+	molecule_create;
 
 ansible-prepare: ansible-destroy
 	. $(JANNAH_PYTHON)/bin/activate;

@@ -4,9 +4,9 @@
   connection: local
   gather_facts: true
   tasks:
-    - name: "Create multipass VM environment if developing on MacOs"
+    - name: "Molecule create tasks"
       block:
-        - name: "Import multipass (Ubuntu on Darwin) build infra tasks"
+        - name: "Import cluster create tasks"
           include_tasks: '{{ create_task_item }}'
           with_fileglob:
             - tasks/create/main.yml
@@ -18,9 +18,9 @@
             - "debug_task"
             - "molecule_create_debug"
       rescue:
-        - name: "Create multipass exception is thrown"
+        - name: "Molecule create tasks exception is thrown"
           ansible.builtin.debug:
-            msg: 'Create multipass exception is thrown'
+            msg: 'Molecule create tasks exception is thrown'
 
         - name: Re-emit failure
           vars:

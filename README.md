@@ -196,4 +196,9 @@ Debug Utils
 -Ansible
 - export ANSIBLE_VAULT_DEFAULT_PASS_FILE=~/jannah-operator/ansible_defaultpass.txt
 - source boot.env.sh
-- ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_cleanup,molecule_destroy;ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_create
+- ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_cleanup,   molecule_destroy;
+- ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_create
+- Papermill
+  - papermill -f operator/ansible/roles/jannahio.end2end/molecule/default/molecule.yml \
+  operator/ansible/library/JannahBootTextVectorizationModelInput.ipynb \
+  operator/ansible/library/JannahBootTextVectorizationModelOutput01122024.ipynb 

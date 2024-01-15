@@ -121,7 +121,8 @@
       tags:
         - "prepare_images"
         - "molecule_prepare"
-        - "operator_e2e" 
+        - "operator_e2e"
+        - "molecule_prepare_debug" 
   rescue:
     - name: "Tag and Push Ubuntu Docker Images Exception"
       ansible.builtin.debug:

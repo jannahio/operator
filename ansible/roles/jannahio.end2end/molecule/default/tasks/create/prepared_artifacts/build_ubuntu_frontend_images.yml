@@ -45,7 +45,7 @@
       async: 600
       poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/frontend/mobile/ios"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/frontend/mobile/ios"
       tags:
         - "build_images"
         - "build_frontend_images"

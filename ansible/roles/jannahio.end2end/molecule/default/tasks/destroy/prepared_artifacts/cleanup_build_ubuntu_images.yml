@@ -47,7 +47,7 @@
         - "destroy_ubuntu_base_images"
         - "molecule_destroy"
         - "operator_e2e"
-    - name: "Import prepare build image tasks - ubuntu middleware and frontend"
+    - name: "Import destroy image tasks - ubuntu middleware and frontend"
       include_tasks: '{{ cleanup_prepared_ubuntu_middleware_and_frontend_task_items }}'
       with_fileglob:
         - cleanup_build_ubuntu_middleware_images.yml

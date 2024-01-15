@@ -61,7 +61,6 @@
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug_1"
     - name: "Get pgbouncer-uri - docker-desktop"
       shell: |
         kubectl get secret \
@@ -70,24 +69,64 @@
         --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
       # To be used downstream ( prepared_artifacts ) as environment variable in the middleware
       register: cluster1_pguser_cluster1_pgbouncer_uri
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug" 
-    - name: "cluster1_pguser_cluster1_pgbouncer_uri - streamos"
+    - name: "cluster1_pguser_cluster1_pgbouncer_uri - docker-desktop"
       debug: var=cluster1_pguser_cluster1_pgbouncer_uri
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug_1"
     - name: "save pgbouncer-uri to env file - streamos - docker-desktop"
       shell: |
         echo "\nDATABASE_URL={{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}?sslmode=disable&connect_timeout=10"  >> \
         "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/.env";
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+            )
       tags:
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_debug_1"
+    - name: "Get pgbouncer-uri - kind-cluster"
+      environment:
+        - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      shell: |
+        kubectl get secret \
+        "{{ Jannah.stages.bootstrap.secrets.percona_db.name }}" \
+        -n "{{ Jannah.stages.bootstrap.deploy.helm_values.common.namespace }}" \
+        --template='{{ '{{' }}index .data "pgbouncer-uri" | base64decode {{ '}}' }}';
+      # To be used downstream ( prepared_artifacts ) as environment variable in the middleware
+      register: cluster1_pguser_cluster1_pgbouncer_uri
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "cluster1_pguser_cluster1_pgbouncer_uri - kind-cluster"
+      debug: var=cluster1_pguser_cluster1_pgbouncer_uri
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+    - name: "save pgbouncer-uri to env file - streamos - kind-cluster"
+      shell: |
+        echo "\nDATABASE_URL={{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}?sslmode=disable&connect_timeout=10"  >> \
+        "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/.env";
+      when: (
+               jannah_stages_bootstrap_deploy_destination == "kind"
+            )
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
     - name: "Build StreamOs middleware image - arm64  docker-desktop"
       shell: |
         docker buildx build \

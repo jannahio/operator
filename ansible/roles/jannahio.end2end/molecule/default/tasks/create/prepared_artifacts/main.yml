@@ -15,6 +15,13 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_os"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
+      tags:
+        - "deploy_images"
+        - "molecule_create"
+        - "operator_e2e"
     - name: "Import Create  docker desktop tasks - Darwin"
       include_tasks: '{{ Create_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -51,6 +58,8 @@
         loop_var: Create_build_streamos_images_task_items
       when: (
             ansible_facts['os_family'] == "Darwin" 
+            and
+            jannah_stages_bootstrap_deploy_os == "streamos"
             and 
               (
                 jannah_stages_bootstrap_deploy_destination == "docker-desktop"
@@ -70,7 +79,9 @@
         loop_var: Create_build_ubuntu_images_task_items
       when: (
             ansible_facts['os_family'] == "Darwin" 
-            and 
+            and
+            jannah_stages_bootstrap_deploy_os == "ubuntu"
+            and  
               (
                 jannah_stages_bootstrap_deploy_destination == "docker-desktop"
                 or 

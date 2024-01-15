@@ -8,6 +8,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -15,6 +16,7 @@
         - "deploy_storage"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     - name: "Pull proxy/nginx image"
       shell: |
         docker pull {{ Jannah.stages.bootstrap.deploy.helm_values.images.proxy.dockerfiles.ubuntu.from }};
@@ -92,6 +94,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
     # - name: "Push registry image image"
     #   shell: |
     #     docker push \

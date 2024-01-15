@@ -88,11 +88,14 @@
     #     - "deploy_images"
     #     - "molecule_create"
     #     - "operator_e2e"
-    - name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
-      environment:
-        KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
-        reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
-        reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
+    #- name: "Create kind cluster - with registry - Part 2. Create kind cluster with containerd registry config dir enabled"
+    # TODO: Reserve Compute Resources for System Daemons
+    # - https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#node-allocatable
+    - name: "Create kind cluster"
+      # environment:
+      #   KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
+      #   reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
+      #   reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
       shell: |
         cat <<EOF | kind create cluster --config=-
         kind: Cluster
@@ -100,15 +103,38 @@
         name: "{{ Jannah.stages.bootstrap.deploy.kind.name }}"
         nodes:
           - role: control-plane
+            kubeadmConfigPatches:
+            - |
+              kind: InitConfiguration
+              nodeRegistration:
+                kubeletExtraArgs:
+                  system-reserved: memory=4Gi
           - role: worker
+            kubeadmConfigPatches:
+            - |
+              kind: JoinConfiguration
+              nodeRegistration:
+                kubeletExtraArgs:
+                  system-reserved: memory=3Gi,cpu3
           - role: worker
+            kubeadmConfigPatches:
+            - |
+              kind: JoinConfiguration
+              nodeRegistration:
+                kubeletExtraArgs:
+                  system-reserved: memory=3Gi,cpu3
           - role: worker
+            kubeadmConfigPatches:
+            - |
+              kind: JoinConfiguration
+              nodeRegistration:
+                kubeletExtraArgs:
+                  system-reserved: memory=3Gi,cpu3
         containerdConfigPatches:
         - |-
           [plugins."io.containerd.grpc.v1.cri".registry]
             config_path = "/etc/containerd/certs.d"
         EOF
-        
       when: ansible_facts['os_family'] == "Darwin" and jannah_stages_bootstrap_deploy_destination == "kind"
       args:
         chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/"

@@ -67,6 +67,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_debug"
   rescue:
     - name: "Prepare Jannah Tasks Exception"
       ansible.builtin.debug:
