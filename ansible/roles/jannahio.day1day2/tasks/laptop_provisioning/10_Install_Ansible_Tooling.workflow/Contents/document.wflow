@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>521.1</string>
+	<string>523</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -69,7 +69,14 @@ brew install hashicorp/tap/hashicorp-vagrant
 brew install kdoctor  cocoapods helm kind graphviz
 helm repo add bitnami https://charts.bitnami.com/bitnami
 npm install -g @ionic/cli@latest native-run pnpm
-</string>
+brew doctor
+brew update
+brew install libpq
+echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' &gt;&gt; ~/.zshrc
+export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"
+brew link --force libpq
+echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' &gt;&gt; ~/.zshrc</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -186,7 +193,7 @@ npm install -g @ionic/cli@latest native-run pnpm
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>365.500000:388.000000</string>
+				<string>313.500000:500.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
