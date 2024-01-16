@@ -52,4 +52,4 @@ dj_database_url
 # dj-database-url
 python-decouple
 # tensorflow-macos==2.14.0
-https://github.com/instruct-br/graphene-django-pagination/archive/master.zip
+# https://github.com/instruct-br/graphene-django-pagination/archive/master.zip
