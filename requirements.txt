@@ -38,6 +38,7 @@ matplotlib
 tensorflow_datasets
 torch
 pydot
+graphviz
 kfp
 kfp-kubernetes
 kubeflow-training
@@ -51,5 +52,6 @@ psycopg[binary]
 dj_database_url
 # dj-database-url
 python-decouple
-# tensorflow-macos==2.14.0
+tensorflow-macos
 # https://github.com/instruct-br/graphene-django-pagination/archive/master.zip
+seaborn==0.13.2

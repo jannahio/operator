@@ -372,18 +372,18 @@ set-to-kind-cluster-standalone-streamos-production-mode:
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.mode  = "production"' ~/jannah-operator/molecule.yml
 	@yq -i '.provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.wait_time  = $(WAIT_TIME)' ~/jannah-operator/molecule.yml
 
-# Install Jannah
-install: jannah-config molecule-destroy molecule-reset molecule-converge molecule-verify
 # Un Install Jannah
 uninstall: jannah-config molecule-destroy molecule-reset
+# Install Jannah
+install: uninstall molecule-converge molecule-verify
 # Test Jannah
-test: jannah-config molecule-destroy molecule-reset molecule-test
+test: uninstall molecule-test
 
 #Ironic, but we created the virtual Python environment and molecule configurations before we clean up the environment.
-clean-docker-desktop: jannah-python set-to-docker-desktop-full-ubuntu-dev-mode \
+clean-docker-desktop: jannah-python set-to-docker-desktop-standalone-ubuntu-dev-mode \
 jannah-config molecule-destroy jannah-python-clean
 
-clean-kind-cluster: jannah-python set-to-kind-cluster-full-ubuntu-dev-mode \
+clean-kind-cluster: jannah-python set-to-kind-cluster-standalone-ubuntu-dev-mode \
 jannah-config molecule-destroy jannah-python-clean
 
 clean: clean-kind-cluster clean-docker-desktop

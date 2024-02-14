@@ -1,3 +1,99 @@
+Jannah.io January 2024
+- Speaker: Osman Jalloh
+- Role: Software Architect at Jannah.io
+- www.jannah.io: A lab (laboratory) for developing cloud native software solutions.
+- Series: Software DevOps with Artificial Intelligence, Automation, and Blockchain
+- Episode: A Comprehensive Tour of the Middleware Application (Jannah Django)
+- Github Repository: https://github.com/alchemiccoruja
+- Intended Audience:
+    - Business Developers
+    - Venture Capitalists
+    - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+    - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
+
+Recap:
+In our previous video, we previewed the various Jannah applications:
+  - Middleware 
+  - Frontends
+    - Web app
+    - Mobile apps
+      - iOS (Swift UI)
+      - Android (Kotlin UI)
+- Find our video series on Youtube at @Jannah_io
+    - Playlist at:
+        - https://youtube.com/playlist?list=PLalaYX-k2k3Ml625P-XFDcS3dAujrmaq4&si=z2ZKMZk4MaPp6_X5
+- Where are we on this marvelous journey?
+    - We have implemented a Helm Chart to deploy Jannah
+      - Added PostgresDB as the default storage (Database)
+      - Deploys middlware application
+        - With graphql pagination support
+      - Deploys web application
+        - Feeding off graphql pagination suppoprt
+
+The journey continues with a deeper look at the middleware application:
+    - Jannah Middleware
+      - A Django based application
+      - Enabled with a graphql API 
+        - Using Graphene library
+      - For the presentation we will review the following directories
+        - jannah_site
+          - models.py
+            - Site Model
+            - User Model
+            - Boot Model
+            - Network Model
+            - Storage Model
+            - Compute Model
+            - UX Model
+            - Feedback Model
+            - Workflow Model
+          - admin.py
+            - UserAdmin
+            - BootAdmin
+            - NetworkAdmin
+            - StorageAdmin
+            - ComputeAdmin
+            - UXAdmin
+            - FeedbackAdmin
+            - WorkflowAdmin
+          - types.py (query types) 
+            - SiteType
+            - UserType
+            - BootType
+            - NetworkType
+            - StorageType
+            - ComputeType
+            - UXType
+            - FeedbackType
+            - WorkflowType
+          - queries.py
+            # get lists of items
+            - sites
+            - users
+            - boots
+            - networks
+            - storages
+            - computes
+            - uxs
+            - feedbacks
+            - workflows
+            # get detail on specific item
+            - workflow
+          - mutations.py
+            - token_auth
+            - verify_token
+            - refresh_token
+            - create_user
+          - schema.py
+            - schema
+        - jannah_graphql
+          - settings.py
+            - Explain each variable listed
+          - urls.py
+            - admin/
+              - Django's administrative view of models
+            - graphql/
+              - Graphql view of models
 Jannah.io October 2023
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
@@ -199,6 +295,9 @@ Debug Utils
 - ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_cleanup,   molecule_destroy;
 - ansible-playbook -i ansible/inventory/ ansible/site.yml  --connection=local --vault-id defaultpass@$ANSIBLE_VAULT_DEFAULT_PASS_FILE --tags molecule_create
 - Papermill
-  - papermill -f operator/ansible/roles/jannahio.end2end/molecule/default/molecule.yml \
-  operator/ansible/library/JannahBootTextVectorizationModelInput.ipynb \
-  operator/ansible/library/JannahBootTextVectorizationModelOutput01122024.ipynb 
+  - papermill -f ./ansible/roles/jannahio.end2end/molecule/default/molecule.yml \
+  ./ansible/library/JannahBootTextVectorizationModelInput.ipynb \
+  ./ansible/library/JannahBootTextVectorizationModelOutput01122024.ipynb 
+  - papermill -f ./ansible/roles/jannahio.end2end/molecule/default/molecule.yml \
+  ./ansible/library/PipelineBuilder.ipynb \
+  ./ansible/library/PipelineBuilder-Output-02013024.ipynb
