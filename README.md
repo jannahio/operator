@@ -1,4 +1,4 @@
-Jannah.io January 2024
+- Jannah.io January 2024
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
 - www.jannah.io: A lab (laboratory) for developing cloud native software solutions.
@@ -10,9 +10,8 @@ Jannah.io January 2024
     - Venture Capitalists
     - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
     - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
-
-Recap:
-In our previous video, we previewed the various Jannah applications:
+- Recap:
+  - In our previous video, we previewed the various Jannah applications:
   - Middleware 
   - Frontends
     - Web app
@@ -29,8 +28,7 @@ In our previous video, we previewed the various Jannah applications:
         - With graphql pagination support
       - Deploys web application
         - Feeding off graphql pagination suppoprt
-
-The journey continues with a deeper look at the middleware application:
+- The journey continues with a deeper look at the middleware application:
     - Jannah Middleware
       - A Django based application
       - Enabled with a graphql API 
@@ -107,8 +105,8 @@ The journey continues with a deeper look at the middleware application:
     - Upcoming Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
     - Experienced Developers, (Frontend, Backend, devOps, Security, Data Scientists, Blockchain Enthusiasts)
 
-Recap:
-In our previous (introductory) video, we invited you to join us on a journey.
+- Recap:
+- In our previous (introductory) video, we invited you to join us on a journey.
 - A journey into software development, and the business of data:
     - Software enginneering.
     - Data science.
