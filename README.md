@@ -94,7 +94,7 @@ The journey continues with a deeper look at the middleware application:
               - Django's administrative view of models
             - graphql/
               - Graphql view of models
-Jannah.io October 2023
+- Jannah.io October 2023
 - Speaker: Osman Jalloh
 - Role: Software Architect at Jannah.io
 - www.jannah.io: A lab (laboratory) for developing cloud native software solutions.
