@@ -16,21 +16,25 @@
     - Jannah iOS (SwiftUI) App
     - Jannah Andriod (Kotlin) App
     - Jannah Website (Shop and Blog)
-        - Signup/Login/Logout
-        - Dashboard App (Landing Page)
-           - Boot App
-           - Networking App
-           - Storage App
-           - Compute App
-           - UX App
-           - Feedback App
-        - Project Onboarding App
         - Blog and Social Media Integraion	
     - Jannah Flavors
         - Enterprise
         - Community
     - Need Icons for various flows   
 - Compute
+    - Signup/Login/Logout
+    - Dashboard App (Landing Page)
+        - Boot App
+        - Networking App
+        - Storage App
+        - Compute App
+        - UX App
+        - Feedback App
+        - Workflows (Pipeline App)
+            - Uses Kubeflow components to run tasks
+                - Base Image for components 
+                    - Start by using jannah-boot image
+    - Project Onboarding App
     - App Models
       - Workflows:
         - Add icons for each flow (or use material design icons?) 
@@ -104,5 +108,7 @@
                     - https://keras.io/keras_core/guides/custom_train_step_in_torch/
                 - Training & evaluation with the built-in methods
                     - https://keras.io/keras_core/guides/training_with_built_in_methods/
+    - Ansible Collections for Playbooks, Roles and Python Modules
+        - Research and Groom Ansible Collections packaging strategy.
     - Jannah Internship/Fellowship
 

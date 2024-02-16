@@ -1,8 +1,8 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
-  role_name: jannahio.bootstrap
+  author: Osman Babar Jalloh
+  description: End to End deployment of Jannah components, services.
+  company: jannah.io
+  role_name: jannahio.end2end
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker

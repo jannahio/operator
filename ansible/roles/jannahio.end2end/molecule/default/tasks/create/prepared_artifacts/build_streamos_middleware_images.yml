@@ -85,7 +85,7 @@
         - "operator_e2e"
     - name: "save pgbouncer-uri to env file - streamos - docker-desktop"
       shell: |
-        echo "\nDATABASE_URL={{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}?sslmode=disable&connect_timeout=10"  >> \
+        echo "\nDATABASE_URL={{ cluster1_pguser_cluster1_pgbouncer_uri['stdout_lines'][0]  }}?sslmode=prefer&connect_timeout=10"  >> \
         "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos/middleware/jannah_graphql/.env";
       when: (
                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
