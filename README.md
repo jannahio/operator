@@ -77,6 +77,7 @@
             - workflows
             # get detail on specific item
             - workflow
+          # create/update items  
           - mutations.py
             - token_auth
             - verify_token
@@ -297,5 +298,5 @@ Debug Utils
   ./ansible/library/JannahBootTextVectorizationModelInput.ipynb \
   ./ansible/library/JannahBootTextVectorizationModelOutput01122024.ipynb 
   - papermill -f ./ansible/roles/jannahio.end2end/molecule/default/molecule.yml \
-  ./ansible/library/PipelineBuilder.ipynb \
-  ./ansible/library/PipelineBuilder-Output-02013024.ipynb
+  ./ansible/library/JannahPipelineBuilder.ipynb \
+  ./ansible/library/JannahPipelineBuilder-Output-02202024.ipynb
