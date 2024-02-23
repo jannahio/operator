@@ -301,7 +301,7 @@ provisioner:
                           from: ubuntu:23.04
                       github:
                         repo: "https://github.com/jannahio/middleware.git"
-                        branch: "main"
+                        branch: "5-compute-module-for-jupyter-notebooks-for-data-science-work-pipeline-submission-prototype"
                     registry:
                       name: jannah-registry
                       repository: jallohmediabuild/jannah-registry
