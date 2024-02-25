@@ -8,6 +8,7 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_pipeline_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -15,6 +16,7 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_pipeline_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
@@ -22,6 +24,7 @@
         - "deploy_images"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_pipeline_images"
     - name: "Import Create  docker desktop tasks - Darwin"
       include_tasks: '{{ Create_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -92,6 +95,28 @@
         - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
+    - name: "Import Create build pipeline images tasks"
+      include_tasks: '{{ Create_build_pipeline_images_task_items }}'
+      with_fileglob:
+        - pipelines/build_pipeline_images.yml
+      loop_control:
+        loop_var: Create_build_pipeline_images_task_items
+      when: (
+            ansible_facts['os_family'] == "Darwin" 
+            and
+            jannah_stages_bootstrap_deploy_os == "ubuntu"
+            and  
+              (
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "kind"
+              )
+            )
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_images"  
   rescue:
     - name: "Create Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -102,6 +127,7 @@
         - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -112,4 +138,5 @@
         - "docker_desktop_infra"
         - "molecule_create"
         - "operator_e2e"
+        - "molecule_create_pipeline_images"
   ignore_errors: false

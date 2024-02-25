@@ -244,6 +244,7 @@ provisioner:
                     arm: "arm64"
                     ubuntu: ubuntu
                     streamos: streamos
+                    alpine: alpine
                     tag: "v0.0.1"
                     repository: jannah-registry
                   images:
@@ -317,6 +318,16 @@ provisioner:
                         #   from: quay.io/centos/centos:stream9
                         ubuntu:
                           from: registry:2
+                    pipeline:
+                      name: jannah-pipeline
+                      repository: jallohmediabuild/jannah-pipeline
+                      pullPolicy: IfNotPresent
+                      port: 8000
+                      dockerfiles:
+                        # push to registry - in production mode (jannah-boot image) will be set to True
+                        push: True
+                        alpine:
+                          from: alpine:3.19
                   storage:
                     parcona_db:
                       PerconaPGCluster:

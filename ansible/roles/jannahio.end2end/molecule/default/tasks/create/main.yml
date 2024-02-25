@@ -62,13 +62,14 @@
     - name: "Import create tasks - Darwin"
       include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
-        - prepared_artifacts/main.yml
+        - create/prepared_artifacts/main.yml
       loop_control:
         loop_var: prepare_build_artifact_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - "create_images"
         - "molecule_create"
+        - "molecule_create_pipeline_images"
         - "operator_e2e"
   rescue:
     - name: "Deploy Jannah Exception"
@@ -77,6 +78,7 @@
       tags:
         - "create_images"
         - "molecule_create"
+        - "molecule_create_pipeline_images"
         - "operator_e2e"
     - name: Re-emit failure
       vars:
@@ -87,5 +89,6 @@
       tags:
         - "create_images"
         - "molecule_create"
+        - "molecule_create_pipeline_images"
         - "operator_e2e"
   ignore_errors: false

@@ -12,7 +12,7 @@
         - "molecule_create"
         - "operator_e2e"
     # 08/22/2022 - Osmanj - The latest version of Kustomize is buggy?
-    # It does not recognize the --load_restrictor='LoadRestrictionsNone' flog
+    # It does not recognize the --load_restrictor='LoadRestrictionsNone' flag
     # Current workaround is to install v3.8.7
     - name: "wget kustomize_v5.0.3_darwin_amd64.tar.gz Darwin/amd64"
       shell: |
