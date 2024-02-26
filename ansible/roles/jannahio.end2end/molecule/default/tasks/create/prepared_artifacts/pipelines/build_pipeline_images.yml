@@ -39,7 +39,7 @@
         "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/jannah_site/pipelines" \
         --component-filepattern \
         my_component.py \
-        --no-push-image;
+        --push-image;
       when: (
               ansible_facts['architecture'] != "x86_64" 
               and 
@@ -55,7 +55,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
+        # - "molecule_create_pipeline_images"
    # [ARM64] Phase 1B - Dockerfiles for use in 'docker build' command 
     - name: "Create images/pipelines/arm64 directory"
       file:
@@ -142,7 +142,7 @@
         "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/jannah_site/pipelines" \
         --component-filepattern \
         my_component.py \
-        --no-push-image;
+        --push-image;
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 

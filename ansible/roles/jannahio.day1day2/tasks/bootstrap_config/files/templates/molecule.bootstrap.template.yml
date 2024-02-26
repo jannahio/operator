@@ -196,10 +196,10 @@ provisioner:
                     services:
                       - name: frontend
                         giturl: https://github.com/jannahio/frontend.git
-                        image: docker.io/jallohmediabuild/jannah-frontend:v0.0.1
+                        image: docker.io/jannahioregistry/jannah-frontend:v0.0.1
                       - name: middlware
                         giturl: https://github.com/jannahio/middleware.git
-                        image: docker.io/jallohmediabuild/jannah-middleware:v0.0.1
+                        image: docker.io/jannahioregistry/jannah-middleware:v0.0.1
               deploy:
                 #  full|local|standalone
                 type: "{{ provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.type }}"
@@ -246,11 +246,11 @@ provisioner:
                     streamos: streamos
                     alpine: alpine
                     tag: "v0.0.1"
-                    repository: jannah-registry
+                    repository: jannahioregistry
                   images:
                     proxy:
                       name: jannah-nginx
-                      repository: jallohmediabuild/jannah-nginx
+                      repository: jannahioregistry/jannah-nginx
                       pullPolicy: IfNotPresent
                       tag: "1.16.0"
                       port: 80
@@ -263,7 +263,7 @@ provisioner:
                           from: "nginx:1.16.0"
                     boot:
                       name: jannah-boot
-                      repository: jallohmediabuild/jannah-boot
+                      repository: jannahioregistry/jannah-boot
                       pullPolicy: IfNotPresent
                       port: 8000
                       dockerfiles:
@@ -275,7 +275,7 @@ provisioner:
                           from: ubuntu:23.04
                     frontend:
                       name: jannah-web
-                      repository: jallohmediabuild/jannah-web
+                      repository: jannahioregistry/jannah-web
                       pullPolicy: IfNotPresent
                       port: 8100
                       dockerfiles:
@@ -290,7 +290,7 @@ provisioner:
                         branch: "main"
                     middleware:
                       name: jannah-compute
-                      repository: jallohmediabuild/jannah-compute
+                      repository: jannahioregistry/jannah-compute
                       pullPolicy: IfNotPresent
                       port: 8200
                       dockerfiles:
@@ -305,7 +305,7 @@ provisioner:
                         branch: "5-compute-module-for-jupyter-notebooks-for-data-science-work-pipeline-submission-prototype"
                     registry:
                       name: jannah-registry
-                      repository: jallohmediabuild/jannah-registry
+                      repository: jannahioregistry/jannah-registry
                       pullPolicy: IfNotPresent
                       port: 5000
                       aux_port: 5001
@@ -320,7 +320,7 @@ provisioner:
                           from: registry:2
                     pipeline:
                       name: jannah-pipeline
-                      repository: jallohmediabuild/jannah-pipeline
+                      repository: jannahioregistry/jannah-pipeline
                       pullPolicy: IfNotPresent
                       port: 8000
                       dockerfiles:
