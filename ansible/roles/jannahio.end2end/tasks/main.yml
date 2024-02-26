@@ -63,6 +63,7 @@
         - "molecule_prepare"
         - "molecule_prepare_debug"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
     - name: "Import dependency and jannah and deployment tasks (molecule converge) - for non-molecule based tasks runs"
       include_tasks: '{{ item }}'
       with_fileglob:

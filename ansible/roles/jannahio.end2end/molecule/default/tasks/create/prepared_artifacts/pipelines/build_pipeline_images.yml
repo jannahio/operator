@@ -197,9 +197,9 @@
         - "operator_e2e"
         - "molecule_create_pipeline_images"
   rescue:
-    - name: "Builds Ubuntu Docker Images Exception"
+    - name: "Build Pipeline Images Exception"
       ansible.builtin.debug:
-        msg: 'Builds Ubuntu Docker Images Exception'
+        msg: 'Build Pipeline Images Exception'
       tags:
         - "build_images"
         - "build_ubuntu_images"

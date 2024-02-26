@@ -8,7 +8,7 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_os"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_os: "{{ Jannah.stages.bootstrap.deploy.os }}"
@@ -16,7 +16,7 @@
         - "deploy_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
     - name: "Import prepare build_base_image tasks - Darwin"
       include_tasks: '{{ prepare_build_base_image_task_items }}'
       with_fileglob:
@@ -79,6 +79,28 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "molecule_prepare_debug"
+    - name: "Import prepare pipeline images tasks"
+      include_tasks: '{{ prepare_pipeline_images_task_items }}'
+      with_fileglob:
+        - pipelines/prepare_pipeline_images.yml
+      loop_control:
+        loop_var: prepare_pipeline_images_task_items
+      when: (
+              ansible_facts['os_family'] == "Darwin" 
+              and 
+                (
+                  jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+                  or 
+                  jannah_stages_bootstrap_deploy_destination == "kind"
+                )
+              and 
+              jannah_stages_bootstrap_deploy_os == "ubuntu" 
+            )
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
   rescue:
     - name: "Prepare Build Artifact for Jannah Deployment Exception"
       ansible.builtin.debug:
@@ -88,11 +110,13 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
     - debug: var=prepare_jannah_tasks_debug_resources
       tags:
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -103,4 +127,5 @@
         - "docker_desktop_infra"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
   ignore_errors: false

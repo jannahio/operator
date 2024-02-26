@@ -8,7 +8,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_type"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_type: "{{ Jannah.stages.bootstrap.deploy.type }}"
@@ -16,6 +16,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
       ansible.builtin.set_fact:
         jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
@@ -23,7 +24,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
     - name: "kind export  and set kubeconfig to kind/config"
       environment:
         KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
@@ -38,7 +39,7 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-        # - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
     - name: "Import prepare  docker desktop tasks - Darwin"
       include_tasks: '{{ prepare_macos_docker_desktop_task_items }}'
       with_fileglob:
@@ -60,14 +61,14 @@
     - name: "Import artifact prepare tasks"
       include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
-        - prepared_artifacts/main.yml
+        - prepare/prepared_artifacts/main.yml
       loop_control:
         loop_var: prepare_build_artifact_darwin_items
       tags:
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
-        - "molecule_prepare_debug"
+        - "molecule_prepare_pipeline_images"
   rescue:
     - name: "Prepare Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -77,11 +78,14 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
+
     - debug: var=prepare_jannah_tasks_debug_resources
       tags:
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -92,4 +96,5 @@
         - "prepare_images"
         - "molecule_prepare"
         - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
   ignore_errors: false
