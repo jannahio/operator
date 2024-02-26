@@ -1,0 +1,106 @@
+---
+- name: "Tag and Push ubuntu pipeline images for use in Kubeflow pipelines"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_push_boot_ubuntu_image"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_push_boot_ubuntu_image: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.dockerfiles.push }}"
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "deploy_storage"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
+    # - name: "Tag kubeflow pipeline component image - arm64"
+    #   shell: |
+    #     docker tag \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #           ansible_facts['architecture'] != "x86_64" 
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu"
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
+    #     - "molecule_prepare_pipeline_images"
+    - name: "Load kubeflow pipeline component image - arm64 - kind cluster"
+      shell: |
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] != "x86_64"
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind" 
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
+    # - name: "Tag kubeflow pipeline component image  - amd64"
+    #   shell: |
+    #     docker tag \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #           ansible_facts['architecture'] == "x86_64" 
+    #         )
+    #   async: 600
+    #   poll: 5
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
+    #     - "molecule_prepare_pipeline_images"
+    - name: "Load Ubuntu boot image - amd64 - kind cluster"
+      shell: |
+        kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+              and
+              jannah_stages_bootstrap_deploy_destination == "kind" 
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "prepare_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"   
+  rescue:
+    - name: "Tag and Push Pipeline Images Exception"
+      ansible.builtin.debug:
+        msg: "Tag and Push Pipeline Images Exception"
+      tags:
+        - "prepare_images"
+        - "prepare_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images" 
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "prepare_images"
+        - "prepare_ubuntu_images"
+        - "molecule_prepare"
+        - "operator_e2e"
+        - "molecule_prepare_pipeline_images"
+  ignore_errors: false
