@@ -1,0 +1,2 @@
+# syntax=docker/dockerfile:1
+FROM {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}

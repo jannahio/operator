@@ -1,9 +1,10 @@
 ---
 # Implements https://www.kubeflow.org/docs/components/pipelines/v2/components/container-components/
 # A two phase approach to build the Kubeflow pipeline container image 
-# 1) First we build the container image off alpine. 
-# 2) Second we call the kfp component build command passing the newly built image both as base_image and target_image 
-#    via environment variables. This will install the necessary kfp libraries in the image
+# 1) First we build the container image using 'kfp component build' command off alpine. 
+#    Passing base_image and target_image via environment variables. 
+#    This will install the necessary kfp libraries in the image
+# 2) Second we call the 'docker build command passing the newly built image both as base_image and target_image 
 - name: "Builds container images for use in Kubeflow pipelines"
   block:
     - name: "set_fact jannah_stages_bootstrap_deploy_destination"
@@ -14,34 +15,6 @@
         - "molecule_create"
         - "molecule_create_pipeline_images"
         - "operator_e2e"
-    - name: "Create images/pipeline directory"
-      file:
-        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines"
-        state: directory
-        mode: 0755
-      tags:
-        - "build_images"
-        - "molecule_create"
-        - "operator_e2e"
-        - "molecule_create_pipeline_images"
-    - name: "Generate images/pipelines/kubeflow.component.Dockerfile"
-      template:
-        src: "files/templates/kubeflow.component.Dockerfile"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/kubeflow.component.Dockerfile"
-      tags:
-        - "build_images"
-        - "molecule_create"
-        - "operator_e2e"
-        - "molecule_create_pipeline_images"
-    - name: "Generate ubuntu/ubuntu.boot.Dockerfile.dockerignore"
-      template:
-        src: "files/templates/kubeflow.component.Dockerfile.dockerignore"
-        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/kubeflow.component.Dockerfile.dockerignore"
-      tags:
-        - "build_images"
-        - "molecule_create"
-        - "operator_e2e"
-        - "molecule_create_pipeline_images"
     - name: "Pull alpine image"
       shell: |
         docker pull "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.dockerfiles.alpine.from }}";
@@ -54,16 +27,75 @@
         - "molecule_create"
         - "operator_e2e"
         # - "molecule_create_pipeline_images"
-# [ARM64] Phase 1 - First we build the container image off alpine 
+ # [ARM64] Phase 1A - First we build the container image using 'kfp component build' command off alpine.
+    - name: "Build kubeflow pipeline component image using kfp utility - arm64"
+      environment:
+        # Pipeline base image is alpine
+        - JANNAH_PIPELINE_BASE_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.dockerfiles.alpine.from }}"
+        # Target image is built/tagged for use on Jannah's Kubeflow pipeline
+        - JANNAH_PIPELINE_TARGET_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
+      shell: |
+        kfp component build \
+        "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/jannah_site/pipelines" \
+        --component-filepattern \
+        my_component.py \
+        --no-push-image;
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+              and 
+              (
+                jannah_stages_bootstrap_deploy_destination == "kind"
+                or 
+                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
+              )
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_images"
+   # [ARM64] Phase 1B - Dockerfiles for use in 'docker build' command 
+    - name: "Create images/pipelines/arm64 directory"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64"
+        state: directory
+        mode: 0755
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess" 
+    - name: "Generate images/pipelines/arm64/kubeflow.component.arm64.Dockerfile"
+      template:
+        src: "files/templates/kubeflow.component.arm64.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64/kubeflow.component.arm64.Dockerfile"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess"
+    - name: "Generate kubeflow.component.arm64.Dockerfile.dockerignore"
+      template:
+        src: "files/templates/kubeflow.component.arm64.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64/kubeflow.component.arm64.Dockerfile.dockerignore"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess"
+ # [ARM64] Phase 2 - Second we call the 'docker build command passing the newly built image 
+ # both as base_image (specified in Dockerfile) and target_image
     - name: "Build kubeflow pipeline component image - arm64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/arm64 \
-          -f kubeflow.component.Dockerfile \
-          --load "{{ Jannah.global.ansible.working_dir }}"
+          -f kubeflow.component.arm64.Dockerfile \
+          --load "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64"
       when: (
               ansible_facts['architecture'] != "x86_64" 
               and
@@ -72,18 +104,18 @@
       async: 9800
       poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64"
       tags:
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
+        - "molecule_create_pipeline_imagess"
     - name: "Build kubeflow pipeline component image - arm64 kind cluster"
       shell: |
         docker build \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f kubeflow.component.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f kubeflow.component.arm64.Dockerfile "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64";
       when: (
               ansible_facts['architecture'] != "x86_64" 
               and 
@@ -92,17 +124,19 @@
       async: 9800
       poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/arm64"
       tags:
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
-  # [ARM64] Phase 2 - call the kfp component build command passing the newly built image both as base_image and target_image
-    - name: "Rebuild kubeflow pipeline component image using kfp utility - arm64"
+        - "molecule_create_pipeline_imagess"
+# [AMD64] Phase 1A - First we build the container image using 'kfp component build' command off alpine.
+    - name: "Build kubeflow pipeline component image using kfp utility - amd64"
       environment:
-        - JANNAH_PIPELINE_BASE_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
-        - JANNAH_PIPELINE_TARGET_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
+        # Pipeline base image is alpine  
+        - JANNAH_PIPELINE_BASE_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.dockerfiles.alpine.from }}"
+        # Target image is built/tagged for use on Jannah's Kubeflow pipeline
+        - JANNAH_PIPELINE_TARGET_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
       shell: |
         kfp component build \
         "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/jannah_site/pipelines" \
@@ -110,7 +144,7 @@
         my_component.py \
         --no-push-image;
       when: (
-              ansible_facts['architecture'] != "x86_64" 
+              ansible_facts['architecture'] == "x86_64" 
               and 
               (
                 jannah_stages_bootstrap_deploy_destination == "kind"
@@ -124,17 +158,46 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
-# [AMD64] Phase 1 - First we build the container image off alpine 
+        - "molecule_create_pipeline_imagess"
+  # [AMD64] Phase 1B - Dockerfiles for use in 'docker build' command 
+    - name: "Create images/pipelines/amd64 directory"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64"
+        state: directory
+        mode: 0755
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess" 
+    - name: "Generate images/pipelines/amd64/kubeflow.component.amd64.Dockerfile"
+      template:
+        src: "files/templates/kubeflow.component.amd64.Dockerfile"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64/kubeflow.component.amd64.Dockerfile"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess"
+    - name: "Generate kubeflow.component.amd64.Dockerfile.dockerignore"
+      template:
+        src: "files/templates/kubeflow.component.amd64.Dockerfile.dockerignore"
+        dest: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64/kubeflow.component.amd64.Dockerfile.dockerignore"
+      tags:
+        - "build_images"
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_pipeline_imagess"
+    # [ARM64] Phase 2 - call the kfp component build command passing the newly built image both as base_image and target_image
     - name: "Build Kubeflow pipeline component image - amd64 docker-desktop"
       shell: |
         docker buildx build \
           --builder=kube \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
           --platform=linux/amd64 \
-          -f kubeflow.component.Dockerfile \
-          --load "{{ Jannah.global.ansible.working_dir }}"
+          -f kubeflow.component.amd64.Dockerfile \
+          --load "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64"
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 
@@ -143,18 +206,18 @@
       async: 9800
       poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64"
       tags:
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
+        - "molecule_create_pipeline_imagess"
     - name: "Build Kubeflow pipeline component image - amd64 kind"
       shell: |
         docker build \
           -t \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          -f kubeflow.component.Dockerfile "{{ Jannah.global.ansible.working_dir }}";
+          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+          -f kubeflow.component.amd64.Dockerfile "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64";
       when: (
               ansible_facts['architecture'] == "x86_64" 
               and 
@@ -163,39 +226,12 @@
       async: 9800
       poll: 5
       args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/"
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines/amd64"
       tags:
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_images"
-  # [ARM64] Phase 2 - call the kfp component build command passing the newly built image both as base_image and target_image
-    - name: "Rebuild kubeflow pipeline component image using kfp utility - amd64"
-      environment:
-        - JANNAH_PIPELINE_BASE_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
-        - JANNAH_PIPELINE_TARGET_IMAGE: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }}"
-      shell: |
-        kfp component build \
-        "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql/jannah_site/pipelines" \
-        --component-filepattern \
-        my_component.py \
-        --no-push-image;
-      when: (
-              ansible_facts['architecture'] == "x86_64" 
-              and 
-              (
-                jannah_stages_bootstrap_deploy_destination == "kind"
-                or 
-                jannah_stages_bootstrap_deploy_destination == "docker-desktop"
-              )
-            )
-      async: 600
-      poll: 5
-      tags:
-        - "build_images"
-        - "molecule_create"
-        - "operator_e2e"
-        - "molecule_create_pipeline_images"
+        - "molecule_create_pipeline_imagess"
   rescue:
     - name: "Build Pipeline Images Exception"
       ansible.builtin.debug:
