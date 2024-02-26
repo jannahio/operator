@@ -158,7 +158,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
   # [AMD64] Phase 1B - Dockerfiles for use in 'docker build' command 
     - name: "Create images/pipelines/amd64 directory"
       file:
