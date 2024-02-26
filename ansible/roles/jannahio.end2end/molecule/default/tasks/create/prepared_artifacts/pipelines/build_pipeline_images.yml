@@ -109,7 +109,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
     - name: "Build kubeflow pipeline component image - arm64 kind cluster"
       shell: |
         docker build \
@@ -129,7 +129,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
 # [AMD64] Phase 1A - First we build the container image using 'kfp component build' command off alpine.
     - name: "Build kubeflow pipeline component image using kfp utility - amd64"
       environment:
@@ -211,7 +211,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
     - name: "Build Kubeflow pipeline component image - amd64 kind"
       shell: |
         docker build \
@@ -231,7 +231,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
   rescue:
     - name: "Build Pipeline Images Exception"
       ansible.builtin.debug:
