@@ -66,7 +66,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess" 
+        - "molecule_create_pipeline_images" 
     - name: "Generate images/pipelines/arm64/kubeflow.component.arm64.Dockerfile"
       template:
         src: "files/templates/kubeflow.component.arm64.Dockerfile"
@@ -75,7 +75,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
     - name: "Generate kubeflow.component.arm64.Dockerfile.dockerignore"
       template:
         src: "files/templates/kubeflow.component.arm64.Dockerfile.dockerignore"
@@ -84,7 +84,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
  # [ARM64] Phase 2 - Second we call the 'docker build command passing the newly built image 
  # both as base_image (specified in Dockerfile) and target_image
     - name: "Build kubeflow pipeline component image - arm64 docker-desktop"
@@ -169,7 +169,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess" 
+        - "molecule_create_pipeline_images" 
     - name: "Generate images/pipelines/amd64/kubeflow.component.amd64.Dockerfile"
       template:
         src: "files/templates/kubeflow.component.amd64.Dockerfile"
@@ -178,7 +178,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
     - name: "Generate kubeflow.component.amd64.Dockerfile.dockerignore"
       template:
         src: "files/templates/kubeflow.component.amd64.Dockerfile.dockerignore"
@@ -187,7 +187,7 @@
         - "build_images"
         - "molecule_create"
         - "operator_e2e"
-        - "molecule_create_pipeline_imagess"
+        - "molecule_create_pipeline_images"
     # [ARM64] Phase 2 - call the kfp component build command passing the newly built image both as base_image and target_image
     - name: "Build Kubeflow pipeline component image - amd64 docker-desktop"
       shell: |
