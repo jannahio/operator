@@ -246,7 +246,7 @@ provisioner:
                     streamos: streamos
                     alpine: alpine
                     tag: "v0.0.1"
-                    repository: jannahioregistry
+                    repository: jannah-registry
                   images:
                     proxy:
                       name: jannah-nginx
