@@ -61,7 +61,7 @@
     - name: "Import artifact prepare tasks"
       include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
-        - prepare/prepared_artifacts/main.yml
+        - prepared_artifacts/main.yml
       loop_control:
         loop_var: prepare_build_artifact_darwin_items
       tags:

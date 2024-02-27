@@ -36,7 +36,7 @@
     - name: "Import cleanup tasks - Darwin"
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
-        - destroy/prepared_artifacts/main.yml
+        - prepared_artifacts/main.yml
         - clusters/kind/main.yml
       loop_control:
         loop_var: cleanup_task_darwin_items

@@ -62,7 +62,7 @@
     - name: "Import create tasks - Darwin"
       include_tasks: '{{ prepare_build_artifact_darwin_items }}'
       with_fileglob:
-        - create/prepared_artifacts/main.yml
+        - prepared_artifacts/main.yml
       loop_control:
         loop_var: prepare_build_artifact_darwin_items
       when: ansible_facts['os_family'] == "Darwin"
