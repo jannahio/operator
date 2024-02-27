@@ -44,6 +44,7 @@
         - molecule/default/tasks/cleanup/main.yml
       tags:
         - "molecule_cleanup"
+        - "molecule_cleanup_pipeline_images"
         - "operator_e2e"
         - "debug_task"
     - name: "Import create tasks (molecule create) - for non-molecule based tasks runs"
@@ -93,6 +94,7 @@
         - "deploy_jannah"
         - "operator_e2e"
         - "molecule_destroy"
+        - "molecule_destroy_pipeline_images"
   rescue:
     - name: "An exception is thrown"
       ansible.builtin.debug:

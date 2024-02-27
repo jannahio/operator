@@ -36,7 +36,7 @@
     - name: "Import cleanup tasks - Darwin"
       include_tasks: '{{ cleanup_task_darwin_items }}'
       with_fileglob:
-        - prepared_artifacts/main.yml
+        - destroy/prepared_artifacts/main.yml
         - clusters/kind/main.yml
       loop_control:
         loop_var: cleanup_task_darwin_items
@@ -44,6 +44,7 @@
       tags:
         - "molecule_destroy"
         - "operator_e2e"
+        - "molecule_destroy_pipeline_images"
     - name: "docker container prune -f -a"
       shell: |
         docker container prune -f
@@ -93,6 +94,7 @@
         - "cleanup_tmp_directory"
         - "cleanup_ephemeral_directory"
         - "cleanup_base_images"
+        - "molecule_destroy_pipeline_images"
     - name: "Print return information from the previous task"
       ansible.builtin.debug:
         var: ansible_facts['architecture']
@@ -102,6 +104,7 @@
         - "cleanup_tmp_directory"
         - "cleanup_ephemeral_directory"
         - "cleanup_base_images"
+        - "molecule_destroy_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -114,5 +117,6 @@
         - "cleanup_tmp_directory"
         - "cleanup_ephemeral_directory"
         - "cleanup_base_images"
+        - "molecule_destroy_pipeline_images"
   ignore_errors: false
   no_log: false

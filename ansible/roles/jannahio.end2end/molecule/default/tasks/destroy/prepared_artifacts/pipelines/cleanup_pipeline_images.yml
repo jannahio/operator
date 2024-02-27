@@ -1,0 +1,77 @@
+---
+- name: "Removes container images for use in Kubeflow pipelines"
+  block:
+    - name: "set_fact jannah_stages_bootstrap_deploy_destination"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_destination: "{{ Jannah.stages.bootstrap.deploy.destination }}"
+      tags:
+        - "molecule_destroy"
+        - "molecule_destroy_pipeline_images"
+        - "operator_e2e"
+    # - name: "Remove alpine image"
+    #   shell: |
+    #     docker image rm -f \
+    #     {{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.dockerfiles.alpine.from }};
+    #     exit 0;        
+    #   async: 9800
+    #   poll: 5
+    #   tags:
+    #     - "build_frontend_images"
+    #     - "molecule_destroy"
+    #     - "operator_e2e"
+    #     - "molecule_destroy_pipeline_images"
+    - name: "Remove images/pipelines/ directory"
+      file:
+        path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/pipelines"
+        state: absent
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "molecule_destroy_pipeline_images" 
+    - name: "Remove kubeflow pipeline component image - arm64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;  
+      when: (
+              ansible_facts['architecture'] != "x86_64" 
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "molecule_destroy_pipeline_images"
+    - name: "Remove Kubeflow pipeline component image - amd64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.pipeline.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.alpine }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: (
+              ansible_facts['architecture'] == "x86_64" 
+            )
+      async: 600
+      poll: 5
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "molecule_destroy_pipeline_images"
+  rescue:
+    - name: "Remove Pipeline Images Exception"
+      ansible.builtin.debug:
+        msg: 'Remove Pipeline Images Exception'
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "molecule_destroy_pipeline_images"
+    - name: Re-emit failure
+      vars:
+        failed_task:
+          result: '{{ ansible_failed_result }}'
+      fail:
+        msg: '{{ failed_task }}'
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+        - "molecule_destroy_pipeline_images"
+  ignore_errors: false

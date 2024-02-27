@@ -41,10 +41,36 @@
         - "destroy_frontend_images"
         - "molecule_destroy"
         - "operator_e2e"
+    - name: "Remove Ubuntu frontend repository/image - arm64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: "Remove Ubuntu frontend image - amd64"
       shell: |
         docker image rm -f \
         {{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64"
+      async: 600
+      poll: 5
+      tags:
+        - "destroy_ubuntu_frontend_images"
+        - "destroy_frontend_images"
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove Ubuntu frontend repository/image - amd64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.frontend.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64"
       async: 600

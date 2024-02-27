@@ -72,10 +72,36 @@
       tags:
         - "molecule_destroy"
         - "operator_e2e"
+    - name: "Remove StreamOs boot repository/image - arm64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] != "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
+      async: 9800
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
     - name: "Remove StreamOs boot image - amd64"
       shell: |
         docker image rm -f \
         {{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+        exit 0;
+      when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
+      async: 9800
+      poll: 5
+      args:
+        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/streamos"
+      tags:
+        - "molecule_destroy"
+        - "operator_e2e"
+    - name: "Remove StreamOs boot repository/image - amd64"
+      shell: |
+        docker image rm -f \
+        {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.boot.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.streamos }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
         exit 0;
       when: ansible_facts['architecture'] == "x86_64" and jannah_stages_bootstrap_deploy_os == "streamos"
       async: 9800

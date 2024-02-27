@@ -16,6 +16,7 @@
           tags:
             - "molecule_cleanup"
             - "operator_e2e"
+            - "molecule_cleanup_pipeline_images"
       rescue:
         - name: Re-emit failure
           vars:
@@ -23,5 +24,9 @@
               result: '{{ ansible_failed_result }}'
           fail:
             msg: '{{ failed_task }}'
+          tags:
+            - "molecule_cleanup"
+            - "operator_e2e"
+            - "molecule_cleanup_pipeline_images"
       ignore_errors: false
 

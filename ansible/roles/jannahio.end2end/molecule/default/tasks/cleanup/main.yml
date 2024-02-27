@@ -89,6 +89,7 @@
         - "cleanup_images"
         - "stop_frontend_images"
         - "docker_desktop_infra"
+        - "molecule_cleanup_pipeline_images"
   rescue:
     - name: "Cleanup Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -98,6 +99,7 @@
         - "operator_e2e"
         - "cleanup_images"
         - "stop_frontend_images"
+        - "molecule_cleanup_pipeline_images"
     - name: "Print return information from the previous task"
       ansible.builtin.debug:
         var: ansible_facts['architecture']
@@ -106,6 +108,7 @@
         - "operator_e2e"
         - "cleanup_images"
         - "stop_frontend_images"
+        - "molecule_cleanup_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -117,4 +120,5 @@
         - "operator_e2e"
         - "cleanup_images"
         - "stop_frontend_images"
+        - "molecule_cleanup_pipeline_images"
   ignore_errors: false

@@ -34,6 +34,18 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+    - name: "Import cleanup prepared pipeline images tasks - Darwin"
+      include_tasks: '{{ cleanup_prepared_pipeline_images_task_items }}'
+      with_fileglob:
+        - pipelines/cleanup_prepared_pipeline_images.yml
+      loop_control:
+        loop_var: cleanup_prepared_pipeline_images_task_items
+      when: ansible_facts['os_family'] == "Darwin" 
+      tags:
+        - "docker_desktop_infra"
+        - "molecule_cleanup"
+        - "operator_e2e"
+        - "molecule_cleanup_pipeline_images"
   rescue:
     - name: "Cleanup prepared Jannah Tasks Exception"
       ansible.builtin.debug:
@@ -43,11 +55,13 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "molecule_cleanup_pipeline_images"
     - debug: var=cleanup_prepared_jannah_tasks_debug_resources
       tags:
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "molecule_cleanup_pipeline_images"
     - name: Re-emit failure
       vars:
         failed_task:
@@ -58,4 +72,5 @@
         - "docker_desktop_infra"
         - "molecule_cleanup"
         - "operator_e2e"
+        - "molecule_cleanup_pipeline_images"
   ignore_errors: false

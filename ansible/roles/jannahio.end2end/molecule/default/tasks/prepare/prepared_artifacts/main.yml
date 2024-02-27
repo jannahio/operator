@@ -82,7 +82,7 @@
     - name: "Import prepare pipeline images tasks"
       include_tasks: '{{ prepare_pipeline_images_task_items }}'
       with_fileglob:
-        - "*prepare/pipelines/prepare_pipeline_images.yml"
+        - pipelines/prepare_pipeline_images.yml
       loop_control:
         loop_var: prepare_pipeline_images_task_items
       when: (
