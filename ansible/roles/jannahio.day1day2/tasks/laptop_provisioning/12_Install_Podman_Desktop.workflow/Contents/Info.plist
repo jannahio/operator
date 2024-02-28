@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>12_Install_Podman_Tooling</string>
+	<string>12_Install_Podman_Desktop</string>
 </dict>
 </plist>

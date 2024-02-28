@@ -92,10 +92,17 @@
     # TODO: Reserve Compute Resources for System Daemons
     # - https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#node-allocatable
     - name: "Create kind cluster"
-      # environment:
+      environment:
+        - KIND_EXPERIMENTAL_PROVIDER: 'podman'
       #   KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
       #   reg_name: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.name }}"
       #   reg_port: "{{ Jannah.stages.bootstrap.deploy.helm_values.images.registry.aux_port }}"
+      # cat <<EOF | kind create cluster --config=-
+      # nodes:
+      #     - role: control-plane
+      #     - role: worker
+      #     - role: worker
+      #     - role: worker
       shell: |
         cat <<EOF | kind create cluster --config=-
         kind: Cluster

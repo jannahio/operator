@@ -16,6 +16,12 @@
         - "build_frontend_images"
         - "molecule_create"
         - "operator_e2e"
+    - name: "set_fact jannah_stages_bootstrap_deploy_wait_time"
+      ansible.builtin.set_fact:
+        jannah_stages_bootstrap_deploy_wait_time: "{{ Jannah.stages.bootstrap.deploy.wait_time }}"
+      tags:
+        - "molecule_create"
+        - "operator_e2e"    
     - name: "Create /images/ubuntu/middleware directory"
       file:
         path: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware"
@@ -99,6 +105,22 @@
         - "molecule_create"
         - "operator_e2e"
         - "molecule_create_debug_1"
+    - name: "echo debug wait - kind"
+      shell: |
+        echo "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time | int != 0
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug" 
+    - name: "debug wait - kind"
+      shell: |
+        sleep "{{ Jannah.stages.bootstrap.deploy.wait_time }}";
+      when: tmp_EPHEMERAL_cr_jannah_stages_bootstrap_deploy_wait_time | int != 0
+      tags:
+        - "molecule_create"
+        - "operator_e2e"
+        - "molecule_create_debug"   
     - name: "Get pgbouncer-uri - kind-cluster"
       environment:
         - KUBECONFIG: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/kind/config"
