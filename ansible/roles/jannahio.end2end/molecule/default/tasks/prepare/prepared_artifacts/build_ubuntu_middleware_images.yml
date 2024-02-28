@@ -17,22 +17,22 @@
         - "molecule_prepare"
         - "operator_e2e"
         - "molecule_prepare_debug"
-    - name: "Tag Ubuntu middleware image - arm64 kind"
-      shell: |
-        docker tag \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: (
-               ansible_facts['architecture'] != "x86_64" 
-            )
-      async: 9800
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
-      tags:
-        - "prepare_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Tag Ubuntu middleware image - arm64 kind"
+    #   shell: |
+    #     docker tag \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.arm }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: (
+    #            ansible_facts['architecture'] != "x86_64" 
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
     - name: "Load Ubuntu middleware image - arm64 kind cluster"
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
@@ -67,22 +67,22 @@
     #     - "prepare_images"
     #     - "molecule_prepare"
     #     - "operator_e2e"
-    - name: "Tag Ubuntu middleware image - amd64"
-      shell: |
-        docker tag \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
-          {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
-      when: ( 
-              ansible_facts['architecture'] == "x86_64" 
-            )
-      async: 9800
-      poll: 5
-      args:
-        chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
-      tags:
-        - "prepare_images"
-        - "molecule_prepare"
-        - "operator_e2e"
+    # - name: "Tag Ubuntu middleware image - amd64"
+    #   shell: |
+    #     docker tag \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }} \
+    #       {{ Jannah.stages.bootstrap.deploy.helm_values.common.repository }}/{{ Jannah.stages.bootstrap.deploy.helm_values.images.middleware.name }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.amd }}-{{ Jannah.stages.bootstrap.deploy.helm_values.common.ubuntu }}:{{ Jannah.stages.bootstrap.deploy.helm_values.common.tag }};
+    #   when: ( 
+    #           ansible_facts['architecture'] == "x86_64" 
+    #         )
+    #   async: 9800
+    #   poll: 5
+    #   args:
+    #     chdir: "{{ Jannah.global.ansible.working_dir }}/tmp/EPHEMERAL/images/ubuntu/middleware/jannah_graphql"
+    #   tags:
+    #     - "prepare_images"
+    #     - "molecule_prepare"
+    #     - "operator_e2e"
     - name: "Load Ubuntu middleware image - amd64"
       shell: |
         kind load docker-image  --name "{{ Jannah.stages.bootstrap.deploy.kind.name }}" \
