@@ -24,9 +24,6 @@ jannah-boot-credentials:
 	   echo "Please follow laptop provisioning instructions at https://operator.jannah.io/boot/"; \
 	fi
 # configurations patches	
-	@yq -i \
-        'with(.; .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.helm_values.common.repository = .provisioner.inventory.group_vars.all.Jannah.stages.bootstrap.deploy.helm_values.images.registry.name )' \
-        $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml
 	cp $(WORKING_DIR)/ansible/roles/jannahio.day1day2/tasks/bootstrap_config/files/templates/molecule.bootstrap.template.yml \
 	$(JANNAHHOME)/jannah-operator/molecule.yml
 
